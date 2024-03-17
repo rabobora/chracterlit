@@ -17,6 +17,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // csrf 차단 해체
+                .csrf(csrf -> csrf.disable())
                 // 특정 경로에 대한 접근 제한 해제
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/v1/sse/subscribe").permitAll() // 인증 없이 접근 허용
@@ -24,10 +26,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated() // 그 외 요청은 인증 필요
                 );
 
-//            http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
-//CSRF해제 필요합니다 작성중!!!
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         // 정적 리소스 spring security 대상에서 제외
