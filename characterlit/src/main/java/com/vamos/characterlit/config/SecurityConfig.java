@@ -21,7 +21,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 // 특정 경로에 대한 접근 제한 해제
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/v1/sse/subscribe").permitAll() // 인증 없이 접근 허용
+                        .requestMatchers("/v1/sse/subscribe/**").permitAll() // 인증 없이 접근 허용
                         .requestMatchers("/v1/sse/broadcast").permitAll() // 인증 없이 접근 허용
                         .anyRequest().authenticated() // 그 외 요청은 인증 필요
                 );
