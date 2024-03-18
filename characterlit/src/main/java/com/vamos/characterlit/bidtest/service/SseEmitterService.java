@@ -123,7 +123,6 @@ public class SseEmitterService {
         }
     }
 
-
 //    public void broadcast(EventPayload eventPayload) {
 //        emitterMap.forEach((id, emitter) -> {
 //            try {
