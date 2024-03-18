@@ -1,4 +1,4 @@
-package com.vamos.characterlit.user.entity;
+package com.vamos.characterlit.user.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Table(name = "user")
 @Getter
 @NoArgsConstructor
-public class User {
+public class UserEntity {
 	
 	@Id
 	@Column(name = "user_id", unique = true, nullable = false)
