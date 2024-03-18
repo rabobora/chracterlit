@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Table(name = "user")
 @Getter
 @NoArgsConstructor
-public class UserEntity {
+public class User {
 	
 	@Id
 	@Column(name = "user_id", unique = true, nullable = false)
