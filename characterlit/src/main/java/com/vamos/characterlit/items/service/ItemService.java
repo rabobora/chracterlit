@@ -87,9 +87,12 @@ public class ItemService {
     // 카테고리 필터링
     @Transactional(readOnly = true)
     public List<ItemListDto> searchCategories(Integer category) {
-        List<Items> items = itemRepository.findByCategory(category);
-        return items.stream()
-                .map(ItemListDto::fromEntity)
-                .collect(Collectors.toList());
+        List<Items> categoryItems = itemRepository.findByCategory(category);
+        List<ItemListDto> itemDtoList = new ArrayList<>();
+        for (Items item : categoryItems) {
+            itemDtoList.add(ItemListDto.fromEntity(item));
+        }
+        return itemDtoList;
     }
+
 }
