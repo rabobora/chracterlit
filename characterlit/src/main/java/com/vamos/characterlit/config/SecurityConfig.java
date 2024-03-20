@@ -23,6 +23,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/v1/sse/subscribe/**").permitAll() // 인증 없이 접근 허용
                         .requestMatchers("/v1/sse/broadcast").permitAll() // 인증 없이 접근 허용
+                        .requestMatchers("/v1/sse/disconnect").permitAll() // 인증 없이 접근 허용
+                        .requestMatchers("/api/bid/read/**").permitAll() // 인증 없이 접근 허용
                         .anyRequest().authenticated() // 그 외 요청은 인증 필요
                 );
 

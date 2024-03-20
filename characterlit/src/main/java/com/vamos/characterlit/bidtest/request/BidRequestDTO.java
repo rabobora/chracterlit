@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Setter
 public class BidRequestDTO {
 
-    private Long bidId;
     private Long userId;
     private int requestBid;
     private LocalDateTime bidTime;

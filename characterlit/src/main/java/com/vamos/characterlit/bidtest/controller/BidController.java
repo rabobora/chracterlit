@@ -3,17 +3,16 @@ package com.vamos.characterlit.bidtest.controller;
 import com.vamos.characterlit.bidtest.request.BidRequestDTO;
 import com.vamos.characterlit.bidtest.service.BidlogsService;
 import com.vamos.characterlit.bidtest.service.NowbidService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController("/api/bid")
+@RestController
+@RequestMapping("/api/bid")
 @Slf4j
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class BidController {
     private final BidlogsService bidlogsService;
     private final NowbidService nowbidService;
@@ -24,24 +23,20 @@ public class BidController {
     }
 
     @PostMapping("/read/{bidId}")
-    public ResponseEntity<?>bid( //@RequestHeader("Authorization") String token,
-                                    @RequestBody BidRequestDTO bidRequestDTO){
-        try {
-            // RabbitMQ를 통한 메시지 수신
-            // 입찰 상태 확인. 날짜는 경메 기간 내인가? 입찰가는 현재 입찰가 초과인가?
-            // 입찰 내역 확인. 혹시 최고 낙찰자가 나인데 또다시 입찰을 보냈는가?
-            // 임시코드
-            // 전부 통과 시
-            nowbidService.update(bidRequestDTO);
+    public ResponseEntity<?> bid(@PathVariable("bidId") Long bidId,
+                                 @RequestBody BidRequestDTO bidRequestDTO,
+                                 HttpSession session) {
+        log.info("Received bid request for bidId: {}", bidId);
 
-            return new ResponseEntity<>("success", HttpStatus.OK);
-        }
-        catch (Exception e){
-            System.out.println("Error during bid process: " + e.getMessage());
-            // 클라이언트에게 에러 메시지 반환
+        try {
+            // 경매 정보를 업데이트하는 비즈니스 로직 호출
+            nowbidService.update(bidId, bidRequestDTO);
+
+            return new ResponseEntity<>("Success", HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error processing the bid: {}", e.getMessage());
             return new ResponseEntity<>("Error processing the bid: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
 }

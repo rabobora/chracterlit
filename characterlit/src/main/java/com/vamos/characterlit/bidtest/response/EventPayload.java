@@ -4,5 +4,5 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record EventPayload(@JsonProperty("bidId") Long bidId,
                            @JsonProperty("memberName") String memberName,
-                           @JsonProperty("memberAge") String memberAge) {
+                           @JsonProperty("requestBid") int requestBid) {
         }
