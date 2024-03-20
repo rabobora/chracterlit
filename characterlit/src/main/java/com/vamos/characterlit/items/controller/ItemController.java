@@ -22,7 +22,7 @@ public class ItemController {
 
     @PostMapping("/create") // 상품 등록
     public ResponseEntity<?> createItem(@RequestBody ItemCreateDto request) {
-//        System.out.println(request.toString());
+        System.out.println(request.toString());
         return ResponseEntity.ok(itemService.createItem(request));
     }
 
@@ -54,9 +54,17 @@ public class ItemController {
         }
     }
 
-//    @GetMapping("/search/{keyword}")
-//    public ResponseEntity<?> searchItem(@PathVariable String keyword){
-//
-//    }
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<List<ItemListDto>> searchItem(@PathVariable String keyword) {
+        List<ItemListDto> searchResults = itemService.searchItems(keyword);
+        return ResponseEntity.ok(searchResults);
+    }
+
+    @GetMapping("/search/category/{categoryid}")
+    public ResponseEntity<List<ItemListDto>> searchCategory(@PathVariable Integer categoryid) {
+        List<ItemListDto> searchCategoryResults = itemService.searchCategories(categoryid);
+        return ResponseEntity.ok(searchCategoryResults);
+    }
+
 
 }

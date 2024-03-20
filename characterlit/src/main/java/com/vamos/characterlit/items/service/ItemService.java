@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -66,5 +67,24 @@ public class ItemService {
         } catch (EmptyResultDataAccessException e) {
             throw new EntityNotFoundException("삭제하려는 상품 정보를 찾을 수 없습니다: " + bidId);
         }
+    }
+
+    // 키워드 검색
+    @Transactional(readOnly = true)
+    public List<ItemListDto> searchItems(String keyword) {
+        List<Items> searchResults = itemRepository.findByTitleContaining(keyword);
+        List<ItemListDto> itemDtoList = new ArrayList<>();
+        for (Items item : searchResults) {
+            itemDtoList.add(ItemListDto.fromEntity(item));
+        }
+        return itemDtoList;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ItemListDto> searchCategories(Integer category) {
+        List<Items> items = itemRepository.findByCategory(category);
+        return items.stream()
+                .map(ItemListDto::fromEntity)
+                .collect(Collectors.toList());
     }
 }
