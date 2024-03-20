@@ -24,6 +24,7 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
+    // 상품 게시글 생성
     public Items createItem(ItemCreateDto itemCreateDto) {
         Items items = ItemCreateDto.toEntity(itemCreateDto);
         // db에 글 저장
@@ -31,6 +32,7 @@ public class ItemService {
 
     }
 
+    // 상품 게시글 수정
     public Items updateItem(Long bidId, ItemUpdateDto itemUpdateDto) {
         Items item = itemRepository.findById(bidId)
                 .orElseThrow(() -> new EntityNotFoundException("상품 정보를 찾을 수 없습니다: " + bidId));
@@ -38,6 +40,7 @@ public class ItemService {
         return itemRepository.save(item);
     }
 
+    // 전체 상품글 조회
     @Transactional(readOnly = true)
     public List<ItemListDto> findAllItems() {
         List<Items> items = itemRepository.findAll();
@@ -49,18 +52,19 @@ public class ItemService {
         return itemDtoList;
     }
 
-
+    // 특정 상품글 조회
     public ItemDetailDto findItemById(Long bidId) {
         Items items = itemRepository.findById(bidId)
                 .orElseThrow(() -> new EntityNotFoundException("상품 정보롤 찾을 수 없습니다: " + bidId));
 
-        // 게시글 조회시 조회수 증가
+        // 게시글 조회시 조회수 증가 로직 (item domain 에서 구현된 메소드 사용)
         items.increaseViewCount();
         itemRepository.save(items);
 
         return ItemDetailDto.fromEntity(items);
     }
 
+    // 상품 게시글 삭제
     public void delete(Long bidId) {
         try {
             itemRepository.deleteById(bidId);
@@ -80,6 +84,7 @@ public class ItemService {
         return itemDtoList;
     }
 
+    // 카테고리 필터링
     @Transactional(readOnly = true)
     public List<ItemListDto> searchCategories(Integer category) {
         List<Items> items = itemRepository.findByCategory(category);

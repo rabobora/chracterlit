@@ -8,7 +8,9 @@ import java.util.List;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Items, Long> {
+    // 키워드 검색
     List<Items> findByTitleContaining(String keyword);
 
+    // 카테고리 필터링
     List<Items> findByCategory(Integer category);
 }

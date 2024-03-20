@@ -22,6 +22,7 @@ public class S3Service {
         this.storageService = storageService;
     }
 
+    // s3이미지 업로드
     public List<String> uploadImages(List<MultipartFile> files) throws IOException {
         List<String> uploadedImageUrls = new ArrayList<>();
         for (MultipartFile file : files) {
@@ -31,6 +32,7 @@ public class S3Service {
         return uploadedImageUrls;
     }
 
+    //s3 이미지 일괄 수정
     public void updateItemImages(Long itemId, List<MultipartFile> newImageFiles) throws IOException {
         Items item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new EntityNotFoundException("Item not found: " + itemId));
@@ -47,6 +49,7 @@ public class S3Service {
         itemRepository.save(item);
     }
 
+    // s3 이미지 일괄 삭제
     public void deleteItemImages(Long itemId) {
         Items item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new EntityNotFoundException("Item not found: " + itemId));

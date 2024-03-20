@@ -41,7 +41,8 @@ public class ItemListDto {
         this.category = category;
     }
 
-    // Entity -> DTO 변환 메소드
+    // Entity를 DTO로 변환하는 메소드
+    // 메소드명은 통상적으로 사용되는 것으로 명명함
     public static ItemListDto fromEntity(Items items) {
         return ItemListDto.builder()
                 .bidId(items.getBidId())

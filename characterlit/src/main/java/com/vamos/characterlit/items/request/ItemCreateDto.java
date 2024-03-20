@@ -36,17 +36,4 @@ public class ItemCreateDto {
                 .build();
     }
 
-//    @Override
-//    public String toString() {
-//        return "ItemCreateDto{" +
-//                "title='" + title + '\'' +
-//                ", content='" + content + '\'' +
-//                ", image='" + image + '\'' +
-//                ", thumbnail='" + thumbnail + '\'' +
-//                ", startDate=" + startDate +
-//                ", endDate=" + endDate +
-//                ", startBid=" + startBid +
-//                ", category=" + category +
-//                '}';
-//    }
 }

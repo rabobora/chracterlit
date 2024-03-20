@@ -20,30 +20,34 @@ import java.util.List;
 public class ItemController {
     private final ItemService itemService;
 
-    @PostMapping("/create") // 상품 등록
+    // 상품 글 생성
+    @PostMapping("/create")
     public ResponseEntity<?> createItem(@RequestBody ItemCreateDto request) {
-        System.out.println(request.toString());
         return ResponseEntity.ok(itemService.createItem(request));
     }
 
-    @GetMapping("/search/all") // 전체글 조회
+    // 전체 상품 조회
+    @GetMapping("/search/all")
     public ResponseEntity<List<ItemListDto>> findAllItems() {
         List<ItemListDto> items = itemService.findAllItems();
         return ResponseEntity.ok(items);
     }
 
-    @GetMapping("/read/{bidid}")// 특정 게시글 상세조회
+    // 특정 상품 상세조회
+    @GetMapping("/read/{bidid}")
     public ResponseEntity<ItemDetailDto> findItemById(@PathVariable Long bidid) {
         ItemDetailDto itemDetail = itemService.findItemById(bidid);
         return ResponseEntity.ok(itemDetail);
     }
 
+    // 상품 글 수정
     @PutMapping("/modify/{bidid}")
     public ResponseEntity<?> updateItem(@PathVariable Long bidid, @RequestBody ItemUpdateDto itemUpdateDto) {
         Items updatedItem = itemService.updateItem(bidid, itemUpdateDto);
         return ResponseEntity.ok(updatedItem);
     }
 
+    //상품 글 삭제
     @DeleteMapping("/delete/{bidid}")
     public ResponseEntity<?> deleteItem(@PathVariable Long bidid) {
         try {
@@ -54,12 +58,14 @@ public class ItemController {
         }
     }
 
+    // 상품 제목 기반 키워드 검색
     @GetMapping("/search/{keyword}")
     public ResponseEntity<List<ItemListDto>> searchItem(@PathVariable String keyword) {
         List<ItemListDto> searchResults = itemService.searchItems(keyword);
         return ResponseEntity.ok(searchResults);
     }
 
+    // 상품 카테고리 필터링
     @GetMapping("/search/category/{categoryid}")
     public ResponseEntity<List<ItemListDto>> searchCategory(@PathVariable Integer categoryid) {
         List<ItemListDto> searchCategoryResults = itemService.searchCategories(categoryid);
