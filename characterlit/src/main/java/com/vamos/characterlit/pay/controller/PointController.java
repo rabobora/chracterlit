@@ -3,6 +3,7 @@ package com.vamos.characterlit.pay.controller;
 
 import com.vamos.characterlit.pay.domain.Point;
 import com.vamos.characterlit.pay.request.AccountTransferRequestDTO;
+import com.vamos.characterlit.pay.response.AccountHistoryResponseDTO;
 import com.vamos.characterlit.pay.response.PointResponseDTO;
 import com.vamos.characterlit.pay.service.BankService;
 import com.vamos.characterlit.pay.service.PointService;
@@ -40,5 +41,4 @@ public class PointController {
         Point point = pointService.getPoint(userId);
         return new ResponseEntity<>(point.getUsablePoint(),HttpStatus.OK);
     }
-
 }

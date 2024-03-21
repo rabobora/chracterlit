@@ -2,6 +2,7 @@ package com.vamos.characterlit.pay.service;
 
 import com.google.gson.*;
 import com.vamos.characterlit.pay.request.AccountTransferRequestDTO;
+import com.vamos.characterlit.pay.response.AccountHistoryResponseDTO;
 import com.vamos.characterlit.pay.response.AccountInfoResponseDTO;
 import com.vamos.characterlit.pay.response.AccountTransferResponseDTO;
 import com.vamos.characterlit.pay.response.FindUserkeyResponseDTO;
@@ -39,6 +40,9 @@ public class BankService {
 
     @Value("${spring.ssafy.accountTransferUrl}")
     private String accountTransferUrl;
+
+    @Value("${spring.ssafy.accountHistoryUrl}")
+    private String accountHistoryUrl;
 
 
     // SSAFY 금융망 사용자 등록 ( 상민오빠 회원가입 과정에 추가해줘... )
@@ -229,14 +233,10 @@ public class BankService {
         request.put("depositTransactionSummary",accountrequest.getDepositTransactionSummary()); // 거래내용요약(입금)
         request.put("withdrawalTransactionSummary",accountrequest.getWithdrawalTransactionSummary()); // 거래내용요약(출금)
 
-        System.out.println("request : " + request);
-
         try {
             WebClient wc = WebClient.create(accountTransferUrl);
 
             System.out.println("wc : "+wc);
-
-
 
             String response = wc.post()
                     .uri(accountTransferUrl)
@@ -250,9 +250,9 @@ public class BankService {
 
             JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
             System.out.println("jsonObject : "+jsonObject);
+
             Gson gson = new Gson();
             JsonArray array = jsonObject.getAsJsonArray("REC");
-            System.out.println("array : "+array);
 
             List<AccountTransferResponseDTO> accounts = new ArrayList<>();
             for (JsonElement element : array) {
@@ -280,8 +280,63 @@ public class BankService {
             return false;
         }
     }
+    // SSAFY 금융망 계좌거래내역 조회 (단건)
+    public AccountHistoryResponseDTO accoutHistory(String bankCode, String aacountNo, int transactionUniqueNo, String userkey){
+        LocalDateTime now = LocalDateTime.now();
+        String transmissionDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String transmissionTime = now.format(DateTimeFormatter.ofPattern("HHmmss"));
+        int randomNumber = (int) (Math.random() * 900000) + 100000;
 
-    // SSAFY 금융망 계좌 출금
-    // SSAFY 금융망 계좌거래내역 조회
+        Map<String,Object> Header = new HashMap<>();
+        Header.put("apiName", "inquireTransactionHistoryDetail");
+        Header.put("transmissionDate", transmissionDate);
+        Header.put("transmissionTime", transmissionTime);
+        Header.put("institutionCode", "00100");
+        Header.put("fintechAppNo", "001");
+        Header.put("apiServiceCode", "inquireTransactionHistoryDetail");
+        Header.put("institutionTransactionUniqueNo", transmissionDate+transmissionTime+randomNumber);
+        Header.put("apiKey", apiKey);
+        Header.put("userKey", userkey);
+
+        Map<String, Object> request = new HashMap<>();
+        request.put("Header", Header);
+        request.put("bankCode", bankCode);
+        request.put("accountNo",aacountNo);
+        request.put("transactionUniqueNo",transactionUniqueNo);
+
+        try {
+            WebClient wc = WebClient.create(accountHistoryUrl);
+
+            String response = wc.post()
+                    .uri(accountHistoryUrl)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(request)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
+            Gson gson = new Gson();
+            JsonObject Object = jsonObject.getAsJsonObject("REC");
+
+            AccountHistoryResponseDTO histroy= null;
+            histroy = gson.fromJson(Object, AccountHistoryResponseDTO.class);
+
+            return histroy;
+
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return null;
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+
 
 }
