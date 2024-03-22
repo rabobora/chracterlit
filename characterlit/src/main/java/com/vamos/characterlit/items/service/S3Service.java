@@ -35,7 +35,7 @@ public class S3Service {
     //s3 이미지 일괄 수정
     public void updateItemImages(Long itemId, List<MultipartFile> newImageFiles) throws IOException {
         Items item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new EntityNotFoundException("Item not found: " + itemId));
+                .orElseThrow(() -> new EntityNotFoundException("해당상품을 찾을 수 없습니다: " + itemId));
 
         // 기존 이미지들을 S3에서 삭제
         List<String> oldImageUrls = item.getImage();
@@ -52,7 +52,7 @@ public class S3Service {
     // s3 이미지 일괄 삭제
     public void deleteItemImages(Long itemId) {
         Items item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new EntityNotFoundException("Item not found: " + itemId));
+                .orElseThrow(() -> new EntityNotFoundException("해당상품을 찾을 수 없습니다: " + itemId));
 
         // S3에서 이미지들 삭제
         List<String> imageUrls = item.getImage();
