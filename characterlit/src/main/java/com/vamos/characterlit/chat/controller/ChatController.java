@@ -20,10 +20,6 @@ public class ChatController {
 
     @MessageMapping("/chatroom/{roomId}") // Send Destination Queue
     public void sendMessage(@RequestBody ChatDTO chatDTO) {
-        System.out.println("메시지를 발행합니다.");
-        System.out.println("방 번호:"+chatDTO.getRoomId());
-        System.out.println("보내는 사용자:"+chatDTO.getSenderId());
-        System.out.println("내용:"+chatDTO.getContent());
-        template.convertAndSend("/sub/"+chatDTO.getRoomId(), chatDTO.getContent());
+
     }
 }
