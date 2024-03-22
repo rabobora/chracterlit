@@ -1,4 +1,4 @@
-package com.vamos.characterlit.bidtest.request;
+package com.vamos.characterlit.sse.request;
 
 import lombok.Getter;
 import lombok.Setter;

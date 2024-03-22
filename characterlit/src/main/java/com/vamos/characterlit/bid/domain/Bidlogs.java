@@ -1,6 +1,7 @@
-package com.vamos.characterlit.bidtest.domain;
+package com.vamos.characterlit.bid.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +19,15 @@ public class Bidlogs {
     private int requestBid;
     private LocalDateTime bidTime;
 
+    public Bidlogs() {}
+    @Builder
+    public Bidlogs(Long logId, Long bidId, Long userId, int requestBid, LocalDateTime bidTime) {
+        this.logId = logId;
+        this.bidId = bidId;
+        this.userId = userId;
+        this.requestBid = requestBid;
+        this.bidTime = bidTime;
+    }
     // 메시지를 보내는 시점에서 시간이 기록되어야 합니다. 사용 안할것.
 //    @PrePersist
 //    protected void onCreate() {

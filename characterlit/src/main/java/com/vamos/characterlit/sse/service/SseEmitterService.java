@@ -1,18 +1,15 @@
-package com.vamos.characterlit.bidtest.service;
+package com.vamos.characterlit.sse.service;
 
-import com.vamos.characterlit.bidtest.request.DisconnectDTO;
-import com.vamos.characterlit.bidtest.response.EventPayload;
+import com.vamos.characterlit.sse.request.DisconnectDTO;
+import com.vamos.characterlit.sse.response.EventPayload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 @Slf4j

@@ -1,6 +1,6 @@
-package com.vamos.characterlit.bidtest.repository;
+package com.vamos.characterlit.bid.repository;
 
-import com.vamos.characterlit.bidtest.domain.Nowbid;
+import com.vamos.characterlit.bid.domain.Nowbid;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

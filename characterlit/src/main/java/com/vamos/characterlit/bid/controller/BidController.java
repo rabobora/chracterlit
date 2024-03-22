@@ -1,8 +1,7 @@
-package com.vamos.characterlit.bidtest.controller;
+package com.vamos.characterlit.bid.controller;
 
-import com.vamos.characterlit.bidtest.request.BidRequestDTO;
-import com.vamos.characterlit.bidtest.service.BidlogsService;
-import com.vamos.characterlit.bidtest.service.NowbidService;
+import com.vamos.characterlit.bid.request.BidRequestDTO;
+import com.vamos.characterlit.bid.service.NowbidService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,11 +13,10 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class BidController {
-    private final BidlogsService bidlogsService;
+
     private final NowbidService nowbidService;
 
-    public BidController(BidlogsService bidlogsService, NowbidService nowbidService) {
-        this.bidlogsService = bidlogsService;
+    public BidController(NowbidService nowbidService) {
         this.nowbidService = nowbidService;
     }
 

@@ -1,8 +1,8 @@
-package com.vamos.characterlit.bidtest.component;
+package com.vamos.characterlit.sse.component;
 
-import com.vamos.characterlit.bidtest.domain.BidEvent;
-import com.vamos.characterlit.bidtest.response.EventPayload;
-import com.vamos.characterlit.bidtest.service.SseEmitterService;
+import com.vamos.characterlit.sse.domain.BidEvent;
+import com.vamos.characterlit.sse.response.EventPayload;
+import com.vamos.characterlit.sse.service.SseEmitterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -19,8 +19,8 @@ public class BidEventListener implements ApplicationListener<BidEvent> {
         log.info("Event Activated");
         // SSE를 통해 클라이언트에게 입찰 정보 변경 알림
         EventPayload payload = new EventPayload(
-                event.getBidItemId(),
-                "exampleMemberName",
+                event.getBidId(),
+                event.getUserId(),
                 event.getPresentBid()
         );
         sseEmitterService.broadcast(payload);
