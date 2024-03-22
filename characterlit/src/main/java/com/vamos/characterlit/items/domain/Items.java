@@ -1,14 +1,14 @@
 package com.vamos.characterlit.items.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -18,14 +18,15 @@ public class Items {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bidId;
 
-    @Column(nullable = false)
+    // 테스트를 위해 일단 userid를 참조키가 아닌 상품 테이블의 칼럼으로 넣어둠
+    @Column
     private Integer userId;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "user_id")
 //    private User user;
 
-    @Column(nullable = false, length = 30)
+    @Column(length = 30)
     private String nickname;
 
     @Column(nullable = false)
@@ -34,12 +35,11 @@ public class Items {
     @Column(nullable = false, length = 100)
     private String title;
 
-    @Lob
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Lob
-    private String image;
+    @ElementCollection
+    private List<String> image;
 
     @Column
     private String thumbnail;
@@ -56,7 +56,7 @@ public class Items {
     @Column(nullable = false)
     private Integer startBid;
 
-    @Column(nullable = true)
+    @Column
     private Integer finalBid;
 
     @Column(nullable = false)
@@ -73,6 +73,7 @@ public class Items {
         this.regDate = LocalDateTime.now();
     }
 
+    //게시글 조회시 조회수 +1 관련 로직
     public void increaseViewCount() {
 
         this.viewCount++;
@@ -80,7 +81,7 @@ public class Items {
     }
 
     @Builder
-    public Items(String title, String content, String image, String thumbnail,
+    public Items(String title, String content, List<String> image, String thumbnail,
                  LocalDateTime startDate, LocalDateTime endDate, Integer startBid,
                  Integer category, Integer bidStatus, Integer viewCount, Boolean isPaid) {
         this.title = title;

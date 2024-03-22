@@ -1,11 +1,9 @@
 package com.vamos.characterlit.user.repository;
 
-import com.vamos.characterlit.user.domain.User;
+import com.vamos.characterlit.user.domain.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<Users, Long> {
 
-    User findByUserId(Long userId);
-
-
+    Users findByUsername(String username);
 }
