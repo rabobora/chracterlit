@@ -93,6 +93,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/sse/subscribe/**").permitAll() // 인증 없이 접근 허용
                         .requestMatchers("/api/sse/disconnect").permitAll() // 인증 없이 접근 허용
                         .requestMatchers("/api/bid/read/**").permitAll() // 인증 없이 접근 허용
+                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS
