@@ -8,10 +8,13 @@ import com.vamos.characterlit.auth2.security.CustomSuccessHandler;
 import com.vamos.characterlit.auth2.security.jwt.JWTFilter;
 import com.vamos.characterlit.auth2.security.jwt.JWTUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -23,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -31,15 +35,6 @@ public class SecurityConfig {
     private final CustomFailureHandler customFailureHandler;
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
-
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, CustomFailureHandler customFailureHandler, JWTUtil jwtUtil, RefreshRepository refreshRepository) {
-
-        this.customOAuth2UserService = customOAuth2UserService;
-        this.customSuccessHandler = customSuccessHandler;
-        this.customFailureHandler = customFailureHandler;
-        this.jwtUtil = jwtUtil;
-        this.refreshRepository = refreshRepository;
-    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -94,9 +89,10 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join").permitAll()
-                        .requestMatchers("/reissue").permitAll()
-//                        .requestMatchers("/my").hasRole("USER")
+                        .requestMatchers("/login", "/", "/join", "/reissue").permitAll()
+                        .requestMatchers("/api/sse/subscribe/**").permitAll() // 인증 없이 접근 허용
+                        .requestMatchers("/api/sse/disconnect").permitAll() // 인증 없이 접근 허용
+                        .requestMatchers("/api/bid/read/**").permitAll() // 인증 없이 접근 허용
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS
@@ -105,5 +101,17 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        // 정적 리소스 spring security 대상에서 제외
+        return (web) -> {
+            web
+                    .ignoring()
+                    .requestMatchers(
+                            PathRequest.toStaticResources().atCommonLocations()
+                    );
+        };
     }
 }
