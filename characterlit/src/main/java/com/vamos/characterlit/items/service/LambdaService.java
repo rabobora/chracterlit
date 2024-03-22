@@ -23,7 +23,7 @@ public class LambdaService {
 
     public String updateThumbnail(Long itemId, MultipartFile newThumbnail) throws Exception {
         Items item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new EntityNotFoundException("Item not found: " + itemId));
+                .orElseThrow(() -> new EntityNotFoundException("해당상품을 찾을 수 없습니다: " + itemId));
 
         if(item.getThumbnail() != null && !item.getThumbnail().isEmpty()) {
             String oldFileName = extractFileName(item.getThumbnail());
@@ -40,7 +40,7 @@ public class LambdaService {
 
     public void deleteThumbnail(Long itemId) {
         Items item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new EntityNotFoundException("Item not found: " + itemId));
+                .orElseThrow(() -> new EntityNotFoundException("해당상품을 찾을 수 없습니다: " + itemId));
 
         if(item.getThumbnail() != null && !item.getThumbnail().isEmpty()) {
             String fileName = extractFileName(item.getThumbnail());
