@@ -12,12 +12,12 @@ public class PointService {
     private final PointRepository pointRepository;
 
     //포인트 조회
-    public Point getPoint(Long userId){
+    public Point getPoint(Long userId) {
 
         Point point = pointRepository.findByUserId(userId);
 
         // point 테이블에 userId에 해당하는 레코드가 없을 경우
-        if(point == null){
+        if (point == null) {
             point = Point.builder()
                     .userId(userId)
                     .allPoint(0)

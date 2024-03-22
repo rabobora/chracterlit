@@ -51,10 +51,9 @@ public class BankService {
         if (findBankUser(email) == null) {
             System.out.println("2번, findBankUser : " + findBankUser(email));
         }
-            Map<String, Object> request = new HashMap<>();
-            request.put("apiKey", apiKey);
-            request.put("userId", email);
-            System.out.println("사용자등록 request : " + request);
+        Map<String, Object> request = new HashMap<>();
+        request.put("apiKey", apiKey);
+        request.put("userId", email);
 
         try {
 
@@ -67,31 +66,22 @@ public class BankService {
                     .bodyToMono(String.class)
                     .block();
 
-            System.out.println("3번, response : " + response);
-
             JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
             Gson gson = new Gson();
             JsonObject payloadObject = jsonObject.getAsJsonObject("payload");
             FindUserkeyResponseDTO findUserkey = null;
 
-            System.out.println("4번, finduserkey : " + findUserkey);
-
             findUserkey = gson.fromJson(payloadObject, FindUserkeyResponseDTO.class);
-            System.out.println("5번, finduserkey : " + findUserkey);
-            System.out.println("6번, Userkey : " + findUserkey.getUserKey());
 
             return findUserkey.getUserKey();
         } catch (NullPointerException e) {
             e.printStackTrace();
-            System.out.println("1번오류");
             return null;
         } catch (JsonParseException e) {
             e.printStackTrace();
-            System.out.println("2번오류");
             return null;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("3번오류");
             return null;
         }
     }
@@ -103,11 +93,8 @@ public class BankService {
         request.put("userId", email);
         request.put("apiKey", apiKey);
 
-        System.out.println("2-1. request : " + request);
-
         try {
             WebClient wc = WebClient.create(findUserUrl);
-            System.out.println("2-2. webclient : " + wc);
 
             String response = wc.post()
                     .uri(findUserUrl)
@@ -117,60 +104,51 @@ public class BankService {
                     .bodyToMono(String.class)
                     .block();
 
-            System.out.println("2-2. response : " + response);
-
             JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
             Gson gson = new Gson();
             JsonObject payloadObject = jsonObject.getAsJsonObject("payload");
-
             FindUserkeyResponseDTO findUserkey = null;
-            System.out.println("2-3. finduserkey : " + findUserkey);
-
             findUserkey = gson.fromJson(payloadObject, FindUserkeyResponseDTO.class);
-            System.out.println("2-4. findUserkey : " + findUserkey);
 
-            System.out.println("2-5. userkey : " + findUserkey.getUserKey());
             return findUserkey.getUserKey();
         } catch (NullPointerException e) {
             e.printStackTrace();
-            System.out.println("1번오류");
             return null;
         } catch (JsonParseException e) {
             e.printStackTrace();
-            System.out.println("2번오류");
             return null;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("3번오류");
             return null;
         }
     }
-    // SSAFY 금융망 계좌 조회
-    public boolean accountCheck(String bankCode, String account, String userkey){
+
+    // SSAFY 금융망 계좌 조회 ( 예금주, 잔액, 등등 조회 가능 )
+    public boolean accountCheck(String bankCode, String account, String userkey) {
 
         LocalDateTime now = LocalDateTime.now();
         String transmissionDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String transmissionTime = now.format(DateTimeFormatter.ofPattern("HHmmss"));
         int randomNumber = (int) (Math.random() * 900000) + 100000;
 
-        Map<String,Object> Header = new HashMap<>();
+        Map<String, Object> Header = new HashMap<>();
         Header.put("apiName", "inquireAccountInfo");
         Header.put("transmissionDate", transmissionDate);
         Header.put("transmissionTime", transmissionTime);
         Header.put("institutionCode", "00100");
         Header.put("fintechAppNo", "001");
         Header.put("apiServiceCode", "inquireAccountInfo");
-        Header.put("institutionTransactionUniqueNo", transmissionDate+transmissionTime+randomNumber);
+        Header.put("institutionTransactionUniqueNo", transmissionDate + transmissionTime + randomNumber);
         Header.put("apiKey", apiKey);
         Header.put("userKey", userkey);
 
         Map<String, Object> request = new HashMap<>();
         request.put("Header", Header);
         request.put("bankCode", bankCode);
-        request.put("accountNo",account);
+        request.put("accountNo", account);
 
         try {
-            WebClient wc = WebClient.create(accountInfoUrl );
+            WebClient wc = WebClient.create(accountInfoUrl);
 
             String response = wc.post()
                     .uri(accountInfoUrl)
@@ -184,12 +162,12 @@ public class BankService {
             Gson gson = new Gson();
             JsonObject Object = jsonObject.getAsJsonObject("REC");
 
-            AccountInfoResponseDTO accountInfo= null;
+            AccountInfoResponseDTO accountInfo = null;
             accountInfo = gson.fromJson(Object, AccountInfoResponseDTO.class);
 
-            if(account.equals(accountInfo.getAccountNo())){
-            return true;
-            }else{
+            if (account.equals(accountInfo.getAccountNo())) {
+                return true;
+            } else {
                 return false;
             }
         } catch (NullPointerException e) {
@@ -205,38 +183,36 @@ public class BankService {
     }
 
     // SSAFY 금융망 계좌이체
-    public boolean accountTransfer(AccountTransferRequestDTO accountrequest, String userkey){
+    public boolean accountTransfer(AccountTransferRequestDTO accountrequest, String userkey) {
 
         LocalDateTime now = LocalDateTime.now();
         String transmissionDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String transmissionTime = now.format(DateTimeFormatter.ofPattern("HHmmss"));
         int randomNumber = (int) (Math.random() * 900000) + 100000;
 
-        Map<String,Object> Header = new HashMap<>();
+        Map<String, Object> Header = new HashMap<>();
         Header.put("apiName", "accountTransfer");
         Header.put("transmissionDate", transmissionDate);
         Header.put("transmissionTime", transmissionTime);
         Header.put("institutionCode", "00100");
         Header.put("fintechAppNo", "001");
         Header.put("apiServiceCode", "accountTransfer");
-        Header.put("institutionTransactionUniqueNo", transmissionDate+transmissionTime+randomNumber);
+        Header.put("institutionTransactionUniqueNo", transmissionDate + transmissionTime + randomNumber);
         Header.put("apiKey", apiKey);
         Header.put("userKey", userkey);
 
         Map<String, Object> request = new HashMap<>();
         request.put("Header", Header);
         request.put("depositBankCode", accountrequest.getDepositBankCode());
-        request.put("depositAccountNo",accountrequest.getDepositAccountNo());
-        request.put("transactionBalance",accountrequest.getTransactionBalance());
-        request.put("withdrawalBankCode",accountrequest.getWithdrawalBankCode());
-        request.put("withdrawalAccountNo",accountrequest.getWithdrawalAccountNo());
-        request.put("depositTransactionSummary",accountrequest.getDepositTransactionSummary()); // 거래내용요약(입금)
-        request.put("withdrawalTransactionSummary",accountrequest.getWithdrawalTransactionSummary()); // 거래내용요약(출금)
+        request.put("depositAccountNo", accountrequest.getDepositAccountNo());
+        request.put("transactionBalance", accountrequest.getTransactionBalance());
+        request.put("withdrawalBankCode", accountrequest.getWithdrawalBankCode());
+        request.put("withdrawalAccountNo", accountrequest.getWithdrawalAccountNo());
+        request.put("depositTransactionSummary", accountrequest.getDepositTransactionSummary()); // 거래내용요약(입금)
+        request.put("withdrawalTransactionSummary", accountrequest.getWithdrawalTransactionSummary()); // 거래내용요약(출금)
 
         try {
             WebClient wc = WebClient.create(accountTransferUrl);
-
-            System.out.println("wc : "+wc);
 
             String response = wc.post()
                     .uri(accountTransferUrl)
@@ -246,10 +222,7 @@ public class BankService {
                     .bodyToMono(String.class)
                     .block();
 
-            System.out.println("response : "+response);
-
             JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
-            System.out.println("jsonObject : "+jsonObject);
 
             Gson gson = new Gson();
             JsonArray array = jsonObject.getAsJsonArray("REC");
@@ -264,9 +237,9 @@ public class BankService {
             // => 입출금계좌 크로스쳌
             // 각각의 거래내역 단건조회로 잘 되었는지 확인
 
-            if(accounts.get(0).getAccountNo().equals(accounts.get(1).getTransactionAccountNo())){
+            if (accounts.get(0).getAccountNo().equals(accounts.get(1).getTransactionAccountNo())) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         } catch (NullPointerException e) {
@@ -280,29 +253,30 @@ public class BankService {
             return false;
         }
     }
+
     // SSAFY 금융망 계좌거래내역 조회 (단건)
-    public AccountHistoryResponseDTO accoutHistory(String bankCode, String aacountNo, int transactionUniqueNo, String userkey){
+    public AccountHistoryResponseDTO accoutHistory(String bankCode, String aacountNo, int transactionUniqueNo, String userkey) {
         LocalDateTime now = LocalDateTime.now();
         String transmissionDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String transmissionTime = now.format(DateTimeFormatter.ofPattern("HHmmss"));
         int randomNumber = (int) (Math.random() * 900000) + 100000;
 
-        Map<String,Object> Header = new HashMap<>();
+        Map<String, Object> Header = new HashMap<>();
         Header.put("apiName", "inquireTransactionHistoryDetail");
         Header.put("transmissionDate", transmissionDate);
         Header.put("transmissionTime", transmissionTime);
         Header.put("institutionCode", "00100");
         Header.put("fintechAppNo", "001");
         Header.put("apiServiceCode", "inquireTransactionHistoryDetail");
-        Header.put("institutionTransactionUniqueNo", transmissionDate+transmissionTime+randomNumber);
+        Header.put("institutionTransactionUniqueNo", transmissionDate + transmissionTime + randomNumber);
         Header.put("apiKey", apiKey);
         Header.put("userKey", userkey);
 
         Map<String, Object> request = new HashMap<>();
         request.put("Header", Header);
         request.put("bankCode", bankCode);
-        request.put("accountNo",aacountNo);
-        request.put("transactionUniqueNo",transactionUniqueNo);
+        request.put("accountNo", aacountNo);
+        request.put("transactionUniqueNo", transactionUniqueNo);
 
         try {
             WebClient wc = WebClient.create(accountHistoryUrl);
@@ -319,7 +293,7 @@ public class BankService {
             Gson gson = new Gson();
             JsonObject Object = jsonObject.getAsJsonObject("REC");
 
-            AccountHistoryResponseDTO histroy= null;
+            AccountHistoryResponseDTO histroy = null;
             histroy = gson.fromJson(Object, AccountHistoryResponseDTO.class);
 
             return histroy;
@@ -334,9 +308,5 @@ public class BankService {
             e.printStackTrace();
             return null;
         }
-
     }
-
-
-
 }

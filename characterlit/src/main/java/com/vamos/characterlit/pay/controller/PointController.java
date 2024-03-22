@@ -23,7 +23,7 @@ public class PointController {
 
     // 포인트 조회
     @GetMapping
-    public ResponseEntity<PointResponseDTO> pointCheck(Long userId){
+    public ResponseEntity<PointResponseDTO> pointCheck(@RequestParam Long userId){
 
         Point point = pointService.getPoint(userId);
 
