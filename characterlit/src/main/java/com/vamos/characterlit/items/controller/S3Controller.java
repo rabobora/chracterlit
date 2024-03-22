@@ -1,11 +1,9 @@
 package com.vamos.characterlit.items.controller;
 
 import com.vamos.characterlit.items.service.S3Service;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -20,15 +18,15 @@ public class S3Controller {
 
     // 이미지 업로드후 URL 목록을 list<string> 형태로 반환
     @PostMapping("/upload")
-    public ResponseEntity<List<String>> uploadImages(@RequestParam("images") List<MultipartFile> images) throws IOException {
-        List<String> imageUrls = s3Service.uploadImages(images);
+    public ResponseEntity<List<String>> uploadImages(@RequestParam("image") List<MultipartFile> image) throws IOException {
+        List<String> imageUrls = s3Service.uploadImages(image);
         return ResponseEntity.ok(imageUrls);
     }
 
     // 특정 게시글의 이미지 수정
     @PutMapping("/update/{bidid}")
-    public ResponseEntity<?> updateItemImages(@PathVariable Long bidid, @RequestParam("images") List<MultipartFile> images) throws IOException {
-        s3Service.updateItemImages(bidid, images);
+    public ResponseEntity<?> updateItemImages(@PathVariable Long bidid, @RequestParam("image") List<MultipartFile> image) throws IOException {
+        s3Service.updateItemImages(bidid, image);
         return ResponseEntity.ok().build();
     }
 

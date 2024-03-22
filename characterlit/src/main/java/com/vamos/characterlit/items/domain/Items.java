@@ -18,7 +18,7 @@ public class Items {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bidId;
 
-    // 테스트를 위해 일단 usid를 참조키가 아닌 상품 테이블의 칼럼으로 넣어둠
+    // 테스트를 위해 일단 userid를 참조키가 아닌 상품 테이블의 칼럼으로 넣어둠
     @Column
     private Integer userId;
 
