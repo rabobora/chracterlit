@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Items, Long> {
@@ -13,4 +14,6 @@ public interface ItemRepository extends JpaRepository<Items, Long> {
 
     // 카테고리 필터링
     List<Items> findByCategory(Integer category);
+
+    Optional<Items> findByBidId(Long bidId);
 }
