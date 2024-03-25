@@ -326,5 +326,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-src/main/resources/*
 src/main/resources/static/*

@@ -40,7 +40,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             return null;
         }
-        String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
+        String username = oAuth2Response.getProvider() + "_" + oAuth2Response.getProviderId();
         Users existData = userRepository.findByUsername(username);
 
         if (existData == null) {
@@ -49,7 +49,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user.setUsername(username);
             user.setEmail(oAuth2Response.getEmail());
             user.setName(oAuth2Response.getName());
-            user.setRole("ROLE_USER");
+            user.setRole("USER");
             if (registrationId.equals("naver")) {
                 user.setLoginServer(1);
             }
@@ -62,7 +62,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             UserResponseDTO userDTO = new UserResponseDTO();
             userDTO.setUsername(username);
             userDTO.setName(oAuth2Response.getName());
-            userDTO.setRole("ROLE_USER");
+            userDTO.setRole("USER");
 
             return new CustomOAuth2User(userDTO);
         } else {
