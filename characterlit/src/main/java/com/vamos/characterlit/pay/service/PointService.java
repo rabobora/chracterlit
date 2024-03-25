@@ -189,7 +189,7 @@ public boolean buyItem(BuyRequestDTO request){
     Point updateSeller = Point.builder()
             .pointID(seller.getPointID())
             .userNumber(request.getUserNumber())
-            .allPoint(seller.getAllPoint()+ request.getFinalBid())
+            .allPoint(seller.getAllPoint()+ (int)(request.getFinalBid()*0.9))
             .usablePoint(seller.getUsablePoint())
             .build();
     pointRepository.save(updateSeller);
@@ -204,7 +204,7 @@ public boolean buyItem(BuyRequestDTO request){
 
     PointStatements sellerstate = PointStatements.builder()
             .userNumber(request.getUserNumber())
-            .point(request.getFinalBid())
+            .point((int)(request.getFinalBid()*0.9))
             .statementDate(now)
             .pointStatus(4)
             .bidId(request.getBidId())
