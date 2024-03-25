@@ -40,13 +40,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             return null;
         }
-        String username = oAuth2Response.getProvider() + "_" + oAuth2Response.getProviderId();
-        Users existData = usersRepository.findByUsername(username);
+        String userId = oAuth2Response.getProvider() + "_" + oAuth2Response.getProviderId();
+        Users existData = usersRepository.findByUserId(userId);
 
         if (existData == null) {
 
             Users user = new Users();
-            user.setUsername(username);
+            user.setUserId(userId);
             user.setEmail(oAuth2Response.getEmail());
             user.setName(oAuth2Response.getName());
             user.setRole("USER");
@@ -60,7 +60,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             usersRepository.save(user);
 
             UsersResponseDTO userDTO = new UsersResponseDTO();
-            userDTO.setUsername(username);
+            userDTO.setUserId(userId);
             userDTO.setName(oAuth2Response.getName());
             userDTO.setRole("USER");
 
@@ -73,7 +73,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             usersRepository.save(existData);
 
             UsersResponseDTO userDTO = new UsersResponseDTO();
-            userDTO.setUsername(existData.getUsername());
+            userDTO.setUserId(existData.getUserId());
             userDTO.setName(oAuth2Response.getName());
             userDTO.setRole(existData.getRole());
 

@@ -1,9 +1,11 @@
 package com.vamos.characterlit.auth2.security;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class CustomOAuth2CookieService {
 
     public Cookie createCookie(String key, String value, boolean isTemp) {
@@ -23,6 +25,18 @@ public class CustomOAuth2CookieService {
         // setHttpOnly : 서버에서만 쿠키를 확인할 수 있음 (프론트에서 확인 X)
         if (!isTemp)
             cookie.setHttpOnly(true);
+        return cookie;
+    }
+
+    public String getCookie(HttpServletRequest request) {
+        String cookie = null;
+        Cookie[] cookieList = request.getCookies();
+        for (Cookie c : cookieList) {
+            if (c.getName().equals("refresh_token")) {
+                cookie = c.getValue();
+            }
+        }
+
         return cookie;
     }
 }

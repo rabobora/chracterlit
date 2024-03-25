@@ -1,5 +1,6 @@
 package com.vamos.characterlit.users.controller;
 
+import com.vamos.characterlit.auth2.security.CustomOAuth2CookieService;
 import com.vamos.characterlit.auth2.security.CustomOAuth2TokenService;
 import com.vamos.characterlit.users.domain.Users;
 import com.vamos.characterlit.users.repository.UsersRepository;
@@ -17,11 +18,11 @@ public class UsersController {
 
     private final UsersService usersService;
     private final UsersRepository usersRepository;
-    private final CustomOAuth2TokenService customOAuth2TokenService;
+    private final CustomOAuth2CookieService customOAuth2CookieService;
 
     @GetMapping("/login")
     public ResponseEntity<?> loginUser(HttpServletRequest request) {
-        String token = customOAuth2TokenService.getCookie(request);
+        String token = customOAuth2CookieService.getCookie(request);
         if (token == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         Users user = usersService.getLoginUser(token);
@@ -38,7 +39,7 @@ public class UsersController {
 
     @GetMapping("/id/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable("userId") String userId) {
-        Users user = usersRepository.findByUsername(userId);
+        Users user = usersRepository.findByUserId(userId);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<Users>(user, HttpStatus.OK);

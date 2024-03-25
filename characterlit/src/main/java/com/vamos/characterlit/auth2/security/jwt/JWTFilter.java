@@ -85,18 +85,18 @@ public class JWTFilter extends OncePerRequestFilter {
         System.out.println("JWTFilter : isAccess true");
 
         // username, role 값을 획득
-        String username = jwtUtil.getUsername(accessToken);
+        String userId = jwtUtil.getUserId(accessToken);
         String role = jwtUtil.getRole(accessToken);
 
         Users user = new Users();
-        user.setUsername(username);
+        user.setUserId(userId);
         user.setRole(role);
         CustomUserDetails customUserDetails = new CustomUserDetails(user);
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
         System.out.println("JWTFilter Complete");
-        System.out.println("Username : " + username + " / Role : " + role);
+        System.out.println("UserId : " + userId + " / Role : " + role);
         filterChain.doFilter(request, response);
     }
 }

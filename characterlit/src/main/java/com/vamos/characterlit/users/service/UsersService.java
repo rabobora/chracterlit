@@ -15,8 +15,8 @@ public class UsersService {
 
     @Transactional
     public Users getLoginUser(String token) {
-        String username = jwtUtil.getUsername(token);
-        Users loginUser = usersRepository.findByUsername(username);
+        String userId = jwtUtil.getUserId(token);
+        Users loginUser = usersRepository.findByUserId(userId);
         return loginUser;
     }
 }

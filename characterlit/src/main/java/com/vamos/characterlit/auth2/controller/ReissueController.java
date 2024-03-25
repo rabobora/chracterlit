@@ -69,16 +69,16 @@ public class ReissueController {
             return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
         }
 
-        String username = jwtUtil.getUsername(refresh);
+        String userId = jwtUtil.getUserId(refresh);
         String role = jwtUtil.getRole(refresh);
 
         //make new JWT
-        String newAccessToken = jwtUtil.createJwt("access", username, role, 600000L);
-        String newRefreshToken = jwtUtil.createJwt("refresh", username, role, 86400000L);
+        String newAccessToken = jwtUtil.createJwt("access", userId, role, 600000L);
+        String newRefreshToken = jwtUtil.createJwt("refresh", userId, role, 86400000L);
 
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
         CustomOAuth2TokenService.deleteRefresh(refresh);
-        CustomOAuth2TokenService.addRefresh(username, newRefreshToken, 86400000L);
+        CustomOAuth2TokenService.addRefresh(userId, newRefreshToken, 86400000L);
 
         //response
         response.setHeader("access_token", newAccessToken);

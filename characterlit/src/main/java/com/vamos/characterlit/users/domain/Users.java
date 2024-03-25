@@ -18,7 +18,7 @@ public class Users {
 
     private int loginServer;
 
-    private String username;
+    private String userId;
 
     private String role;
 
