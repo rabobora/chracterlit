@@ -1,5 +1,6 @@
 package com.vamos.characterlit.users.controller;
 
+import com.vamos.characterlit.auth2.annotation.ExtractPayload;
 import com.vamos.characterlit.auth2.security.CustomOAuth2CookieService;
 import com.vamos.characterlit.auth2.security.CustomOAuth2TokenService;
 import com.vamos.characterlit.users.domain.Users;
@@ -37,8 +38,9 @@ public class UsersController {
         return new ResponseEntity<Users>(user, HttpStatus.OK);
     }
 
-    @GetMapping("/id/{userId}")
-    public ResponseEntity<?> getUserById(@PathVariable("userId") String userId) {
+    @GetMapping("/id")
+    public ResponseEntity<?> getUserById(@ExtractPayload String userId) {
+        System.out.println("getUserById : " + userId);
         Users user = usersRepository.findByUserId(userId);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
