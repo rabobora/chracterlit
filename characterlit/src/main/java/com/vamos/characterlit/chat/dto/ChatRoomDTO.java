@@ -1,5 +1,22 @@
 package com.vamos.characterlit.chat.dto;
 
-public class ChatRoomDTO { // 수정중입니다.
+import jakarta.persistence.*;
+import lombok.*;
 
+@ToString
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+@Table(name = "chatrooms")
+public class ChatRoomDTO { // FK 수정중입니다.
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    Long chatroomId;
+    boolean isPaid;
+    Long bidId;
+    Long buyerId;
+    Long sellerId;
 }
+
