@@ -51,7 +51,7 @@ public class PointController {
     // 계좌이체 포인트 충전 결제
     @PutMapping("/charge")
     public ResponseEntity<Void> pointCharge(@RequestHeader Long userNumber, @RequestBody ChargeRequestDTO request){
-        pointService.Charge(request,userNumber);
+        pointService.charge(request,userNumber);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -91,7 +91,4 @@ public class PointController {
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
-
 }

@@ -5,10 +5,7 @@ import com.vamos.characterlit.pay.service.PointStatementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,4 +22,7 @@ public class PointStatementController {
     public ResponseEntity<List<StatementResponseDTO>> statementRead(Long userNumber){
         return new ResponseEntity<List<StatementResponseDTO>>(pointStatementService.pointStatementsList(userNumber), HttpStatus.OK);
     }
+
+    // 구매확정
+//    @PutMapping("/")
 }

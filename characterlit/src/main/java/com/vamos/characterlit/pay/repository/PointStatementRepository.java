@@ -15,4 +15,6 @@ public interface PointStatementRepository extends JpaRepository<PointStatements,
     @Query("SELECT s FROM PointStatements s WHERE s.pointStatus =4 "+
             "AND s.statementDate =:date")
     List<PointStatements> findByStatementDate(LocalDate date);
+
+    PointStatements findByUserNumberAndBidId(Long userNumber, Long bidId);
 }
