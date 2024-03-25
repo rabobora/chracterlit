@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface PointStatementRepository extends JpaRepository<PointStatements, Long> {
 
-    List<PointStatements> findByUserId(Long userId);
+    List<PointStatements> findByuserNumber(Long userNumber);
 }
