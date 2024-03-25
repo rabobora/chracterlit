@@ -1,6 +1,6 @@
 package com.vamos.characterlit.auth2.security;
 
-import com.vamos.characterlit.user.response.UserResponseDTO;
+import com.vamos.characterlit.users.response.UsersResponseDTO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -10,9 +10,9 @@ import java.util.Map;
 
 public class CustomOAuth2User implements OAuth2User {
 
-    private final UserResponseDTO userDTO;
+    private final UsersResponseDTO userDTO;
 
-    public CustomOAuth2User(UserResponseDTO userDTO) {
+    public CustomOAuth2User(UsersResponseDTO userDTO) {
 
         this.userDTO = userDTO;
     }

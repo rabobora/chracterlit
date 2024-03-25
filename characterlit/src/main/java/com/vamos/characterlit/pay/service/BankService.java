@@ -6,7 +6,7 @@ import com.vamos.characterlit.pay.response.AccountHistoryResponseDTO;
 import com.vamos.characterlit.pay.response.AccountInfoResponseDTO;
 import com.vamos.characterlit.pay.response.AccountTransferResponseDTO;
 import com.vamos.characterlit.pay.response.FindUserkeyResponseDTO;
-import com.vamos.characterlit.user.repository.UserRepository;
+import com.vamos.characterlit.users.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -24,7 +24,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BankService {
 
-    private final UserRepository userRepository;
+    private final UsersRepository userRepository;
 
     @Value("${spring.ssafy.apiKey}")
     private String apiKey;

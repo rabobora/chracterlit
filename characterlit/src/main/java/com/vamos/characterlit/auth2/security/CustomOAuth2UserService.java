@@ -2,9 +2,9 @@ package com.vamos.characterlit.auth2.security;
 
 import com.vamos.characterlit.auth2.response.NaverResponse;
 import com.vamos.characterlit.auth2.response.OAuth2Response;
-import com.vamos.characterlit.user.domain.Users;
-import com.vamos.characterlit.user.repository.UserRepository;
-import com.vamos.characterlit.user.response.UserResponseDTO;
+import com.vamos.characterlit.users.domain.Users;
+import com.vamos.characterlit.users.repository.UsersRepository;
+import com.vamos.characterlit.users.response.UsersResponseDTO;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -16,11 +16,11 @@ import java.sql.Timestamp;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    private final UserRepository userRepository;
+    private final UsersRepository usersRepository;
 
-    public CustomOAuth2UserService(UserRepository userRepository) {
+    public CustomOAuth2UserService(UsersRepository usersRepository) {
 
-        this.userRepository = userRepository;
+        this.usersRepository = usersRepository;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return null;
         }
         String username = oAuth2Response.getProvider() + "_" + oAuth2Response.getProviderId();
-        Users existData = userRepository.findByUsername(username);
+        Users existData = usersRepository.findByUsername(username);
 
         if (existData == null) {
 
@@ -57,9 +57,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Timestamp now = new Timestamp(System.currentTimeMillis());
             user.setCreatedDate(now);
 
-            userRepository.save(user);
+            usersRepository.save(user);
 
-            UserResponseDTO userDTO = new UserResponseDTO();
+            UsersResponseDTO userDTO = new UsersResponseDTO();
             userDTO.setUsername(username);
             userDTO.setName(oAuth2Response.getName());
             userDTO.setRole("USER");
@@ -70,9 +70,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             existData.setEmail(oAuth2Response.getEmail());
             existData.setName(oAuth2Response.getName());
 
-            userRepository.save(existData);
+            usersRepository.save(existData);
 
-            UserResponseDTO userDTO = new UserResponseDTO();
+            UsersResponseDTO userDTO = new UsersResponseDTO();
             userDTO.setUsername(existData.getUsername());
             userDTO.setName(oAuth2Response.getName());
             userDTO.setRole(existData.getRole());

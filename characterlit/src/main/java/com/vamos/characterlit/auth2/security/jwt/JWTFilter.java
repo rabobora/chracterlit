@@ -2,7 +2,7 @@ package com.vamos.characterlit.auth2.security.jwt;
 
 import com.vamos.characterlit.auth2.response.CustomUserDetails;
 import com.vamos.characterlit.auth2.security.CustomOAuth2TokenService;
-import com.vamos.characterlit.user.domain.Users;
+import com.vamos.characterlit.users.domain.Users;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -46,12 +46,13 @@ public class JWTFilter extends OncePerRequestFilter {
 
             return;
         }
-
+        System.out.println("JWTFilter : isAccessToken true");
         // RefreshToken가 유효하지 않은 토큰인지 확인
         if (!isRefreshExist) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
+        System.out.println("JWTFilter : isRefreshExist true");
 
         // 토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
         try {
@@ -66,6 +67,7 @@ public class JWTFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
+        System.out.println("JWTFilter : isExpired pass");
 
         // 토큰이 access인지 확인 (발급시 페이로드에 명시)
         String category = jwtUtil.getCategory(accessToken);
@@ -80,8 +82,7 @@ public class JWTFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
-
-        // 로그아웃 상태인지 확인
+        System.out.println("JWTFilter : isAccess true");
 
         // username, role 값을 획득
         String username = jwtUtil.getUsername(accessToken);
@@ -94,7 +95,8 @@ public class JWTFilter extends OncePerRequestFilter {
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
-        System.out.println("-----");
+        System.out.println("JWTFilter Complete");
+        System.out.println("Username : " + username + " / Role : " + role);
         filterChain.doFilter(request, response);
     }
 }

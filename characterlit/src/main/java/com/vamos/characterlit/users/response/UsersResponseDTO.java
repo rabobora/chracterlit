@@ -1,11 +1,11 @@
-package com.vamos.characterlit.user.response;
+package com.vamos.characterlit.users.response;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UserResponseDTO {
+public class UsersResponseDTO {
 
     private String role;
     private String name;
