@@ -36,7 +36,7 @@ public class KakaoPayService {
     @Value("${spring.pay.cid}")
     private String cid;
 
-    @Value("${spring.pay.secretKey}")
+    @Value(" ${spring.pay.secretKey}")
     private String secretKey;
 
     @Value("${spring.pay.readyUrl}")
@@ -50,7 +50,7 @@ public class KakaoPayService {
 
         LocalDateTime now = LocalDateTime.now();
         String transmissionDate = now.format(DateTimeFormatter.ofPattern("yyMMdd"));
-        String orderId = transmissionDate +pointStatementService.createOrderId();
+        String orderId = transmissionDate + pointStatementService.createOrderId();
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("cid", cid);
@@ -58,9 +58,9 @@ public class KakaoPayService {
         params.add("partner_user_id", String.valueOf(userNumber));
         params.add("item_name", "Characterlit Point");
         params.add("quantity", "1");
-        params.add("total_amount", String.valueOf(money));
-        params.add("tax_free_amount", String.valueOf(money));
-        params.add("approval_url", "http://localhost:8080/api/point/charge/kakao/success?order_id="+orderId);
+        params.add("total_amount", String.valueOf((int)(money*0.005)));
+        params.add("tax_free_amount", String.valueOf((int)(money*0.005)));
+        params.add("approval_url", "http://localhost:8080/api/point/charge/kakao/success?order_id=" + orderId);
         params.add("cancel_url", "http://localhost:8080/api/point/charge/kakao/cancel");
         params.add("fail_url", "http://localhost:8080/api/point/charge/kakao/fail");
         params.add("payment_method_type", "MONEY");
@@ -105,7 +105,7 @@ public class KakaoPayService {
     }
 
     // 결제 승인
-    public void kakaoApprove(String pgToken, String orderId){
+    public void kakaoApprove(String pgToken, String orderId) {
 
         Payment payment = paymentRepository.findByPaymentId(orderId);
 
@@ -115,7 +115,7 @@ public class KakaoPayService {
         params.add("partner_order_id", orderId);
         params.add("partner_user_id", String.valueOf(payment.getUserNumber()));
         params.add("pg_token", pgToken);
-        params.add("total_amount", String.valueOf(payment.getMoney()));
+        params.add("total_amount", String.valueOf((int)(payment.getMoney()*0.005)));
 
         WebClient wc = WebClient.create(approveUrl);
         KaKaoApproveResponseDTO kakaoResponse = null;
@@ -148,9 +148,9 @@ public class KakaoPayService {
 
         Point point = pointRepository.findByuserNumber(payment.getUserNumber());
         Point updatePoint = Point.builder()
-                .userNumber(payment.getUserNumber() )
-                .allPoint(point.getAllPoint()+ payment.getMoney())
-                .usablePoint(point.getUsablePoint()+ payment.getMoney())
+                .userNumber(payment.getUserNumber())
+                .allPoint(point.getAllPoint() + payment.getMoney())
+                .usablePoint(point.getUsablePoint() + payment.getMoney())
                 .build();
 
         pointRepository.save(updatePoint);
