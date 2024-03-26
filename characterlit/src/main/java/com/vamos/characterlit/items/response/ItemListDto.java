@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class ItemListDto {
     private Long bidId;
     private String nickname;
-    private Integer userId;
+    private Long userName;;
 
     private String title;
     private String thumbnail;
@@ -24,12 +24,12 @@ public class ItemListDto {
     private Integer category;
 
     @Builder
-    public ItemListDto(Long bidId, String nickname, Integer userId, String title, String thumbnail,
+    public ItemListDto(Long bidId, String nickname, Long userName, String title, String thumbnail,
                        LocalDateTime regDate, LocalDateTime startDate, LocalDateTime endDate, Integer startBid,
                        Integer finalBid, Integer bidStatus, Integer category) {
         this.bidId = bidId;
         this.nickname = nickname;
-        this.userId = userId;
+        this.userName = userName;
         this.title = title;
         this.thumbnail = thumbnail;
         this.regDate = regDate;
@@ -47,7 +47,7 @@ public class ItemListDto {
         return ItemListDto.builder()
                 .bidId(items.getBidId())
                 .nickname(items.getNickname())
-                .userId(items.getUserId())
+                .userName(items.getUserId())
                 .title(items.getTitle())
                 .thumbnail(items.getThumbnail())
                 .regDate(items.getRegDate())
