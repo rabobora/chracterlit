@@ -6,7 +6,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class FindUserkeyResponseDTO {
-    private String userId;
+    private String userNumber;
     private String username;
     private String institutionCode;
     private String userKey;
