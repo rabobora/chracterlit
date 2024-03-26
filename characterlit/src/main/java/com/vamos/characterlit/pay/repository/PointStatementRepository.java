@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PointStatementRepository extends JpaRepository<PointStatements, Long> {
 
-    List<PointStatements> findByuserNumber(Long userNumber);
+    List<PointStatements> findByuserId(String userId);
 
     @Query("SELECT s FROM PointStatements s WHERE s.pointStatus =4 "+
             "AND s.statementDate =:date")

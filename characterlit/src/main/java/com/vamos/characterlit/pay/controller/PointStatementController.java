@@ -1,5 +1,6 @@
 package com.vamos.characterlit.pay.controller;
 
+import com.vamos.characterlit.auth2.annotation.ExtractPayload;
 import com.vamos.characterlit.pay.response.StatementResponseDTO;
 import com.vamos.characterlit.pay.service.PointStatementService;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,8 @@ public class PointStatementController {
 
     // 포인트 내역 조회
     @GetMapping("/statement")
-    public ResponseEntity<List<StatementResponseDTO>> statementRead(Long userNumber){
-        return new ResponseEntity<List<StatementResponseDTO>>(pointStatementService.pointStatementsList(userNumber), HttpStatus.OK);
+    public ResponseEntity<List<StatementResponseDTO>> statementRead(@ExtractPayload String userId){
+        return new ResponseEntity<List<StatementResponseDTO>>(pointStatementService.pointStatementsList(userId), HttpStatus.OK);
     }
 
     // 구매확정
