@@ -1,26 +1,24 @@
 package com.vamos.characterlit.pay.domain;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Point {
-
+public class Payment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pointID;
-
+    private String paymentId;
+    private String pgTid;
     private Long userNumber;
+    private int money;
     @Setter
-    private int allPoint;
+    private LocalDateTime paymentDate;
     @Setter
-    private int usablePoint;
+    private int paymentStatus;
 }
