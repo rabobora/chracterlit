@@ -1,4 +1,4 @@
-package com.vamos.characterlit.user.domain;
+package com.vamos.characterlit.users.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;

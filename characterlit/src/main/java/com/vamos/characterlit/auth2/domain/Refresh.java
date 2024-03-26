@@ -16,7 +16,7 @@ public class Refresh {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    private String userId;
     private String refresh;
     private String expiration;
 }

@@ -1,4 +1,4 @@
-package com.vamos.characterlit.user.response;
+package com.vamos.characterlit.users.response;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,5 +9,5 @@ public class UsersResponseDTO {
 
     private String role;
     private String name;
-    private String username;
+    private String userId;
 }
