@@ -1,4 +1,4 @@
-package com.vamos.characterlit.chat.config;
+package com.vamos.characterlit.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
