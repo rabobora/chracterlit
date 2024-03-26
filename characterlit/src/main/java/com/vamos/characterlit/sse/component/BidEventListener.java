@@ -23,6 +23,10 @@ public class BidEventListener implements ApplicationListener<BidEvent> {
                 event.getUserId(),
                 event.getPresentBid()
         );
-        sseEmitterService.broadcast(payload);
+        if(event.getBroadcastType().equals("BROADCAST")){
+            sseEmitterService.broadcast(payload);
+        } else if (event.getBroadcastType().equals("SINGLE")){
+//            sseEmitterService.bidSuccessAlarm(payload);
+        }
     }
 }

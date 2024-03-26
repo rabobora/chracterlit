@@ -65,7 +65,7 @@ public class SseEmitterService {
     }
 
     public void broadcast(EventPayload eventPayload) {
-        Map<String, SseEmitter> userEmitters = emitterMap.get("bidId"+eventPayload.bidId());
+        Map<String, SseEmitter> userEmitters = emitterMap.get("bidId" + eventPayload.bidId());
         log.info("Client" + userEmitters);
         if (userEmitters != null) {
             userEmitters.forEach((nickname, emitter) -> {
@@ -83,6 +83,20 @@ public class SseEmitterService {
         }
     }
 
+//    public void bidSuccessAlarm(EventPayload eventPayload) {
+//        SseEmitter bidderEmitter = emitterMap.get("bidId" + eventPayload.bidId()).get(eventPayload.userId());
+//        try {
+//            bidderEmitter.send(SseEmitter.event()
+//                    .name("bidding success")
+//                    .id("send event for " + eventPayload.bidId())
+//                    .reconnectTime(RECONNECTION_TIMEOUT)
+//                    .data(eventPayload, MediaType.APPLICATION_JSON));
+//            log.info("Sent BID SUCCESS notification, bidId={}, userId={}", eventPayload.bidId(), eventPayload.userId());
+//
+//        } catch (Exception e) {
+//            log.error("Failed to send BID SUCCESS emitter for bidId={}, userId={}, {}", eventPayload.bidId(), eventPayload.userId(), e.getMessage());
+//        }
+//    }
     private void removeEmitter(String bidId, String nickname) {
         Map<String, SseEmitter> userEmitters = emitterMap.get(bidId);
         if (userEmitters != null) {
@@ -102,6 +116,6 @@ public class SseEmitterService {
 
     public void disconnect(DisconnectDTO disconnectDTO) {
         log.info("SSE disconnect request Activated bidId={}, nickname={}", disconnectDTO.getBidId(), disconnectDTO.getNickname());
-        removeEmitter("bidId"+ disconnectDTO.getBidId(), disconnectDTO.getNickname());
+        removeEmitter("bidId" + disconnectDTO.getBidId(), disconnectDTO.getNickname());
     }
 }
