@@ -20,10 +20,10 @@ public class Items {
 
     // 테스트를 위해 일단 userid를 참조키가 아닌 상품 테이블의 칼럼으로 넣어둠
     @Column
-    private Integer userId;
+    private Long userId;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
+//    @JoinColumn(name = "user_number")
 //    private User user;
 
     @Column(length = 30)
