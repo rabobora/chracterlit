@@ -6,7 +6,7 @@ import com.vamos.characterlit.pay.response.AccountHistoryResponseDTO;
 import com.vamos.characterlit.pay.response.AccountInfoResponseDTO;
 import com.vamos.characterlit.pay.response.AccountTransferResponseDTO;
 import com.vamos.characterlit.pay.response.FindUserkeyResponseDTO;
-import com.vamos.characterlit.user.repository.UsersRepository;
+import com.vamos.characterlit.users.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -52,7 +52,7 @@ public class BankService {
             System.out.println("2번, findBankUser : " + findBankUser(userNumber));
         }
 
-        String email = usersRepository.findByuserNumber(userNumber).getEmail();
+        String email = usersRepository.findByUserNumber(userNumber).getEmail();
 
         Map<String, Object> request = new HashMap<>();
         request.put("apiKey", apiKey);
@@ -92,7 +92,7 @@ public class BankService {
     // SSAFY 금융망 사용자 조회
     public String findBankUser(Long userNumber) {
 
-        String email = usersRepository.findByuserNumber(userNumber).getEmail();
+        String email = usersRepository.findByUserNumber(userNumber).getEmail();
 
         Map<String, Object> request = new HashMap<>();
         request.put("userNumber", email);

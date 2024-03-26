@@ -30,8 +30,7 @@ public class NowbidService {
         log.info("Bidding process Activated : bidId={}, requestbid={}",
                 messageDTO.getBidId(), messageDTO.getRequestBid());
 
-        Items target = itemRepository.findByBidId(messageDTO.getBidId())
-                .orElseThrow(() -> new RuntimeException("Item not found for bidId: " + messageDTO.getBidId()));
+        Items target = itemRepository.findByBidId(messageDTO.getBidId());
         log.info("Bidding Time : bidTime={}", messageDTO.getBidTime());
         log.info("Start Time : bidTime={}", target.getStartDate());
         log.info("End Time : bidTime={}", target.getEndDate());

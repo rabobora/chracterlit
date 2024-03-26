@@ -19,7 +19,7 @@ public interface ItemRepository extends JpaRepository<Items, Long> {
     // 카테고리 필터링
     List<Items> findByCategory(Integer category);
 
-    Optional<Items> findByBidId(Long bidId);
+    Items findByBidId(Long bidId);
 
     @Transactional
     @Modifying

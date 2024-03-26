@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RefreshRepository extends JpaRepository<Refresh, Long> {
 
+    @Transactional
     Boolean existsByRefresh(String refresh);
 
     @Transactional
