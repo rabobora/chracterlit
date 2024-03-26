@@ -1,5 +1,7 @@
 package com.vamos.characterlit.sse.service;
 
+import com.vamos.characterlit.bid.domain.Nowbid;
+import com.vamos.characterlit.bid.repository.NowbidRepository;
 import com.vamos.characterlit.sse.request.DisconnectDTO;
 import com.vamos.characterlit.sse.response.EventPayload;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -17,6 +20,11 @@ public class SseEmitterService {
     private final Map<String, Map<String, SseEmitter>> emitterMap = new ConcurrentHashMap<>();
     private static final long TIMEOUT = 600 * 1000;
     private static final long RECONNECTION_TIMEOUT = 1000L;
+    private final NowbidRepository nowbidRepository;
+
+    public SseEmitterService(NowbidRepository nowbidRepository) {
+        this.nowbidRepository = nowbidRepository;
+    }
 
     public SseEmitter subscribe(String bidId, String nickname) {
         SseEmitter emitter = createEmitter();
@@ -39,13 +47,14 @@ public class SseEmitterService {
         log.info("Added SseEmitter to list for bidId: {}, nickname: {}", bidId, nickname);
 
         try {
+            Nowbid nowbid = nowbidRepository.findById(Long.parseLong(bidId.substring(5))).orElseThrow(() -> new RuntimeException("Wrong Accepted"));
             SseEmitter.SseEventBuilder event = SseEmitter.event()
                     //event 명 (event: event example)
                     .name("event example")
                     //event id (id: id-1) - 재연결시 클라이언트에서 `Last-Event-ID` 헤더에 마지막 event id 를 설정
                     .id(String.valueOf(bidId))
                     //event data payload (data: SSE connected)
-                    .data("SSE connected as: " + nickname)
+                    .data("SSE connected as: " + nickname + "present bid" + nowbid.getPresentBid())
                     //SSE 연결이 끊어진 경우 재접속 하기까지 대기 시간 (retry: <RECONNECTION_TIMEOUT>)
                     .reconnectTime(RECONNECTION_TIMEOUT);
             emitter.send(event);
@@ -56,7 +65,7 @@ public class SseEmitterService {
     }
 
     public void broadcast(EventPayload eventPayload) {
-        Map<String, SseEmitter> userEmitters = emitterMap.get("bidId"+eventPayload.bidId());
+        Map<String, SseEmitter> userEmitters = emitterMap.get("bidId" + eventPayload.bidId());
         log.info("Client" + userEmitters);
         if (userEmitters != null) {
             userEmitters.forEach((nickname, emitter) -> {
@@ -74,6 +83,20 @@ public class SseEmitterService {
         }
     }
 
+//    public void bidSuccessAlarm(EventPayload eventPayload) {
+//        SseEmitter bidderEmitter = emitterMap.get("bidId" + eventPayload.bidId()).get(eventPayload.userId());
+//        try {
+//            bidderEmitter.send(SseEmitter.event()
+//                    .name("bidding success")
+//                    .id("send event for " + eventPayload.bidId())
+//                    .reconnectTime(RECONNECTION_TIMEOUT)
+//                    .data(eventPayload, MediaType.APPLICATION_JSON));
+//            log.info("Sent BID SUCCESS notification, bidId={}, userId={}", eventPayload.bidId(), eventPayload.userId());
+//
+//        } catch (Exception e) {
+//            log.error("Failed to send BID SUCCESS emitter for bidId={}, userId={}, {}", eventPayload.bidId(), eventPayload.userId(), e.getMessage());
+//        }
+//    }
     private void removeEmitter(String bidId, String nickname) {
         Map<String, SseEmitter> userEmitters = emitterMap.get(bidId);
         if (userEmitters != null) {
@@ -93,6 +116,6 @@ public class SseEmitterService {
 
     public void disconnect(DisconnectDTO disconnectDTO) {
         log.info("SSE disconnect request Activated bidId={}, nickname={}", disconnectDTO.getBidId(), disconnectDTO.getNickname());
-        removeEmitter("bidId"+ disconnectDTO.getBidId(), disconnectDTO.getNickname());
+        removeEmitter("bidId" + disconnectDTO.getBidId(), disconnectDTO.getNickname());
     }
 }
