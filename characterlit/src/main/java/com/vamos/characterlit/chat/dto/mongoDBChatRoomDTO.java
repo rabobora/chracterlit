@@ -2,21 +2,16 @@ package com.vamos.characterlit.chat.dto;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @ToString
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity
-@Table(name = "chatrooms")
-public class ChatRoomDTO { // FK 수정중입니다.
+@Document(collection="chatrooms")
+public class mongoDBChatRoomDTO { // FK 수정중입니다.
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
     Long chatroomId;
-    boolean isPaid;
-    Long bidId;
-    Long buyerId;
-    Long sellerId;
 }
 
