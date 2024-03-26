@@ -2,7 +2,6 @@ package com.vamos.characterlit.users.controller;
 
 import com.vamos.characterlit.auth2.annotation.ExtractPayload;
 import com.vamos.characterlit.auth2.security.CustomOAuth2CookieService;
-import com.vamos.characterlit.auth2.security.CustomOAuth2TokenService;
 import com.vamos.characterlit.users.domain.Users;
 import com.vamos.characterlit.users.repository.UsersRepository;
 import com.vamos.characterlit.users.service.UsersService;
@@ -10,7 +9,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
