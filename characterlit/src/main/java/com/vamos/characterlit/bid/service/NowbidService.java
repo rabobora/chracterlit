@@ -35,18 +35,27 @@ public class NowbidService {
         log.info("Bidding Time : bidTime={}", messageDTO.getBidTime());
         log.info("Start Time : bidTime={}", target.getStartDate());
         log.info("End Time : bidTime={}", target.getEndDate());
-          if (target.getStartDate().isAfter(messageDTO.getBidTime())
+        if (target.getStartDate().isAfter(messageDTO.getBidTime())
                 || target.getEndDate().isBefore(messageDTO.getBidTime())) {
             throw new RuntimeException("Bid time is not within the auction period.");
         }
         if (target.getStartBid() > messageDTO.getRequestBid()) {
             throw new RuntimeException("The bid is lower than the start bid.");
         }
+        // 본인이 최상위 입찰자인가 확인 로직
+        Optional<Bidlogs> highestBidlog = bidlogsRepository.findTopByBidIdOrderByRequestBidDesc(messageDTO.getBidId());
+        if(highestBidlog.isPresent()){
+            Bidlogs targetLog = highestBidlog.get();
+            if(targetLog.getUserId().equals(messageDTO.getUserId())){
+                //예외저치가 아닌 메시지 처리해야하나 임의 작성
+                throw new RuntimeException("you are the highest bidder.");
+            }
+        }
 
         Optional<Nowbid> nowbidOptional = nowbidRepository.findById(messageDTO.getBidId());
         if (nowbidOptional.isPresent()) {
             Nowbid bidTarget = nowbidOptional.get();
-            if(bidTarget.getPresentBid() >= messageDTO.getRequestBid()){
+            if (bidTarget.getPresentBid() >= messageDTO.getRequestBid()) {
                 throw new RuntimeException("The bid is lower than the current bid.");
             }
             bidTarget.setPresentBid(messageDTO.getRequestBid());
@@ -59,7 +68,7 @@ public class NowbidService {
             nowbidRepository.save(bidTarget);
             bidlogsRepository.save(bidLog);
         } else {
-            log.info("First Bidding at bidId={}",messageDTO.getBidId());
+            log.info("First Bidding at bidId={}", messageDTO.getBidId());
             Nowbid newBid = new Nowbid();
             newBid.setBidId(messageDTO.getBidId());
             newBid.setPresentBid(messageDTO.getRequestBid());
@@ -73,8 +82,21 @@ public class NowbidService {
             bidlogsRepository.save(bidLog);
         }
         log.info("Bidding event process started for bidId={}", messageDTO.getBidId());
-        BidEvent event = new BidEvent(this, messageDTO.getBidId(), messageDTO.getUserId(), messageDTO.getRequestBid());
+        BidEvent event = new BidEvent(this, messageDTO.getBidId(), messageDTO.getUserId(), messageDTO.getRequestBid(), "BROADCAST");
+        BidEvent biddingEvent = new BidEvent(this, messageDTO.getBidId(), messageDTO.getUserId(), messageDTO.getRequestBid(), "SINGLE");
         log.info(String.valueOf(event));
+        log.info(String.valueOf(biddingEvent));
         eventPublisher.publishEvent(event);
+//        eventPublisher.publishEvent(biddingEvent);
+    }
+
+    public int readPrice(Long bidId) {
+        Optional<Nowbid> nowbidTargetOptional = nowbidRepository.findById(bidId);
+        if (nowbidTargetOptional.isEmpty()) {
+            throw new RuntimeException("nowbid not exist");
+        }
+        int presentPrice = nowbidTargetOptional.get().getPresentBid();
+
+        return presentPrice;
     }
 }

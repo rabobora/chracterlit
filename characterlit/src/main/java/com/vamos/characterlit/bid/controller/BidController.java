@@ -1,5 +1,6 @@
 package com.vamos.characterlit.bid.controller;
 
+import com.vamos.characterlit.bid.repository.NowbidRepository;
 import com.vamos.characterlit.bid.request.BidMessageDTO;
 import com.vamos.characterlit.bid.request.BidRequestDTO;
 import com.vamos.characterlit.bid.service.NowbidService;
@@ -21,10 +22,12 @@ public class BidController {
 
     private final RabbitTemplate template;
     private final DirectExchange direct;
+    private final NowbidService nowbidService;
 
-    public BidController(RabbitTemplate template, DirectExchange direct) {
+    public BidController(RabbitTemplate template, DirectExchange direct, NowbidService nowbidService) {
         this.template = template;
         this.direct = direct;
+        this.nowbidService = nowbidService;
     }
 
     @PostMapping("/read/{bidId}")
@@ -50,6 +53,18 @@ public class BidController {
             return new ResponseEntity<>("Message Add", HttpStatus.OK);
         } catch (Exception e) {
             log.error("Error processing the bid: {}", e.getMessage());
+            return new ResponseEntity<>("Error processing the bid: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/read/now/{bidId}")
+    public ResponseEntity<?> now(@PathVariable("bidId") Long bidId){
+        try {
+            int presentBid = nowbidService.readPrice(bidId);
+            log.info("Page init, send present bid price : {}", presentBid);
+            return new ResponseEntity<Integer>(presentBid, HttpStatus.OK);
+        }catch (Exception e){
+            log.error("Error call : {}", e.getMessage());
             return new ResponseEntity<>("Error processing the bid: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
