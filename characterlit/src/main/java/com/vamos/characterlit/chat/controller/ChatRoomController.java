@@ -4,6 +4,7 @@ import java.net.URI;
 
 import com.vamos.characterlit.chat.dto.mongoDBChatRoomDTO;
 import com.vamos.characterlit.chat.service.mongoDBChatRoomService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,17 @@ public class ChatRoomController {
     @PostMapping("/api/chatroom/create")
     ResponseEntity createChatRoom(@RequestBody ChatRoomDTO chatRoomDTO){
         System.out.println(chatRoomDTO);
+
+        // 이미 생성된 채팅방이 있는지 조회 후 분기
+        ChatRoomDTO existChatRoom=chatRoomService.selectChatRoom(
+                chatRoomDTO.getBuyerId(),
+                chatRoomDTO.getSellerId(),
+                chatRoomDTO.getBidId());
+
+        if(existChatRoom!=null){ // 이미 채팅방이 존재
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 존재하는 채팅방입니다.");
+        }
+
         Long chatroomId = chatRoomService.createChatRoom(chatRoomDTO);
 
         // mongoDB에도 넣어주기

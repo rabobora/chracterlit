@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoomDTO, Long> {
     List<ChatRoomDTO> findByBuyerIdOrSellerId(Long buyerId, Long sellerId);
+    ChatRoomDTO findByBuyerIdAndSellerIdAndBidId(Long buyerId, Long sellerId, Long bidId);
 }

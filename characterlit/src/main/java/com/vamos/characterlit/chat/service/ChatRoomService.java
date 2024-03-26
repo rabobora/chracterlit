@@ -20,4 +20,8 @@ public class ChatRoomService {
     public List<ChatRoomDTO> listChatRoom(Long userId){
         return chatRoomRepository.findByBuyerIdOrSellerId(userId, userId);
     }
+
+    public ChatRoomDTO selectChatRoom(Long buyerId, Long sellerId, Long bidId){
+        return chatRoomRepository.findByBuyerIdAndSellerIdAndBidId(buyerId, sellerId, bidId);
+    }
 }
