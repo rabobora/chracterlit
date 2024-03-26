@@ -1,6 +1,7 @@
 package com.vamos.characterlit.chat.controller;
 
 import com.vamos.characterlit.chat.service.mongoDBChatService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -42,9 +43,11 @@ public class ChatController {
 
     // 메시지 저장 테스트
     @GetMapping("/api/chat/save/{chatroomId}")
-    public void saveMessage(@PathVariable Long chatroomId){
+    public ResponseEntity saveMessage(@PathVariable Long chatroomId){
         mongoDBchatService.saveMongoDBChat(testChatStack);
         testChatStack=new ArrayList<>(); // 초기화
+
+        return ResponseEntity.status(HttpStatus.OK).body("메시지 저장 완료");
     }
     // websocket connection 끊길 시 채팅내역 프론트에서 일괄 저장
 }
