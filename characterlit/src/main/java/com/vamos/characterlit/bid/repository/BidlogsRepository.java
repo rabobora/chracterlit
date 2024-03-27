@@ -13,6 +13,6 @@ public interface BidlogsRepository extends JpaRepository<Bidlogs, Long> {
     @Query("SELECT b FROM Bidlogs b WHERE b.bidId = :bidId ORDER BY b.requestBid DESC")
     Optional<Bidlogs> findTopByBidIdOrderByRequestBidDesc(Long bidId);
 
-    @Query("SELECT b FROM Bidlogs b WHERE b.userId = :userId GROUP BY b.bidId ORDER BY MAX(b.requestBid) DESC")
-    List<Bidlogs> findHighestBidByUser(Long userId);
+    @Query("SELECT b FROM Bidlogs b WHERE b.userNumber = :userNumber GROUP BY b.bidId ORDER BY MAX(b.requestBid) DESC")
+    List<Bidlogs> findHighestBidByUser(Long userNumber);
 }
