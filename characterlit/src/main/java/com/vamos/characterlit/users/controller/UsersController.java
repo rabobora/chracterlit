@@ -32,18 +32,10 @@ public class UsersController {
         return new ResponseEntity<Users>(user, HttpStatus.OK);
     }
 
-    @GetMapping("/{userNumber}")
-    public ResponseEntity<?> getUserByNumber(@PathVariable("userNumber") Long userNumber) {
-        Users user = usersRepository.findByUserNumber(userNumber);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<Users>(user, HttpStatus.OK);
-    }
-
     @GetMapping("/id")
-    public ResponseEntity<?> getUserById(@ExtractPayload String userId) {
-        System.out.println("getUserById : " + userId);
-        Users user = usersRepository.findByUserId(userId);
+    public ResponseEntity<?> getUserByNumber(@ExtractPayload long userNumber) {
+        System.out.println("getUserById : " + userNumber);
+        Users user = usersRepository.findByUserNumber(userNumber);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<Users>(user, HttpStatus.OK);
