@@ -1,4 +1,4 @@
-package com.vamos.characterlit.user.domain;
+package com.vamos.characterlit.users.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class Users {
 
     private int loginServer;
 
-    private String username;
+    private String userId;
 
     private String role;
 

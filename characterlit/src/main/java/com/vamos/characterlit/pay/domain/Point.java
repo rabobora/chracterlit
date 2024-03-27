@@ -4,10 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 @Entity
@@ -21,10 +18,9 @@ public class Point {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pointID;
 
-    private Long userId;
+    private Long userNumber;
+    @Setter
     private int allPoint;
+    @Setter
     private int usablePoint;
-
-
-
 }

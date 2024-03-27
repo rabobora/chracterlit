@@ -1,6 +1,6 @@
 package com.vamos.characterlit.auth2.response;
 
-import com.vamos.characterlit.user.domain.Users;
+import com.vamos.characterlit.users.domain.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -42,7 +42,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getUsername() {
 
-        return user.getUsername();
+        return user.getUserId();
     }
 
     @Override

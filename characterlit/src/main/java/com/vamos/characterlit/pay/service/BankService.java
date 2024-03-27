@@ -6,7 +6,7 @@ import com.vamos.characterlit.pay.response.AccountHistoryResponseDTO;
 import com.vamos.characterlit.pay.response.AccountInfoResponseDTO;
 import com.vamos.characterlit.pay.response.AccountTransferResponseDTO;
 import com.vamos.characterlit.pay.response.FindUserkeyResponseDTO;
-import com.vamos.characterlit.user.repository.UserRepository;
+import com.vamos.characterlit.users.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -24,7 +24,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BankService {
 
-    private final UserRepository userRepository;
+    private final UsersRepository usersRepository;
 
     @Value("${spring.ssafy.apiKey}")
     private String apiKey;
@@ -46,14 +46,17 @@ public class BankService {
 
 
     // SSAFY 금융망 사용자 등록 ( 상민오빠 회원가입 과정에 추가해줘... )
-    public String registBankUser(String email) {
+    public String registBankUser(Long userNumber) {
 
-        if (findBankUser(email) == null) {
-            System.out.println("2번, findBankUser : " + findBankUser(email));
+        if (findBankUser(userNumber) == null) {
+            System.out.println("2번, findBankUser : " + findBankUser(userNumber));
         }
+
+        String email = usersRepository.findByUserNumber(userNumber).getEmail();
+
         Map<String, Object> request = new HashMap<>();
         request.put("apiKey", apiKey);
-        request.put("userId", email);
+        request.put("userNumber", email);
 
         try {
 
@@ -87,10 +90,12 @@ public class BankService {
     }
 
     // SSAFY 금융망 사용자 조회
-    public String findBankUser(String email) {
+    public String findBankUser(Long userNumber) {
+
+        String email = usersRepository.findByUserNumber(userNumber).getEmail();
 
         Map<String, Object> request = new HashMap<>();
-        request.put("userId", email);
+        request.put("userNumber", email);
         request.put("apiKey", apiKey);
 
         try {
@@ -232,10 +237,6 @@ public class BankService {
                 AccountTransferResponseDTO account = gson.fromJson(element, AccountTransferResponseDTO.class);
                 accounts.add(account);
             }
-
-            // 서로의 계좌 거래번호로 거래 잘되었는지 확인
-            // => 입출금계좌 크로스쳌
-            // 각각의 거래내역 단건조회로 잘 되었는지 확인
 
             if (accounts.get(0).getAccountNo().equals(accounts.get(1).getTransactionAccountNo())) {
                 return true;

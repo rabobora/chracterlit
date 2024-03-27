@@ -1,12 +1,10 @@
 package com.vamos.characterlit.auth2.security;
 
-import com.vamos.characterlit.auth2.domain.Refresh;
-import com.vamos.characterlit.auth2.repository.RefreshRepository;
 import com.vamos.characterlit.auth2.security.jwt.JWTUtil;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,20 +13,15 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 
 @Component
+@RequiredArgsConstructor
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JWTUtil jwtUtil;
-    private final RefreshRepository refreshRepository;
-
-    public CustomSuccessHandler(JWTUtil jwtUtil, RefreshRepository refreshRepository) {
-
-        this.jwtUtil = jwtUtil;
-        this.refreshRepository = refreshRepository;
-    }
+    private final CustomOAuth2CookieService CustomOAuth2CookieService;
+    private final CustomOAuth2TokenService CustomOAuth2TokenService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -37,46 +30,25 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
 
         // 유저 정보
-        String username = customUserDetails.getUsername();
+        String username = customUserDetails.getUserId();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
         // 토큰 생성
-        String accessToken = jwtUtil.createJwt("access", username, role, 60 * 60L);
-        String refreshToken = jwtUtil.createJwt("refresh", username, role, 10 * 60 * 60L);
+        String accessToken = jwtUtil.createJwt("access", username, role, 6000000L);
+        String refreshToken = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
         //Refresh 토큰 저장
-        addRefreshEntity(username, refreshToken, 86400000L);
+        CustomOAuth2TokenService.addRefresh(username, refreshToken, 86400000L);
 
         // 응답 설정
         response.setHeader("access_token", accessToken);
-        response.addCookie(createCookie("refresh_token", refreshToken));
-        response.setStatus(HttpStatus.OK.value());
+        response.addCookie(CustomOAuth2CookieService.createCookie("access_token", accessToken, true));
+        response.addCookie(CustomOAuth2CookieService.createCookie("refresh_token", refreshToken, false));
         response.sendRedirect("http://localhost:3000/");
+        response.setStatus(HttpStatus.OK.value());
     }
 
-    private Cookie createCookie(String key, String value) {
-
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24 * 60 * 60);
-//        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-
-        return cookie;
-    }
-
-    private void addRefreshEntity(String username, String refreshToken, Long expiredMs) {
-
-        Date date = new Date(System.currentTimeMillis() + expiredMs);
-
-        Refresh newRefreshToken = new Refresh();
-        newRefreshToken.setUsername(username);
-        newRefreshToken.setRefresh(refreshToken);
-        newRefreshToken.setExpiration(date.toString());
-
-        refreshRepository.save(newRefreshToken);
-    }
 }
