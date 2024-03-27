@@ -20,13 +20,13 @@ public class BidEventListener implements ApplicationListener<BidEvent> {
         // SSE를 통해 클라이언트에게 입찰 정보 변경 알림
         EventPayload payload = new EventPayload(
                 event.getBidId(),
-                event.getUserId(),
+                event.getUserNumber(),
                 event.getPresentBid()
         );
         if(event.getBroadcastType().equals("BROADCAST")){
             sseEmitterService.broadcast(payload);
         } else if (event.getBroadcastType().equals("SINGLE")){
-//            sseEmitterService.bidSuccessAlarm(payload);
+            sseEmitterService.bidSuccessAlarm(payload);
         }
     }
 }

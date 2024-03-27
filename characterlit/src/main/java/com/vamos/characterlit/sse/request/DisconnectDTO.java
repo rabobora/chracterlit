@@ -7,6 +7,5 @@ import lombok.Setter;
 @Setter
 public class DisconnectDTO {
     private Long bidId;
-    private Long userId;
-    private String nickname;
+    private Long userNumber;
 }

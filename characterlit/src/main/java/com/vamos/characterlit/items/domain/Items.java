@@ -20,7 +20,7 @@ public class Items {
 
     // 테스트를 위해 일단 userid를 참조키가 아닌 상품 테이블의 칼럼으로 넣어둠
     @Column
-    private Long userId;
+    private Long userNumber;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "user_number")
@@ -68,6 +68,9 @@ public class Items {
     @Column(nullable = false)
     private Boolean isPaid;
 
+    @Column
+    private Long winnerNumber;
+
     @PrePersist
     protected void onCreate() {
         this.regDate = LocalDateTime.now();
@@ -83,7 +86,7 @@ public class Items {
     @Builder
     public Items(String title, String content, List<String> image, String thumbnail,
                  LocalDateTime startDate, LocalDateTime endDate, Integer startBid,
-                 Integer category, Integer bidStatus, Integer viewCount, Boolean isPaid) {
+                 Integer category, Integer bidStatus, Integer viewCount, Boolean isPaid,Long winnerNumber) {
         this.title = title;
         this.content = content;
         this.image = image;
@@ -95,6 +98,7 @@ public class Items {
         this.bidStatus = bidStatus;
         this.viewCount = viewCount;
         this.isPaid = isPaid;
+        this.winnerNumber = winnerNumber;
     }
 
 }

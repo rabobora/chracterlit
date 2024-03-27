@@ -47,7 +47,7 @@ public class ItemListDto {
         return ItemListDto.builder()
                 .bidId(items.getBidId())
                 .nickname(items.getNickname())
-                .userName(items.getUserId())
+                .userName(items.getUserNumber())
                 .title(items.getTitle())
                 .thumbnail(items.getThumbnail())
                 .regDate(items.getRegDate())

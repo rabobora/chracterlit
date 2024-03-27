@@ -33,7 +33,9 @@ public class ItemCreateDto {
                 .bidStatus(0)
                 .viewCount(0)
                 .isPaid(false)
+                .winnerNumber(null)
                 .build();
     }
 
 }
+
