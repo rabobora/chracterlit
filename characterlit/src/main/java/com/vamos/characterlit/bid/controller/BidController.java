@@ -1,5 +1,6 @@
 package com.vamos.characterlit.bid.controller;
 
+import com.vamos.characterlit.auth2.annotation.ExtractPayload;
 import com.vamos.characterlit.bid.repository.NowbidRepository;
 import com.vamos.characterlit.bid.request.BidMessageDTO;
 import com.vamos.characterlit.bid.request.BidRequestDTO;
@@ -33,6 +34,7 @@ public class BidController {
     @PostMapping("/read/{bidId}")
     public ResponseEntity<?> bid(@PathVariable("bidId") Long bidId,
                                  @RequestBody BidRequestDTO bidRequestDTO,
+                                 @ExtractPayload String userId,
                                  HttpSession session) {
         log.info("API Received bid request for bidId: {}", bidId);
 
