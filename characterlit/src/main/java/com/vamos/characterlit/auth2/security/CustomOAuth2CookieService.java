@@ -13,7 +13,7 @@ public class CustomOAuth2CookieService {
         if (!isTemp)
             cookie.setMaxAge(2 * 24 * 60 * 60);
         else
-            cookie.setMaxAge(60 * 60);
+            cookie.setMaxAge(30);
 
         // setSecure : Https 옵션이 아니면 쿠키를 전송하지 않음
         // cookie.setSecure(true);

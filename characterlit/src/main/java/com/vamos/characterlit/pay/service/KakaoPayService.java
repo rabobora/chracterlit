@@ -36,7 +36,7 @@ public class KakaoPayService {
     @Value("${spring.pay.cid}")
     private String cid;
 
-    @Value(" ${spring.pay.secretKey}")
+    @Value("${spring.pay.secretKey}")
     private String secretKey;
 
     @Value("${spring.pay.readyUrl}")
@@ -157,3 +157,4 @@ public class KakaoPayService {
     }
 
 }
+

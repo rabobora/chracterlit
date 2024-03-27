@@ -1,7 +1,9 @@
 package com.vamos.characterlit.auth2.security.jwt;
 
 import com.vamos.characterlit.auth2.response.CustomUserDetails;
+import com.vamos.characterlit.auth2.security.CustomOAuth2CookieService;
 import com.vamos.characterlit.auth2.security.CustomOAuth2TokenService;
+import com.vamos.characterlit.auth2.service.ReissueService;
 import com.vamos.characterlit.users.domain.Users;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -10,6 +12,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +25,8 @@ import java.io.PrintWriter;
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
+    private final ReissueService reissueService;
+    private final CustomOAuth2CookieService customOAuth2CookieService;
     private final CustomOAuth2TokenService customOAuth2TokenService;
 
     @Override
@@ -47,6 +52,7 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
         System.out.println("JWTFilter : isAccessToken true");
+
         // RefreshToken가 유효하지 않은 토큰인지 확인
         if (!isRefreshExist) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -63,8 +69,18 @@ public class JWTFilter extends OncePerRequestFilter {
             PrintWriter writer = response.getWriter();
             writer.print("access token expired");
 
-            //response status code
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            //token 재발급
+            if (!reissueService.checkRefreshToken(refreshToken).getStatusCode().equals(HttpStatus.OK)) {
+                //response status code
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+
+            String newAccessToken = reissueService.reissueAccessToken(refreshToken);
+            response.setHeader("access_token", newAccessToken);
+            response.addCookie(customOAuth2CookieService.createCookie("access_token", newAccessToken, true));
+            accessToken = newAccessToken;
+            System.out.println("access token expired. reissued.");
             return;
         }
         System.out.println("JWTFilter : isExpired pass");

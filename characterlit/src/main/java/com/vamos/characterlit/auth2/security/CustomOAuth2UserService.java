@@ -52,6 +52,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user.setRole("USER");
             if (registrationId.equals("naver")) {
                 user.setLoginServer(1);
+            } else if (registrationId.equals("kakao")) {
+                user.setLoginServer(2);
             }
 
             Timestamp now = new Timestamp(System.currentTimeMillis());
