@@ -6,17 +6,17 @@ import org.springframework.context.ApplicationEvent;
 public class BidEvent extends ApplicationEvent {
 
     private final Long bidId;
-    private final Long userId;
+    private final Long userNumber;
     private final int presentBid;
     private String broadcastType;
 
 
     // 'source'는 이 이벤트를 발생시킨 객체를 참조합니다.
     // 이는 Spring의 이벤트 시스템에서 요구하는 구조입니다.
-    public BidEvent(Object source, Long bidId, Long userId, int presentBid, String broadcastType) {
+    public BidEvent(Object source, Long bidId, Long userNumber, int presentBid, String broadcastType) {
         super(source);
         this.bidId = bidId;
-        this.userId = userId;
+        this.userNumber = userNumber;
         this.presentBid = presentBid;
         this.broadcastType = broadcastType;
     }
@@ -26,8 +26,8 @@ public class BidEvent extends ApplicationEvent {
         return bidId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getUserNumber() {
+        return userNumber;
     }
 
     public int getPresentBid() {

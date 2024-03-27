@@ -21,11 +21,18 @@ public interface ItemRepository extends JpaRepository<Items, Long> {
 
     Items findByBidId(Long bidId);
 
-    @Transactional
-    @Modifying
-    @Query("UPDATE Items i SET i.bidStatus = 1 WHERE i.startDate <= :now AND i.bidStatus = 0")
-    int updateBidStatusForOpenBids(LocalDateTime now);
+//    @Transactional
+//    @Modifying
+//    @Query("UPDATE Items i SET i.bidStatus = 1 WHERE i.startDate <= :now AND i.bidStatus = 0")
+//    int updateBidStatusForOpenBids(LocalDateTime now);
+
+    @Query("SELECT i FROM Items i WHERE i.startDate <= :now AND i.bidStatus = 0")
+    List<Items> findItemsToOpen(LocalDateTime now);
+
+
 
     @Query("SELECT i FROM Items i WHERE i.endDate <= :now AND i.bidStatus = 1")
     List<Items> findItemsToClose(LocalDateTime now);
+
+    List<Items> findAllByUserNumber(Long userNumber);
 }

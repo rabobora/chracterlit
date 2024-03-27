@@ -4,6 +4,7 @@ import com.vamos.characterlit.auth2.exception.AuthErrorCode;
 import com.vamos.characterlit.auth2.exception.BaseException;
 import com.vamos.characterlit.auth2.security.jwt.JWTUtil;
 import io.jsonwebtoken.*;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -51,12 +52,23 @@ public class ExtractPayloadArgumentResolver implements HandlerMethodArgumentReso
     }
 
     public static Optional<String> extractToken(HttpServletRequest request) {
-        String token = request.getHeader("access_token");
-        System.out.println("extractToken " + token);
-        if (isEmptyAuthorizationHeader(token))
-            return Optional.empty();
-
-        return Optional.ofNullable(token);
+//        String token = request.getHeader("access_token");
+//        System.out.println("extractToken " + token);
+//        if (isEmptyAuthorizationHeader(token))
+//            return Optional.empty();
+//
+//        return Optional.ofNullable(token);
+//    }
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("access_token".equals(cookie.getName())) {
+                    System.out.println("extractToken from cookie: " + cookie.getValue());
+                    return Optional.ofNullable(cookie.getValue());
+                }
+            }
+        }
+        System.out.println("Token not found in cookies.");
+        return Optional.empty();
     }
 
     private static boolean isEmptyAuthorizationHeader(String token) {
