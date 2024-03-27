@@ -20,8 +20,8 @@ public class PointStatementController {
 
     // 포인트 내역 조회
     @GetMapping("/statement")
-    public ResponseEntity<List<StatementResponseDTO>> statementRead(@ExtractPayload String userId){
-        return new ResponseEntity<List<StatementResponseDTO>>(pointStatementService.pointStatementsList(userId), HttpStatus.OK);
+    public ResponseEntity<List<StatementResponseDTO>> statementRead(@ExtractPayload Long userNumber){
+        return new ResponseEntity<List<StatementResponseDTO>>(pointStatementService.pointStatementsList(userNumber), HttpStatus.OK);
     }
 
     // 구매확정

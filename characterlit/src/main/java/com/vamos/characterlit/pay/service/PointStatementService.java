@@ -37,9 +37,9 @@ public class PointStatementService {
     private String feeAccount;
 
     // 포인트 내역 조회
-    public List<StatementResponseDTO> pointStatementsList(String userId) {
+    public List<StatementResponseDTO> pointStatementsList(Long userNumber) {
 
-        List<PointStatements> statements = pointStatementRepository.findByuserId(userId);
+        List<PointStatements> statements = pointStatementRepository.findByUserNumber(userNumber);
         List<StatementResponseDTO> result = new ArrayList<>();
         for (PointStatements statement : statements) {
             result.add(StatementResponseDTO.builder()
