@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,10 +33,28 @@ public class ItemService {
 
     }
 
+    // 상품 게시글 생성 -> 로그인 후 로직
+//    public Items createItem(ItemCreateDto itemCreateDto, String username) {
+//        User user = userRepository.findByUsername(username)
+//                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+//
+//        Items items = ItemCreateDto.toEntity(itemCreateDto);
+//        items.setNickname(user.getNickname());
+//
+//        return itemRepository.save(items);
+//    }
+
+
     // 상품 게시글 수정
     public Items updateItem(Long bidId, ItemUpdateDto itemUpdateDto) {
         Items item = itemRepository.findById(bidId)
                 .orElseThrow(() -> new EntityNotFoundException("상품 정보를 찾을 수 없습니다: " + bidId));
+
+        // 경매 시작 시간 전에만 수정 가능
+        if (item.getStartDate().isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("경매 시작 시간 이후에는 상품 정보를 수정할 수 없습니다.");
+        }
+
         ItemUpdateDto.updateEntity(item, itemUpdateDto);
         return itemRepository.save(item);
     }
@@ -66,11 +85,15 @@ public class ItemService {
 
     // 상품 게시글 삭제
     public void delete(Long bidId) {
-        try {
-            itemRepository.deleteById(bidId);
-        } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException("삭제하려는 상품 정보를 찾을 수 없습니다: " + bidId);
+        Items item = itemRepository.findById(bidId)
+                .orElseThrow(() -> new EntityNotFoundException("삭제하려는 상품 정보를 찾을 수 없습니다: " + bidId));
+
+        // 경매 시작 시간 전에만 삭제 가능
+        if (item.getStartDate().isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("경매 시작 시간 이후에는 상품 정보를 삭제할 수 없습니다.");
         }
+
+        itemRepository.delete(item);
     }
 
     // 키워드 검색
