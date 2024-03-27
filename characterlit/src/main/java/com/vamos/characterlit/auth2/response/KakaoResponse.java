@@ -2,19 +2,19 @@ package com.vamos.characterlit.auth2.response;
 
 import java.util.Map;
 
-public class NaverResponse implements OAuth2Response {
+public class KakaoResponse implements OAuth2Response{
 
     private final Map<String, Object> attribute;
 
-    public NaverResponse(Map<String, Object> attribute) {
+    public KakaoResponse(Map<String, Object> attribute) {
 
-        this.attribute = (Map<String, Object>) attribute.get("response");
+        this.attribute = attribute;
     }
 
     @Override
     public String getProvider() {
 
-        return "naver";
+        return "kakao";
     }
 
     @Override
@@ -25,13 +25,11 @@ public class NaverResponse implements OAuth2Response {
 
     @Override
     public String getEmail() {
-
         return "unknown";
     }
 
     @Override
     public String getName() {
-
         return "unknown";
     }
 }
