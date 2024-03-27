@@ -37,7 +37,7 @@ public class ChatController {
     // 메시지 전송
     @MessageMapping("/api/chat/{chatRoomId}") // Send Destination Queue
     public void sendMessage(@RequestBody mongoDBChatDTO mongoDBchatDTO) {
-        template.convertAndSend("/sub/"+mongoDBchatDTO.getChatroomId(), mongoDBchatDTO.getContent());
+        template.convertAndSend("/sub/"+mongoDBchatDTO.getChatroomId(), mongoDBchatDTO);
         testChatStack.add(mongoDBchatDTO);
     }
 
