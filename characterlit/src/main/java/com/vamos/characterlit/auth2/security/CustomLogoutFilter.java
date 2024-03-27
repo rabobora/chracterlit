@@ -40,6 +40,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
             filterChain.doFilter(request, response);
             return;
         }
+
         String requestMethod = request.getMethod();
         if (!requestMethod.equals("POST")) {
 
@@ -95,7 +96,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
         //로그아웃 진행
         //Refresh 토큰 DB에서 제거
-        refreshRepository.deleteByRefresh(refresh);
+        refreshRepository.deleteAllByUserId(jwtUtil.getUserId(refresh));
 
         //Refresh 토큰 Cookie 값 0
         Cookie resetAccessToken = new Cookie("access_token", null);
