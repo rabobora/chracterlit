@@ -11,9 +11,8 @@ public class CorsMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry corsRegistry) {
 
         corsRegistry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
-                .allowCredentials(true)
-                .exposedHeaders("Access_token");
-
+                .allowedHeaders("Authorization", "Content-Type")
+                .exposedHeaders("Set-Cookie", "access_token")
+                .allowedOrigins("http://localhost:3000", "https://nid.naver.com", "http://localhost:8080");
     }
 }

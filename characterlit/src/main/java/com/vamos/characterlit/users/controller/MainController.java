@@ -1,4 +1,4 @@
-package com.vamos.characterlit.user.controller;
+package com.vamos.characterlit.users.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

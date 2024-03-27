@@ -1,29 +1,222 @@
 package com.vamos.characterlit.pay.service;
 
+import com.vamos.characterlit.items.domain.Items;
+import com.vamos.characterlit.items.repository.ItemRepository;
+import com.vamos.characterlit.pay.domain.Payment;
 import com.vamos.characterlit.pay.domain.Point;
+import com.vamos.characterlit.pay.domain.PointStatements;
+import com.vamos.characterlit.pay.repository.PaymentRepository;
 import com.vamos.characterlit.pay.repository.PointRepository;
+import com.vamos.characterlit.pay.repository.PointStatementRepository;
+import com.vamos.characterlit.pay.request.AccountTransferRequestDTO;
+import com.vamos.characterlit.pay.request.BuyRequestDTO;
+import com.vamos.characterlit.pay.request.ChargeRequestDTO;
+import com.vamos.characterlit.pay.response.KakaoReadyResponseDTO;
+import com.vamos.characterlit.users.domain.Users;
+import com.vamos.characterlit.users.repository.UsersRepository;
+import com.vamos.characterlit.users.repository.UsersRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PointService {
 
+    private final UsersRepository usersRepository;
     private final PointRepository pointRepository;
+    private final PointStatementRepository pointStatementRepository;
+    private final PaymentRepository paymentRepository;
+    private final ItemRepository itemRepository;
+    private final BankService bankService;
+    private final PointStatementService pointStatementService;
+
+    @Value("${spring.ssafy.pointAccount}")
+    private String pointAccount;
+
+    @Value("${spring.ssafy.pointKey}")
+    private String pointKey;
+
+    @Value("${spring.ssafy.feeAccount}")
+    private String feeAccount;
+
 
     //포인트 조회
-    public Point getPoint(Long userId) {
+    public Point getPoint(Long userNumber) {
 
-        Point point = pointRepository.findByUserId(userId);
+        Point point = pointRepository.findByuserNumber(userNumber);
 
-        // point 테이블에 userId에 해당하는 레코드가 없을 경우
+        // point 테이블에 userNumber에 해당하는 레코드가 없을 경우
         if (point == null) {
             point = Point.builder()
-                    .userId(userId)
+                    .userNumber(userNumber)
                     .allPoint(0)
                     .usablePoint(0)
                     .build();
         }
         return point;
     }
+
+    // 포인트 충전 (계좌이체)
+    public void charge(ChargeRequestDTO request, Long userNumber) {
+
+        String userkey = bankService.findBankUser(userNumber);
+        AccountTransferRequestDTO chargeRequest = AccountTransferRequestDTO.builder()
+                .depositBankCode(request.getBankCode())
+                .depositAccountNo(request.getAccountNo())
+                .transactionBalance(request.getTransactionBalance())
+                .withdrawalBankCode("004")
+                .withdrawalAccountNo(pointAccount)
+                .depositTransactionSummary("포인트 충전")
+                .withdrawalTransactionSummary("Characterlit 포인트 충전")
+                .build();
+
+        boolean success = bankService.accountTransfer(chargeRequest, userkey);
+
+        if (success) {
+
+            LocalDateTime now = LocalDateTime.now();
+            String transmissionDate = now.format(DateTimeFormatter.ofPattern("yyMMdd"));
+            String orderId = transmissionDate + pointStatementService.createOrderId();
+
+            Payment payment = Payment.builder()
+                    .paymentId(orderId)
+                    .userNumber(userNumber)
+                    .money(request.getTransactionBalance())
+                    .paymentDate(LocalDateTime.now())
+                    .paymentStatus(1)
+                    .build();
+
+            paymentRepository.save(payment);
+
+            PointStatements pointStatements = PointStatements.builder()
+                    .userNumber(userNumber)
+                    .point(request.getTransactionBalance())
+                    .statementDate(payment.getPaymentDate())
+                    .pointStatus(1)
+                    .build();
+
+            pointStatementRepository.save(pointStatements);
+
+            Point point = pointRepository.findByuserNumber(userNumber);
+            Point updatePoint = Point.builder()
+                    .userNumber(userNumber)
+                    .allPoint(point.getAllPoint()+ payment.getMoney())
+                    .usablePoint(point.getUsablePoint()+ payment.getMoney())
+                    .build();
+
+            pointRepository.save(updatePoint);
+        }
+    }
+
+    // 포인트 출금
+    public void withdraw(ChargeRequestDTO request, Long userNumber){
+
+        String userkey = bankService.findBankUser(userNumber);
+        AccountTransferRequestDTO withdrawRequest = AccountTransferRequestDTO.builder()
+                .depositBankCode("004")
+                .depositAccountNo(pointAccount)
+                .transactionBalance(request.getTransactionBalance())
+                .withdrawalBankCode(request.getBankCode())
+                .withdrawalAccountNo(request.getAccountNo())
+                .depositTransactionSummary("Characterlit 포인트 출금")
+                .withdrawalTransactionSummary("Characterlit 포인트 출금")
+                .build();
+
+        boolean success = bankService.accountTransfer(withdrawRequest, pointKey);
+
+        if (success) {
+
+            LocalDateTime now = LocalDateTime.now();
+            String transmissionDate = now.format(DateTimeFormatter.ofPattern("yyMMdd"));
+            String orderId = transmissionDate + pointStatementService.createOrderId();
+
+            Payment payment = Payment.builder()
+                    .paymentId(orderId)
+                    .userNumber(userNumber)
+                    .money(request.getTransactionBalance())
+                    .paymentDate(LocalDateTime.now())
+                    .paymentStatus(1)
+                    .build();
+
+            paymentRepository.save(payment);
+
+            PointStatements pointStatements = PointStatements.builder()
+                    .userNumber(userNumber)
+                    .point(request.getTransactionBalance())
+                    .statementDate(payment.getPaymentDate())
+                    .pointStatus(4)
+                    .build();
+
+            pointStatementRepository.save(pointStatements);
+
+            Point point = pointRepository.findByuserNumber(userNumber);
+            Point updatePoint = Point.builder()
+                    .userNumber(userNumber)
+                    .allPoint(point.getAllPoint()- payment.getMoney())
+                    .usablePoint(point.getUsablePoint()- payment.getMoney())
+                    .build();
+
+            pointRepository.save(updatePoint);
+        }
+    }
+
+    // 구매하기
+public boolean buyItem(BuyRequestDTO request){
+
+    Point seller = pointRepository.findByuserNumber(request.getUserNumber());
+    Point buyer = pointRepository.findByuserNumber(request.getWinnerId());
+
+    if(buyer.getUsablePoint()< request.getFinalBid()){
+        return false;
+    }
+
+    LocalDateTime now = LocalDateTime.now();
+
+    Point updateBuyer = Point.builder()
+            .pointID(buyer.getPointID())
+            .userNumber(request.getWinnerId())
+            .allPoint(buyer.getAllPoint()-request.getFinalBid())
+            .usablePoint(buyer.getUsablePoint()- request.getFinalBid())
+            .build();
+    pointRepository.save(updateBuyer);
+
+    Point updateSeller = Point.builder()
+            .pointID(seller.getPointID())
+            .userNumber(request.getUserNumber())
+            .allPoint(seller.getAllPoint()+ (int)(request.getFinalBid()*0.9))
+            .usablePoint(seller.getUsablePoint())
+            .build();
+    pointRepository.save(updateSeller);
+
+    PointStatements buyerstate = PointStatements.builder()
+            .userNumber(request.getWinnerId())
+            .point(request.getFinalBid())
+            .statementDate(now)
+            .pointStatus(2)
+            .bidId(request.getBidId())
+            .build();
+
+    PointStatements sellerstate = PointStatements.builder()
+            .userNumber(request.getUserNumber())
+            .point((int)(request.getFinalBid()*0.9))
+            .statementDate(now)
+            .pointStatus(4)
+            .bidId(request.getBidId())
+            .build();
+
+    pointStatementRepository.save(buyerstate);
+    pointStatementRepository.save(sellerstate);
+
+    Items item = itemRepository.findByBidId(request.getBidId());
+    item.setIsPaid(true);
+
+    return true;
+}
+
 }
