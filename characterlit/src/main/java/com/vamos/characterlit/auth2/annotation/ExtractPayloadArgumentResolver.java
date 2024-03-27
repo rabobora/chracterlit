@@ -33,8 +33,7 @@ public class ExtractPayloadArgumentResolver implements HandlerMethodArgumentReso
                 .orElseThrow(() -> BaseException.type(AuthErrorCode.INVALID_PERMISSION));
         validateToken(token);
         System.out.println("resolveArgument : " + token);
-
-        return jwtUtil.getUserId(token);
+        return jwtUtil.getUserNumber(token);
     }
 
     // 토큰 검증
