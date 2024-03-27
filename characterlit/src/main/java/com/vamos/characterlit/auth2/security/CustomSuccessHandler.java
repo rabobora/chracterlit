@@ -47,7 +47,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.setHeader("access_token", accessToken);
         response.addCookie(CustomOAuth2CookieService.createCookie("access_token", accessToken, true));
         response.addCookie(CustomOAuth2CookieService.createCookie("refresh_token", refreshToken, false));
-        response.sendRedirect("http://localhost:3000/");
+        response.sendRedirect("http://localhost:5173/");
         response.setStatus(HttpStatus.OK.value());
     }
 

@@ -1,5 +1,6 @@
 package com.vamos.characterlit.bid.service;
 
+import com.vamos.characterlit.bid.domain.Bidlogs;
 import com.vamos.characterlit.bid.repository.BidlogsRepository;
 import com.vamos.characterlit.bid.repository.NowbidRepository;
 import com.vamos.characterlit.items.domain.Items;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -19,6 +21,7 @@ public class ScheduledService {
 
     private final ItemRepository itemRepository;
     private final NowbidRepository nowbidRepository;
+    private final BidlogsRepository bidlogsRepository;
     @Transactional
     public void bidClose() {
         LocalDateTime now = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
@@ -27,8 +30,13 @@ public class ScheduledService {
         log.info("target count: {}", itemsToClose.size());
         for (Items item : itemsToClose) {
             Integer presentBid = nowbidRepository.findPresentBidByBidId(item.getBidId());
-            item.setBidStatus(2);
+//            Optional<Bidlogs> winnerlog = bidlogsRepository.findTopByBidIdOrderByRequestBidDesc(item.getBidId());
+//            if(winnerlog.isEmpty()){
+//
+//            } else {
+//            }
             item.setFinalBid(presentBid);
+            item.setBidStatus(2);
             itemRepository.save(item);
         }
     }
