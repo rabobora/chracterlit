@@ -51,7 +51,7 @@ public class ItemDetailDto {
         return ItemDetailDto.builder()
                 .bidId(items.getBidId())
                 .nickname(items.getNickname())
-                .userName(items.getUserId())
+                .userName(items.getUserNumber())
                 .title(items.getTitle())
                 .content(items.getContent())
                 .image(items.getImage())

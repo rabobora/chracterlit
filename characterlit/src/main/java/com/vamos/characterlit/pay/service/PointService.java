@@ -45,6 +45,12 @@ public class PointService {
     @Value("${spring.ssafy.feeAccount}")
     private String feeAccount;
 
+    @Value("${spring.ssafy.accountKey}")
+    private String accountKey;
+
+    @Value("${spring.ssafy.mainAccount}")
+    private String mainAccount;
+
 
     //포인트 조회
     public Point getPoint(Long userNumber) {
@@ -67,18 +73,42 @@ public class PointService {
 
         String userkey = bankService.findBankUser(userNumber);
         AccountTransferRequestDTO chargeRequest = AccountTransferRequestDTO.builder()
-                .depositBankCode(request.getBankCode())
-                .depositAccountNo(request.getAccountNo())
+                .depositBankCode("004")
+                .depositAccountNo(mainAccount)
                 .transactionBalance(request.getTransactionBalance())
-                .withdrawalBankCode("004")
-                .withdrawalAccountNo(pointAccount)
-                .depositTransactionSummary("포인트 충전")
+                .withdrawalBankCode(request.getBankCode())
+                .withdrawalAccountNo(request.getAccountNo())
+                .depositTransactionSummary("Characterlit 포인트 충전")
                 .withdrawalTransactionSummary("Characterlit 포인트 충전")
                 .build();
 
         boolean success = bankService.accountTransfer(chargeRequest, userkey);
 
-        if (success) {
+        AccountTransferRequestDTO divideFee = AccountTransferRequestDTO.builder()
+                .depositBankCode("004")
+                .depositAccountNo(feeAccount)
+                .transactionBalance((int)(request.getTransactionBalance()*0.005))
+                .withdrawalBankCode("004")
+                .withdrawalAccountNo(mainAccount)
+                .depositTransactionSummary("Characterlit 포인트 충전(수수료)")
+                .withdrawalTransactionSummary("Characterlit 포인트 충전(수수료)")
+                .build();
+
+        boolean feeSuccess = bankService.accountTransfer(divideFee, accountKey);
+
+        AccountTransferRequestDTO dividePoint = AccountTransferRequestDTO.builder()
+                .depositBankCode("004")
+                .depositAccountNo(pointAccount)
+                .transactionBalance(request.getTransactionBalance()-(int)(request.getTransactionBalance()*0.005))
+                .withdrawalBankCode("004")
+                .withdrawalAccountNo(mainAccount)
+                .depositTransactionSummary("Characterlit 포인트 충전(수수료 제외)")
+                .withdrawalTransactionSummary("Characterlit 포인트 충전(수수료 제외)")
+                .build();
+
+        boolean pointSuccess = bankService.accountTransfer(divideFee, accountKey);
+
+        if (success && feeSuccess && pointSuccess) {
 
             LocalDateTime now = LocalDateTime.now();
             String transmissionDate = now.format(DateTimeFormatter.ofPattern("yyMMdd"));
@@ -120,7 +150,7 @@ public class PointService {
         String userkey = bankService.findBankUser(userNumber);
         AccountTransferRequestDTO withdrawRequest = AccountTransferRequestDTO.builder()
                 .depositBankCode("004")
-                .depositAccountNo(pointAccount)
+                .depositAccountNo(accountKey)
                 .transactionBalance(request.getTransactionBalance())
                 .withdrawalBankCode(request.getBankCode())
                 .withdrawalAccountNo(request.getAccountNo())
@@ -189,7 +219,7 @@ public boolean buyItem(BuyRequestDTO request){
     Point updateSeller = Point.builder()
             .pointID(seller.getPointID())
             .userNumber(request.getUserNumber())
-            .allPoint(seller.getAllPoint()+ (int)(request.getFinalBid()*0.9))
+            .allPoint(seller.getAllPoint()+request.getFinalBid())
             .usablePoint(seller.getUsablePoint())
             .build();
     pointRepository.save(updateSeller);
@@ -204,7 +234,7 @@ public boolean buyItem(BuyRequestDTO request){
 
     PointStatements sellerstate = PointStatements.builder()
             .userNumber(request.getUserNumber())
-            .point((int)(request.getFinalBid()*0.9))
+            .point((int)(request.getFinalBid()))
             .statementDate(now)
             .pointStatus(4)
             .bidId(request.getBidId())
