@@ -76,8 +76,8 @@ public class PointService {
                 .depositBankCode("004")
                 .depositAccountNo(mainAccount)
                 .transactionBalance(request.getTransactionBalance())
-                .withdrawalBankCode(request.getBankCode())
-                .withdrawalAccountNo(request.getAccountNo())
+                .withdrawalBankCode(String.valueOf(request.getBankCode()))
+                .withdrawalAccountNo(String.valueOf(request.getAccountNo()))
                 .depositTransactionSummary("Characterlit 포인트 충전")
                 .withdrawalTransactionSummary("Characterlit 포인트 충전")
                 .build();
@@ -152,8 +152,8 @@ public class PointService {
                 .depositBankCode("004")
                 .depositAccountNo(accountKey)
                 .transactionBalance(request.getTransactionBalance())
-                .withdrawalBankCode(request.getBankCode())
-                .withdrawalAccountNo(request.getAccountNo())
+                .withdrawalBankCode(String.valueOf(request.getBankCode()))
+                .withdrawalAccountNo(String.valueOf(request.getAccountNo()))
                 .depositTransactionSummary("Characterlit 포인트 출금")
                 .withdrawalTransactionSummary("Characterlit 포인트 출금")
                 .build();
