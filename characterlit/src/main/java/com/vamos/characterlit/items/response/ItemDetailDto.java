@@ -12,7 +12,7 @@ import java.util.List;
 public class ItemDetailDto {
     private Long bidId;
     private String nickname;
-    private Long userName;
+    private Long userNumber;
     private String title;
     private String content;
     private List<String> image;
@@ -27,12 +27,12 @@ public class ItemDetailDto {
     private Integer viewCount;
 
     @Builder
-    public ItemDetailDto(Long bidId, String nickname, Long userName, String title, String content, List<String> image, String thumbnail,
+    public ItemDetailDto(Long bidId, String nickname, Long userNumber, String title, String content, List<String> image, String thumbnail,
                          LocalDateTime regDate, LocalDateTime startDate, LocalDateTime endDate, Integer startBid, Integer finalBid,
                          Integer bidStatus, Integer category, Integer viewCount) {
         this.bidId = bidId;
         this.nickname = nickname;
-        this.userName = userName;
+        this.userNumber = userNumber;
         this.title = title;
         this.content = content;
         this.image = image;
@@ -51,7 +51,7 @@ public class ItemDetailDto {
         return ItemDetailDto.builder()
                 .bidId(items.getBidId())
                 .nickname(items.getNickname())
-                .userName(items.getUserNumber())
+                .userNumber(items.getUserNumber())
                 .title(items.getTitle())
                 .content(items.getContent())
                 .image(items.getImage())
