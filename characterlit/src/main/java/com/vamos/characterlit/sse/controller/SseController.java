@@ -21,24 +21,22 @@ public class SseController {
         this.sseEmitterService = sseEmitterService;
     }
     //응답 mime type 은 반드시 text/event-stream 이여야 한다.
-    //클라이언트로부터 SSE subscription 을 수락한다.
-    @GetMapping(path = "/subscribe/{bidid}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    ResponseEntity<SseEmitter> subscribe(@PathVariable("bidid") String bidid, @ExtractPayload String userId, HttpSession session) {
-        System.out.println("Session ID: " + session.getId() + ", Nickname: " + userId); // 세션 ID와 닉네임 로깅
-        if(userId == null){
-            throw new RuntimeException("no ssession");
+    @GetMapping(path = "/subscribe/{bidId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    ResponseEntity<SseEmitter> subscribe(@PathVariable("bidId") String bidId, @ExtractPayload Long userNumber, HttpSession session) {
+        log.info("subscribe bidId:{}, userNumber: {}", bidId, userNumber); // 세션 ID와 닉네임 로깅
+        if(userNumber == null){
+            throw new RuntimeException("SSE user auth failed");
         }
-        String sseId = "bidId" + bidid;
-        SseEmitter emitter = sseEmitterService.subscribe(sseId, userId);
+        String sseId = "bidId" + bidId;
+        SseEmitter emitter = sseEmitterService.subscribe(sseId, userNumber);
         return ResponseEntity.ok(emitter);
     }
     // 페이지 벗어나 연결을 종료합니다.
     @PostMapping("/disconnect")
-    public ResponseEntity<Void> disconnect(@ExtractPayload String userId, @RequestBody DisconnectDTO disconnectDTO){
-        System.out.println("disconnect request :" + disconnectDTO);
-        disconnectDTO.setNickname(userId);
+    public ResponseEntity<Void> disconnect(@ExtractPayload Long userNumber, @RequestBody DisconnectDTO disconnectDTO){
+        log.info("disconnect request :" + disconnectDTO);
+        disconnectDTO.setUserNumber(userNumber);
         sseEmitterService.disconnect(disconnectDTO);
         return  ResponseEntity.ok().build();
     }
-
 }
