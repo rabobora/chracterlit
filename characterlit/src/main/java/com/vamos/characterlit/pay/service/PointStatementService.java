@@ -39,7 +39,7 @@ public class PointStatementService {
     // 포인트 내역 조회
     public List<StatementResponseDTO> pointStatementsList(Long userNumber) {
 
-        List<PointStatements> statements = pointStatementRepository.findByuserNumber(userNumber);
+        List<PointStatements> statements = pointStatementRepository.findByUserNumber(userNumber);
         List<StatementResponseDTO> result = new ArrayList<>();
         for (PointStatements statement : statements) {
             result.add(StatementResponseDTO.builder()
@@ -87,29 +87,14 @@ public class PointStatementService {
     public void pointConfirm(Long bidId) {
 
         Items item = itemRepository.findByBidId(bidId);
-        PointStatements statements = pointStatementRepository.findByUserNumberAndBidId(item.getUserId(), item.getBidId());
+        PointStatements statements = pointStatementRepository.findByUserNumberAndBidId(item.getUserNumber(), item.getBidId());
         statements.setPointStatus(5);
-        Point point = pointRepository.findByuserNumber(item.getUserId());
+        Point point = pointRepository.findByuserNumber(item.getUserNumber());
         int usablePoint = point.getUsablePoint();
         int plus = statements.getPoint();
         point.setUsablePoint(usablePoint + plus);
-        balanceFee(item.getFinalBid() - plus);
     }
 
-    // 수수료
-    public void balanceFee(int fee) {
 
-        AccountTransferRequestDTO transfer = AccountTransferRequestDTO.builder()
-                .depositBankCode("004")
-                .depositAccountNo(feeAccount)
-                .transactionBalance(fee)
-                .withdrawalBankCode("004")
-                .withdrawalAccountNo(pointAccount)
-                .depositTransactionSummary("수수료")
-                .withdrawalTransactionSummary("수수료")
-                .build();
-        boolean check = bankService.accountTransfer(transfer, pointKey);
-
-    }
 }
 
