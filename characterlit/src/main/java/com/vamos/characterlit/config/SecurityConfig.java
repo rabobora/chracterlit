@@ -4,6 +4,7 @@ import com.vamos.characterlit.auth2.repository.RefreshRepository;
 import com.vamos.characterlit.auth2.security.*;
 import com.vamos.characterlit.auth2.security.jwt.JWTFilter;
 import com.vamos.characterlit.auth2.security.jwt.JWTUtil;
+import com.vamos.characterlit.auth2.service.ReissueService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -31,11 +32,13 @@ import java.util.Collections;
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2CookieService customOAuth2CookieService;
     private final CustomOAuth2TokenService customOAuth2TokenService;
     private final CustomSuccessHandler customSuccessHandler;
     private final CustomFailureHandler customFailureHandler;
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
+    private final ReissueService reissueService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -48,7 +51,7 @@ public class SecurityConfig {
 
                         CorsConfiguration configuration = new CorsConfiguration();
 
-                        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000", "http://localhost:8080", "https://nid.naver.com"));
+                        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:5173", "http://localhost:8080", "https://nid.naver.com"));
                         configuration.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT"));
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
@@ -73,7 +76,7 @@ public class SecurityConfig {
 
         //JWTFilter 추가
         http
-                .addFilterBefore(new JWTFilter(jwtUtil, customOAuth2TokenService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JWTFilter(jwtUtil, reissueService, customOAuth2CookieService, customOAuth2TokenService), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
 
         //oauth2

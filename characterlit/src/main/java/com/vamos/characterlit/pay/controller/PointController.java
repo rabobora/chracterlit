@@ -1,15 +1,12 @@
 package com.vamos.characterlit.pay.controller;
 
 
+import com.vamos.characterlit.auth2.annotation.ExtractPayload;
 import com.vamos.characterlit.pay.domain.Point;
-import com.vamos.characterlit.pay.request.AccountTransferRequestDTO;
 import com.vamos.characterlit.pay.request.BuyRequestDTO;
 import com.vamos.characterlit.pay.request.ChargeRequestDTO;
-import com.vamos.characterlit.pay.response.AccountHistoryResponseDTO;
-import com.vamos.characterlit.pay.response.KaKaoApproveResponseDTO;
 import com.vamos.characterlit.pay.response.KakaoReadyResponseDTO;
 import com.vamos.characterlit.pay.response.PointResponseDTO;
-import com.vamos.characterlit.pay.service.BankService;
 import com.vamos.characterlit.pay.service.KakaoPayService;
 import com.vamos.characterlit.pay.service.PointService;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +21,11 @@ import org.springframework.web.bind.annotation.*;
 public class PointController {
 
     private final PointService pointService;
-    private final BankService bankService;
     private final KakaoPayService kakaoPayService;
 
     // 포인트 조회
     @GetMapping
-    public ResponseEntity<PointResponseDTO> pointCheck(@RequestHeader Long userNumber){
+    public ResponseEntity<PointResponseDTO> pointCheck(@ExtractPayload Long userNumber){
 
         Point point = pointService.getPoint(userNumber);
 
@@ -43,21 +39,21 @@ public class PointController {
 
     // 사용가능한 포인트 조회
     @GetMapping("/usable")
-    public ResponseEntity<Integer> usablePointCheck(@RequestParam Long userNumber){
+    public ResponseEntity<Integer> usablePointCheck(@ExtractPayload Long userNumber){
         Point point = pointService.getPoint(userNumber);
         return new ResponseEntity<>(point.getUsablePoint(),HttpStatus.OK);
     }
 
     // 계좌이체 포인트 충전 결제
     @PutMapping("/charge")
-    public ResponseEntity<Void> pointCharge(@RequestHeader Long userNumber, @RequestBody ChargeRequestDTO request){
+    public ResponseEntity<Void> pointCharge(@ExtractPayload Long userNumber, @RequestBody ChargeRequestDTO request){
         pointService.charge(request,userNumber);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 카카오페이 포인트 충전 결제 준비
     @PostMapping("/charge/kakao/ready")
-    public ResponseEntity<KakaoReadyResponseDTO> kakaopayReady(@RequestHeader Long userNumber, @RequestParam int money){
+    public ResponseEntity<KakaoReadyResponseDTO> kakaopayReady(@ExtractPayload Long userNumber, @RequestParam int money){
 
         KakaoReadyResponseDTO kakaoReadyResponseDTO = kakaoPayService.kakaoReady(money, userNumber);
 
@@ -66,7 +62,7 @@ public class PointController {
 
     // 카카오페이 포인트 충전 결제 승인
     @GetMapping("/charge/kakao/approve")
-    public ResponseEntity<Void> kakaopayApprove(@RequestHeader Long userNumber, @RequestParam("pg_token") String pgToken,@RequestParam("order_id") String orderId){
+    public ResponseEntity<Void> kakaopayApprove(@RequestParam("pg_token") String pgToken,@RequestParam("order_id") String orderId){
 
         kakaoPayService.kakaoApprove(pgToken,orderId);
 
@@ -75,14 +71,14 @@ public class PointController {
 
     // 포인트 출금
     @PutMapping("/withdraw")
-    public ResponseEntity<Void> pointWithdraw(@RequestHeader Long userNumber,@RequestBody ChargeRequestDTO request){
+    public ResponseEntity<Void> pointWithdraw(@ExtractPayload Long userNumber, @RequestBody ChargeRequestDTO request){
         pointService.withdraw(request,userNumber);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 구매하기
     @PutMapping("/buy")
-    public ResponseEntity<Void> buyItem(@RequestHeader Long userNumber, @RequestBody BuyRequestDTO request){
+    public ResponseEntity<Void> buyItem(@RequestBody BuyRequestDTO request){
 
         boolean check = pointService.buyItem(request);
 
