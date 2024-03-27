@@ -32,7 +32,7 @@ public class CustomFailureHandler extends SimpleUrlAuthenticationFailureHandler 
         }
 
         errorMessage = URLEncoder.encode(errorMessage, "UTF-8"); //한글 인코딩 깨지는 문제 방지
-        setDefaultFailureUrl("http://localhost:3000/");
+        setDefaultFailureUrl("http://localhost:5173/");
         super.onAuthenticationFailure(httpServletRequest, httpServletResponse, e);
     }
 }
