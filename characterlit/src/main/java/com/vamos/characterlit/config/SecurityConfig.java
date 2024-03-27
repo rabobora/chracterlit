@@ -91,12 +91,11 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join").permitAll()
+                        .requestMatchers("/my", "/reissue").hasAnyAuthority("USER")
                         .requestMatchers("/api/sse/subscribe/**").permitAll() // 인증 없이 접근 허용
                         .requestMatchers("/api/sse/disconnect").permitAll() // 인증 없이 접근 허용
                         .requestMatchers("/api/bid/read/**").permitAll() // 인증 없이 접근 허용
-                        .requestMatchers("/my", "/reissue").hasAnyAuthority("USER")
-                        .requestMatchers("/**").permitAll() // 인증 없이 접근 허용
+                        .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS
