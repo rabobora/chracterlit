@@ -9,10 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,7 +20,7 @@ public class UsersController {
     private final UsersRepository usersRepository;
     private final CustomOAuth2CookieService customOAuth2CookieService;
 
-    @GetMapping("/login")
+    @GetMapping("/loginuser")
     public ResponseEntity<?> loginUser(HttpServletRequest request) {
         String token = customOAuth2CookieService.getCookie(request);
         if (token == null)
@@ -32,7 +29,7 @@ public class UsersController {
         return new ResponseEntity<Users>(user, HttpStatus.OK);
     }
 
-    @GetMapping("/id")
+    @PostMapping("/id")
     public ResponseEntity<?> getUserByNumber(@ExtractPayload long userNumber) {
         System.out.println("getUserById : " + userNumber);
         Users user = usersRepository.findByUserNumber(userNumber);
