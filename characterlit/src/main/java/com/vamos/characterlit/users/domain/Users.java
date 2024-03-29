@@ -39,4 +39,5 @@ public class Users {
     private Timestamp createdDate;
 
     private Timestamp deletedDate;
+
 }
