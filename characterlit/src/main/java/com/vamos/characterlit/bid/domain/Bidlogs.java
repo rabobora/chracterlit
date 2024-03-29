@@ -15,22 +15,17 @@ public class Bidlogs {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long logId;
     private Long bidId;
-    private Long userId;
+    private Long userNumber;
     private int requestBid;
     private LocalDateTime bidTime;
 
     public Bidlogs() {}
     @Builder
-    public Bidlogs(Long logId, Long bidId, Long userId, int requestBid, LocalDateTime bidTime) {
+    public Bidlogs(Long logId, Long bidId, Long userNumber, int requestBid, LocalDateTime bidTime) {
         this.logId = logId;
         this.bidId = bidId;
-        this.userId = userId;
+        this.userNumber = userNumber;
         this.requestBid = requestBid;
         this.bidTime = bidTime;
     }
-    // 메시지를 보내는 시점에서 시간이 기록되어야 합니다. 사용 안할것.
-//    @PrePersist
-//    protected void onCreate() {
-//        bidTime = LocalDateTime.now();
-//    }
 }

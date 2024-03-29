@@ -6,7 +6,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
-
 @Entity
 @Getter
 @Builder
@@ -16,8 +15,6 @@ public class Point {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pointID;
-
     private Long userNumber;
     @Setter
     private int allPoint;

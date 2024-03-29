@@ -14,7 +14,6 @@ public class ChatRoomDTO { // FK 수정중입니다.
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     Long chatroomId;
-    boolean isPaid;
     Long bidId;
     Long buyerId;
     Long sellerId;
