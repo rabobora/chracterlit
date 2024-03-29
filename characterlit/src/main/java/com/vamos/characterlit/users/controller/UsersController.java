@@ -30,6 +30,12 @@ public class UsersController {
         return new ResponseEntity<Users>(user, HttpStatus.OK);
     }
 
+    @PatchMapping("/loginuser")
+    public ResponseEntity<Users> updateUser(@RequestBody UserUpdate userUpdate) {
+        Users updatedUser = usersService.updateUser(userUpdate);
+        return ResponseEntity.ok(updatedUser);
+    }
+
     @PostMapping("/id")
     public ResponseEntity<?> getUserByNumber(@ExtractPayload long userNumber) {
         System.out.println("getUserById : " + userNumber);
@@ -39,9 +45,5 @@ public class UsersController {
         return new ResponseEntity<Users>(user, HttpStatus.OK);
     }
 
-    @PatchMapping("/loginuser")
-    public ResponseEntity<Users> updateUser(@RequestBody UserUpdate userUpdate) {
-        Users updatedUser = usersService.updateUser(userUpdate);
-        return ResponseEntity.ok(updatedUser);
-    }
+
 }
