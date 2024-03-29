@@ -16,8 +16,8 @@ const router = createRouter({
 					component: UserTest,
 				},
 				{
-					path: 'user',
-					name: 'user',
+					path: 'user/update',
+					name: 'userUpdate',
 					component: UserInfoRevView,
 				},
 			],

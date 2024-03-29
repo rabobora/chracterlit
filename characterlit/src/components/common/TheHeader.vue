@@ -5,11 +5,16 @@
 				<img src="@/assets/logo.png" alt="logo" />
 			</router-link>
 			<ul class="nav-links">
-				<div v-if="isLoggedIn" class="nav-if-member">
-					<h2 class="nav-logout" @click="logout">로그아웃</h2>
+				<div v-if="store.getIsLogin" class="nav-if-member">
+					<div>
+						<h4 class="nav-userInfo" @click="toUserInfo">
+							{{ store.getLoginUser.nickname }}
+						</h4>
+					</div>
+					<div><h4 class="nav-logout" @click="toLogout">로그아웃</h4></div>
 				</div>
-				<div v-else="isLoggedIn" class="nav-if-guest">
-					<h2 class="nav-login" @click="login">로그인</h2>
+				<div v-else class="nav-if-guest">
+					<h4 class="nav-login" @click="toLogin">로그인</h4>
 				</div>
 			</ul>
 		</nav>
@@ -20,65 +25,68 @@
 import { ref, onMounted } from 'vue';
 import { useUsersStore } from '@/stores/users';
 import router from '@/router';
+import { RouterLink } from 'vue-router';
 
-const isLoggedIn = ref(false);
+// const isLoggedIn = ref(false);
 const store = useUsersStore();
+// const getCookie = (name) => {
+// 	let matches = document.cookie.match(
+// 		new RegExp(
+// 			'(?:^|; )' +
+// 				name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') +
+// 				'=([^;]*)',
+// 		),
+// 	);
+// 	return matches ? decodeURIComponent(matches[1]) : undefined;
+// };
 
-const getCookie = (name) => {
-	let matches = document.cookie.match(
-		new RegExp(
-			'(?:^|; )' +
-				name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') +
-				'=([^;]*)',
-		),
-	);
-	return matches ? decodeURIComponent(matches[1]) : undefined;
-};
+// const deleteCookie = (name) => {
+// 	document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+// };
 
-const deleteCookie = (name) => {
-	document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-};
+// const saveTokenToLocalStorage = async () => {
+// 	let token = getCookie('access_token');
+// 	deleteCookie('access_token');
+// 	if (token != null && token !== 'undefined')
+// 		localStorage.setItem('access-token', token);
+// 	token = null;
+// 	checkLoginStatus();
+// };
 
-const saveTokenToLocalStorage = () => {
-	let token = getCookie('access_token');
-	deleteCookie('access_token');
-	if (token != null && token !== 'undefined')
-		localStorage.setItem('access-token', token);
-	token = null;
-};
+// const checkLoginStatus = () => {
+// 	let token = localStorage.getItem('access-token');
+// 	if (token) {
+// 		store.isLogIn = true;
+// 	} else {
+// 		store.isLogIn = false;
+// 	}
+// 	console.log(store.isLogIn);
+// };
 
-const checkLoginStatus = () => {
-	let token = localStorage.getItem('access-token');
-	if (token) {
-		isLoggedIn.value = true;
-	} else {
-		isLoggedIn.value = false;
-	}
-};
-
-const login = async () => {
+const toLogin = async () => {
 	try {
-		router.push('/login');
+		await router.push('/login');
 	} catch (error) {
 		console.error('login failed:', error);
 	}
 };
 
-const logout = async () => {
+const toLogout = async () => {
 	try {
-		store.onLogout();
-		isLoggedIn.value = false;
-		localStorage.removeItem('access-token');
-		// router.push('/');
+		await store.onLogout();
+		router.push('/');
 	} catch (error) {
 		console.error('logout failed:', error);
 	}
-	location.reload(true);
 };
 
-onMounted(() => {
-	saveTokenToLocalStorage();
-	checkLoginStatus();
+const toUserInfo = () => {
+	router.push('/user/update');
+};
+
+onMounted(async () => {
+	await store.saveTokenToLocalStorage();
+	await store.fetchLoginUser();
 });
 </script>
 
@@ -102,11 +110,22 @@ onMounted(() => {
 	height: 120px;
 }
 
+.nav-if-member {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
 .nav-login {
 	cursor: pointer;
 }
 
 .nav-logout {
 	cursor: pointer;
+}
+
+.nav-userInfo {
+	cursor: pointer;
+	margin-right: 20px;
 }
 </style>

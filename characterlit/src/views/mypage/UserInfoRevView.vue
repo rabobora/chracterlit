@@ -27,7 +27,7 @@
 	<div class="update-profile container my-5">
 		<div class="row">
 			<div class="col-lg-6 offset-lg-3">
-				<h2 class="mb-4 text-start">회원 정보 수정</h2>
+				<h2 class="mb-4 text-start">회원정보 수정</h2>
 				<form @submit.prevent="submitForm">
 					<div class="mb-3">
 						<label for="nickname" class="form-label">닉네임</label>
@@ -54,6 +54,7 @@
 							class="form-control"
 							id="email"
 							v-model="loginUser.email"
+							disabled
 						/>
 					</div>
 					<div class="mb-3">
@@ -110,44 +111,28 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useUsersStore } from '@/stores/users';
+import router from '@/router';
 const usersStore = useUsersStore();
 
 const loginUser = ref({
 	userNumber: '',
-	// profileImage: '',
 	nickname: '',
 	email: '',
 	name: '',
 	phone: '',
 	address: '',
+	// profileImage: '',
 });
 
-onMounted(() => {
-	usersStore
-		.getLoginUser()
-		.then((loggedInUser) => {
-			const {
-				userNumber,
-				// profileImage,
-				nickname,
-				email,
-				name,
-				phone,
-				address,
-			} = loggedInUser;
-			loginUser.value = {
-				userNumber,
-				// profileImage,
-				nickname,
-				email,
-				name,
-				phone,
-				address,
-			};
-		})
-		.catch((error) => {
-			console.error('로그인한 사용자 정보를 불러오는데 실패했습니다.', error);
-		});
+onMounted(async () => {
+	await usersStore.fetchLoginUser();
+	const user = usersStore.getLoginUser;
+	loginUser.value.userNumber = user.userNumber;
+	loginUser.value.nickname = user.nickname;
+	loginUser.value.email = user.email;
+	loginUser.value.name = user.name;
+	loginUser.value.phone = user.phone;
+	loginUser.value.address = user.address;
 });
 
 // const profileImageInput = ref(null); // 파일 입력 필드를 위한 ref 추가
@@ -180,6 +165,8 @@ const submitForm = () => {
 		.updateLoginUser(loginUser.value)
 		.then(() => {
 			alert('회원 정보가 성공적으로 수정되었습니다.');
+			router.push('/');
+			location.reload(true);
 		})
 		.catch((error) => {
 			alert('회원 정보 수정 중 오류가 발생했습니다. 다시 시도해주세요.');
