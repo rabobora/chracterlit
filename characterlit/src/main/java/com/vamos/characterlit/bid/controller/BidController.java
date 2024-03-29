@@ -43,10 +43,8 @@ public class BidController {
     @PostMapping("/read/{bidId}")
     public ResponseEntity<?> bid(@PathVariable("bidId") Long bidId,
                                  @RequestBody BidRequestDTO bidRequestDTO,
-//                                 @ExtractPayload Long userNumberTest,
-                                 @RequestHeader(value = "access_token") String accessToken ) {
-//        log.info(String.valueOf(userNumberTest));
-        Long userNumber = jwtUtil.getUserNumber(accessToken);
+                                 @ExtractPayload Long userNumber) {
+
         log.info("API Received bid request for bidId: {}, userNumber: {}", bidId, userNumber);
 
         try {
@@ -84,12 +82,8 @@ public class BidController {
     }
 
     @GetMapping("/mybid")
-    public ResponseEntity<?> mybid(
-            @RequestHeader(value = "access_token") String accessToken
-//                                   @ExtractPayload Long userNumber
-                                   ){
+    public ResponseEntity<?> mybid(@ExtractPayload Long userNumber){
         try {
-            Long userNumber = jwtUtil.getUserNumber(accessToken);
             log.info("read my bidlist userNumber: {}", userNumber);
             MyBidList biddingList = myBidService.show(userNumber);
             return new ResponseEntity<MyBidList>(biddingList, HttpStatus.OK);
@@ -100,12 +94,9 @@ public class BidController {
     }
 
     @GetMapping("/mysell")
-    public ResponseEntity<?> mysell(@RequestHeader(value = "access_token") String accessToken
-//                                    @ExtractPayload Long userNumber,
-                                    ){
+    public ResponseEntity<?> mysell(@ExtractPayload Long userNumber){
         try {
             log.info("read my sell");
-            Long userNumber = jwtUtil.getUserNumber(accessToken);
             List<Items> mySellList = myBidService.mysell(userNumber);
             return new ResponseEntity<List<Items> >(mySellList, HttpStatus.OK);
         } catch (Exception e) {
