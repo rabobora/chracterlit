@@ -97,7 +97,7 @@ export const useUsersStore = defineStore(
 
 		const searchLoginUser = () => {
 			saveTokenToLocalStorage();
-			return fetch('http://localhost:8080/api/users/loginuser', {
+			return fetch('http://localhost:8080/api/users/login', {
 				method: 'GET',
 				headers: {
 					'access_token': localStorage.getItem('access-token'),
@@ -119,7 +119,7 @@ export const useUsersStore = defineStore(
 
 		const updateLoginUser = (userInfo) => {
 			saveTokenToLocalStorage();
-			return fetch('http://localhost:8080/api/users/loginuser', {
+			return fetch('http://localhost:8080/api/users/login', {
 				method: 'PATCH',
 				headers: {
 					'access_token': localStorage.getItem('access-token'),
@@ -140,6 +140,30 @@ export const useUsersStore = defineStore(
 				});
 		};
 
+		const isExistNickname = (nickname) => {
+			saveTokenToLocalStorage();
+			return fetch(
+				`http://localhost:8080/api/users/find/nickname/${nickname}`,
+				{
+					method: 'GET',
+					headers: {
+						'access_token': localStorage.getItem('access-token'),
+					},
+					credentials: 'include',
+				},
+			)
+				.then((res) => {
+					return res.json();
+				})
+				.then((data) => {
+					return data;
+				})
+				.catch((error) => {
+					console.log(error);
+					throw error;
+				});
+		};
+
 		return {
 			isLogin,
 			loginUser,
@@ -153,6 +177,7 @@ export const useUsersStore = defineStore(
 			onLogout,
 			searchLoginUser,
 			updateLoginUser,
+			isExistNickname,
 		};
 	},
 	{ persist: true },

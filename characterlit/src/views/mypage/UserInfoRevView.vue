@@ -149,9 +149,13 @@ onMounted(async () => {
 // 	}
 // }
 
-function checkNickname() {
-	console.log('닉네임 중복 체크:', form.value.nickname);
-	// 닉네임 중복 체크
+async function checkNickname() {
+	console.log(loginUser.value.nickname);
+	if (await usersStore.isExistNickname(loginUser.value.nickname)) {
+		alert('중복된 닉네임입니다.');
+	} else {
+		alert('사용 가능한 닉네임입니다.');
+	}
 }
 
 function findAddress() {
