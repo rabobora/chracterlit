@@ -209,7 +209,6 @@ public boolean buyItem(BuyRequestDTO request){
     LocalDateTime now = LocalDateTime.now();
 
     Point updateBuyer = Point.builder()
-            .pointID(buyer.getPointID())
             .userNumber(request.getWinnerId())
             .allPoint(buyer.getAllPoint()-request.getFinalBid())
             .usablePoint(buyer.getUsablePoint()- request.getFinalBid())
@@ -217,7 +216,6 @@ public boolean buyItem(BuyRequestDTO request){
     pointRepository.save(updateBuyer);
 
     Point updateSeller = Point.builder()
-            .pointID(seller.getPointID())
             .userNumber(request.getUserNumber())
             .allPoint(seller.getAllPoint()+request.getFinalBid())
             .usablePoint(seller.getUsablePoint())
