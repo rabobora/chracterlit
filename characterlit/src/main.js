@@ -1,12 +1,21 @@
-import { createApp } from 'vue';
-import { createPinia } from 'pinia';
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 
-import App from './App.vue';
-import router from './router';
+import App from './App.vue'
+import router from './router'
 
-const app = createApp(App);
+function initializeSession() {
+    if (!sessionStorage.getItem('userSession')) {
+      const sessionId = Math.floor(1000000000000000 + Math.random() * 9000000000000000);
+      sessionStorage.setItem('userSession', sessionId);
+      }
+    }  
+  
+    initializeSession();
 
-app.use(createPinia());
-app.use(router);
+const app = createApp(App)
 
-app.mount('#app');
+app.use(createPinia())
+app.use(router)
+
+app.mount('#app')

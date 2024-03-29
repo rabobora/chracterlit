@@ -1,18 +1,40 @@
 <template>
-    <div>
+  <div class="read-page-container">
+    <div class="header">
       <h1>This is Read Page {{ bidId }}</h1>
       <router-link to="/" class="home-button">HomeView로 돌아가기</router-link>
     </div>
-    <div>
-      <input type="number" v-model="requestBid" placeholder="Enter requestBid">
-    <button @click="sendRequest">Send Request</button>
+    <div v-if="showMessage" class="message-overlay">
+    <div class="message-box">
+      {{ popMessage }}
     </div>
-        <!-- 이벤트 메시지 표시 영역 -->
-        <div v-if="latestEvent">
-      <h2>Event Messages:</h2>
-      <p>{{ latestEvent }}</p>
-    </div>
+  </div>
+    <div class="content">
+      <div class="item-image">
+        <!-- 이미지가 있을 때 -->
+        <img v-if="itemDetail.thumbnail" :src="itemDetail.thumbnail" alt="Item image" class="image-style" />
+        <!-- 이미지가 없을 때 -->
+        <div v-else class="image-placeholder"></div>
+      </div>
 
+      <div class="item-details">
+        <h1 class="title">{{ itemDetail.title || 'Loading...' }}</h1>
+        <div class="price-container">
+          <p class="start-price">시작가: <span>{{ itemDetail.startBidFormatted || 'Loading...' }}</span></p>
+          <p class="current-price">현재가: <span>{{ latestEvent.requestBidFormatted || 'Loading...' }}</span></p>
+        </div>
+        <div class="description">
+          <h2>상세설명</h2>
+          <p>{{ itemDetail.content || 'Loading...' }}</p>
+        </div>
+      </div>
+
+      <div class="bid-input">
+        <input type="number" v-model="requestBid" placeholder="Enter requestBid">
+        <button @click="sendRequest">Send Request</button>
+      </div>
+    </div>
+  </div>
   </template>
   
   <script>
@@ -27,16 +49,66 @@
       const bidId = ref(route.params.number);  
       const nickname = sessionStorage.getItem('nickname'); // 세션에서 닉네임 가져옴
       const requestBid = ref(null); // 사용자가 입력한 requestBid 값을 저장할 ref 변수
-      const latestEvent = ref(null);
+      const latestEvent = ref('');
+      const itemDetail = ref({
+                      title: null,
+                      startBid: null,
+                      thumbnail: null,
+                      content: null
+      });
       let eventSource = null; // EventSource 인스턴스를 저장할 변수
+      const showMessage = ref(false);
+      const popMessage = ref('');
+      let messageTimeout;
+
+      const fetchItemDetail = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/bid/read/${bidId.value}`);
+        itemDetail.value = response.data;
+        if(typeof itemDetail.value.startBid === 'number' && !isNaN(itemDetail.value.startBid)) {
+        itemDetail.value.startBidFormatted = `₩${itemDetail.value.startBid.toLocaleString()}`;
+        } else {
+        itemDetail.value.startBidFormatted = 'Loading...';
+      }
+        console.log("Item detail fetched successfully", response.data);
+      } catch (error) {
+        console.error("Failed to fetch item detail:", error);
+      }
+    };
+    const loadInitialEvent = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/bid/read/now/${bidId.value}`);
+        latestEvent.value = {
+        requestBid: response.data,
+        requestBidFormatted: `₩${response.data.toLocaleString()}`
+      };
+        console.log("Initial current bid loaded:", response.data);
+      } catch (error) {
+        console.error("Error loading initial current bid:", error);
+      }
+    };
   
-const subscribe = () => {
-      const url = `http://localhost:8080/v1/sse/subscribe/${bidId.value}?nickname=${encodeURIComponent(nickname)}`;
+      const subscribe = () => {
+      const url = `http://localhost:8080/api/sse/subscribe/${bidId.value}?nickname=${encodeURIComponent(nickname)}`;
       eventSource = new EventSource(url);
 
       eventSource.addEventListener('bid price update', (event) => {
         const data = JSON.parse(event.data);
-        latestEvent.value = `Bid ID: ${data.bidId}, Member Name: ${data.memberName}, Request Bid: ${data.requestBid}`;
+        // latestEvent.value = `Bid ID: ${data.bidId}, Member Name: ${data.memberName}, Request Bid: ${data.requestBid}`;
+        latestEvent.value = {
+        ...latestEvent.value, // 기존의 latestEvent 데이터를 유지
+        requestBid: data.requestBid,
+        requestBidFormatted: `₩${data.requestBid.toLocaleString()}`,
+        memberName: data.memberName,
+        bidId: data.bidId
+      };
+        popMessage.value = `Bid ID: ${data.bidId}, Member Name: ${data.memberName}, Request Bid: ${data.requestBid}`;
+        showMessage.value = true;
+        clearTimeout(messageTimeout);
+        messageTimeout = setTimeout(() => {
+          showMessage.value = false;
+        }, 3000);
+
         console.log("Received bid price update:", data);
       });
 
@@ -66,14 +138,13 @@ const disconnect = () => {
     nickname: nickname,
   };
   const payload = new Blob([JSON.stringify(data)], { type: 'application/json' });
-  const url = 'http://localhost:8080/v1/sse/disconnect';
+  const url = 'http://localhost:8080/api/sse/disconnect';
   console.log("request sent:", bidId.value);
   navigator.sendBeacon(url, payload);
   console.log("Disconnect request sent");
 };  
 
 const sendRequest = async () => {
-      const bidTime = new Date().toISOString(); // 현재 시간을 ISO 문자열로 변환하여 bidTime으로 사용
       const userId = 4; // 현재 사용자의 nickname을 userId로 사용
 
       // 사용자가 입력한 requestBid 값이 유효한지 확인
@@ -84,8 +155,7 @@ const sendRequest = async () => {
 
       const data = {
         userId: userId,
-        requestBid: requestBid.value,
-        bidTime: bidTime
+        requestBid: requestBid.value  
       };
       console.log("Request sent", data);
       try {
@@ -98,28 +168,110 @@ const sendRequest = async () => {
       }
     };
 
-      onMounted(() => {
-        // 페이지에 진입하면 subscribe 요청
-        subscribe();
-
-      });
-  
+        onMounted(async () => {
+          await fetchItemDetail();
+          await loadInitialEvent();
+          subscribe();
+          window.addEventListener('beforeunload', disconnect);
+      });  
       onBeforeUnmount(() => {
         // 페이지를 떠나기 전에 disconnect 요청
         disconnect();
+          // 더 이상 필요하지 않으므로 이벤트 리스너 제거
+        window.removeEventListener('beforeunload', disconnect);
       });
   
       return {
         bidId,
         requestBid,
         sendRequest,
-        latestEvent
+        latestEvent,
+        itemDetail,
+        showMessage,
+        popMessage
       };
     }
   };
   </script>
   
   <style>
+.read-page-container {
+  max-width: 800px; /* 컨테이너의 최대 너비 */
+  margin: auto; /* 중앙 정렬 */
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.item-image {
+  text-align: center; /* 이미지를 중앙 정렬 */
+}
+
+.image-style {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+}
+
+.image-placeholder {
+  width: 300px;
+  height: 400px;
+  background-color: #f3f3f3;
+  display: inline-block;
+}
+
+.item-details {
+  margin-top: 20px;
+}
+
+.title {
+  font-size: 1.5em;
+  color: #333;
+  text-align: center; /* 타이틀 중앙 정렬 */
+}
+
+.price-container {
+  text-align: center; /* 가격 정보 중앙 정렬 */
+  margin: 20px 0;
+}
+
+.start-price, .current-price {
+  font-size: 1em;
+  color: #666;
+}
+
+.description h2 {
+  font-size: 1.2em;
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+}
+
+.description p {
+  font-size: 1em;
+  color: #666;
+}
+
+.bid-input {
+  text-align: center; /* 입력 필드 중앙 정렬 */
+  margin-top: 20px;
+}
+
+.bid-input input {
+  padding: 5px;
+  margin-right: 10px;
+}
+
+.bid-input button {
+  padding: 5px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.bid-input button:hover {
+  background-color: #0056b3;
+}
+
 .home-button {
   display: inline-block;
   margin-top: 20px;
@@ -132,5 +284,38 @@ const sendRequest = async () => {
 
 .home-button:hover {
   background-color: #0056b3;
+}
+
+.message-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeInOut 4s;
+  pointer-events: none; /* 오버레이에서 마우스 이벤트 무시 */
+}
+
+.message-box {
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  pointer-events: auto; /* 메시지 박스에서는 마우스 이벤트 활성화 */
+}
+
+/* 페이드 인 아웃 애니메이션 */
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  10%, 90% {
+    opacity: 1;
+    visibility: visible;
+  }
 }
   </style>
