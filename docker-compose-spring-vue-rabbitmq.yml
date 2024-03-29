@@ -1,9 +1,9 @@
-version: '3'
+version: '3.7'
 
 services:
   springboot:
-    image: my-springboot-image:latest
-    container_name: springboot_container
+    image: woojincheon/spring:latest
+    container_name: spring
     restart: always
     ports:
       - "8080:8080"
@@ -14,15 +14,15 @@ services:
       SPRING_RABBITMQ_PORT: 5672
 
   vue:
-    image: my-vue-image:latest
-    container_name: vue_container
+    image: woojincheon/front:latest
+    container_name: front
     restart: always
     ports:
       - "80:80"
 
   rabbitmq:
     image: rabbitmq:latest
-    container_name: rabbitmq_container
+    container_name: rabbitmq
     restart: always
     ports:
       - "5672:5672"
