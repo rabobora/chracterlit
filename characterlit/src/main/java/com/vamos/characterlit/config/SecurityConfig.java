@@ -52,7 +52,7 @@ public class SecurityConfig {
                         CorsConfiguration configuration = new CorsConfiguration();
 
                         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:5173", "http://localhost:8080", "http://localhost:8081", "https://nid.naver.com"));
-                        configuration.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT"));
+                        configuration.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT", "PATCH"));
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
                         configuration.setMaxAge(3600L);
@@ -91,12 +91,11 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join").permitAll()
+                        .requestMatchers("/my", "/reissue").hasAnyAuthority("USER")
                         .requestMatchers("/api/sse/subscribe/**").permitAll() // 인증 없이 접근 허용
                         .requestMatchers("/api/sse/disconnect").permitAll() // 인증 없이 접근 허용
                         .requestMatchers("/api/bid/read/**").permitAll() // 인증 없이 접근 허용
-                        .requestMatchers("/my", "/reissue").hasAnyAuthority("USER")
-                        .requestMatchers("/**").permitAll() // 인증 없이 접근 허용
+                        .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS

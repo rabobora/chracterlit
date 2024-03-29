@@ -36,7 +36,7 @@ public class JWTFilter extends OncePerRequestFilter {
         String accessToken = request.getHeader("access_token");
         String refreshToken = null;
         Cookie[] cookieList = request.getCookies();
-        if(cookieList != null) {
+        if (cookieList != null) {
             for (Cookie cookie : cookieList) {
                 if (cookie.getName().equals("refresh_token")) {
                     refreshToken = cookie.getValue();

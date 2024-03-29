@@ -91,6 +91,7 @@ public class ReissueService {
         String role = jwtUtil.getRole(refresh);
         long userNumber = jwtUtil.getUserNumber(refresh);
         String newAccessToken = jwtUtil.createJwt("access", userNumber, userId, role, 3600000L);
+        // 3600000L 4000L
         return newAccessToken;
     }
 }
