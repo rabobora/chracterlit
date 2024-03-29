@@ -61,7 +61,7 @@ public class PointController {
     }
 
     // 카카오페이 포인트 충전 결제 승인
-    @GetMapping("/charge/kakao/approve")
+    @GetMapping("/charge/kakao/success")
     public ResponseEntity<Void> kakaopayApprove(@RequestParam("pg_token") String pgToken,@RequestParam("order_id") String orderId){
 
         kakaoPayService.kakaoApprove(pgToken,orderId);
