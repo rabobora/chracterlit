@@ -51,7 +51,7 @@ public class ExtractPayloadArgumentResolver implements HandlerMethodArgumentReso
     }
 
     public static Optional<String> extractToken(HttpServletRequest request) {
-        String token = request.getHeader("access_token");
+        String token = request.getHeader("access_rttoken");
         System.out.println("extractToken " + token);
         if (isEmptyAuthorizationHeader(token))
             return Optional.empty();

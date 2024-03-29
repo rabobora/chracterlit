@@ -1,6 +1,7 @@
 package com.vamos.characterlit.bid.controller;
 
 import com.vamos.characterlit.auth2.annotation.ExtractPayload;
+import com.vamos.characterlit.auth2.security.jwt.JWTUtil;
 import com.vamos.characterlit.bid.repository.NowbidRepository;
 import com.vamos.characterlit.bid.request.BidMessageDTO;
 import com.vamos.characterlit.bid.request.BidRequestDTO;
@@ -29,25 +30,30 @@ public class BidController {
     private final DirectExchange direct;
     private final NowbidService nowbidService;
     private final MyBidService myBidService;
+    private final JWTUtil jwtUtil;
 
-    public BidController(RabbitTemplate template, DirectExchange direct, NowbidService nowbidService, MyBidService myBidService) {
+    public BidController(RabbitTemplate template, DirectExchange direct, NowbidService nowbidService, MyBidService myBidService, JWTUtil jwtUtil) {
         this.template = template;
         this.direct = direct;
         this.nowbidService = nowbidService;
         this.myBidService = myBidService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/read/{bidId}")
     public ResponseEntity<?> bid(@PathVariable("bidId") Long bidId,
                                  @RequestBody BidRequestDTO bidRequestDTO,
-                                 @ExtractPayload Long userNumber,
-                                 HttpSession session) {
-        log.info("API Received bid request for bidId: {}", bidId);
+//                                 @ExtractPayload Long userNumberTest,
+                                 @RequestHeader(value = "access_token") String accessToken ) {
+//        log.info(String.valueOf(userNumberTest));
+        Long userNumber = jwtUtil.getUserNumber(accessToken);
+        log.info("API Received bid request for bidId: {}, userNumber: {}", bidId, userNumber);
 
         try {
             // rabbitMQ에게 메시지 전달
             BidMessageDTO bidMessage = BidMessageDTO.builder()
                     .bidId(bidId)
+                    .sessionId(bidRequestDTO.getSessionId())
                     .userNumber(userNumber)
                     .requestBid(bidRequestDTO.getRequestBid())
                     .bidTime(LocalDateTime.now())
@@ -78,9 +84,13 @@ public class BidController {
     }
 
     @GetMapping("/mybid")
-    public ResponseEntity<?> mybid(@ExtractPayload Long userNumber){
+    public ResponseEntity<?> mybid(
+            @RequestHeader(value = "access_token") String accessToken
+//                                   @ExtractPayload Long userNumber
+                                   ){
         try {
-            log.info("read my bidlist");
+            Long userNumber = jwtUtil.getUserNumber(accessToken);
+            log.info("read my bidlist userNumber: {}", userNumber);
             MyBidList biddingList = myBidService.show(userNumber);
             return new ResponseEntity<MyBidList>(biddingList, HttpStatus.OK);
         } catch (Exception e) {
@@ -90,9 +100,12 @@ public class BidController {
     }
 
     @GetMapping("/mysell")
-    public ResponseEntity<?> mysell(@ExtractPayload Long userNumber){
+    public ResponseEntity<?> mysell(@RequestHeader(value = "access_token") String accessToken
+//                                    @ExtractPayload Long userNumber,
+                                    ){
         try {
             log.info("read my sell");
+            Long userNumber = jwtUtil.getUserNumber(accessToken);
             List<Items> mySellList = myBidService.mysell(userNumber);
             return new ResponseEntity<List<Items> >(mySellList, HttpStatus.OK);
         } catch (Exception e) {
