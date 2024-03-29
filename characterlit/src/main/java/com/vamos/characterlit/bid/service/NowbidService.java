@@ -58,6 +58,7 @@ public class NowbidService {
                 throw new RuntimeException("The bid is lower than the current bid.");
             }
             bidTarget.setPresentBid(messageDTO.getRequestBid());
+            log.info("nowbid updated: bidId: {}, presentBid: {}", bidTarget.getBidId(), bidTarget.getPresentBid());
             Bidlogs bidLog = Bidlogs.builder()
                     .bidId(messageDTO.getBidId())
                     .userNumber(messageDTO.getUserNumber())
@@ -81,8 +82,8 @@ public class NowbidService {
             bidlogsRepository.save(bidLog);
         }
         log.info("Bidding event process started for bidId={}", messageDTO.getBidId());
-        BidEvent event = new BidEvent(this, messageDTO.getBidId(), messageDTO.getUserNumber(), messageDTO.getRequestBid(), "BROADCAST");
-        BidEvent biddingEvent = new BidEvent(this, messageDTO.getBidId(), messageDTO.getUserNumber(), messageDTO.getRequestBid(), "SINGLE");
+        BidEvent event = new BidEvent(this, messageDTO.getBidId(), messageDTO.getSessionId(), messageDTO.getUserNumber(), messageDTO.getRequestBid(), "BROADCAST");
+        BidEvent biddingEvent = new BidEvent(this, messageDTO.getBidId(),  messageDTO.getSessionId(), messageDTO.getUserNumber(), messageDTO.getRequestBid(), "SINGLE");
         log.info(String.valueOf(event));
         log.info(String.valueOf(biddingEvent));
         eventPublisher.publishEvent(event);

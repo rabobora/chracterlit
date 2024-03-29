@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class BidRequestDTO {
 
     private Long userId;
+    private Long sessionId;
     private int requestBid;
     private LocalDateTime bidTime;
 
