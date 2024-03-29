@@ -37,12 +37,12 @@ public class PointController {
                 , HttpStatus.OK);
     }
 
-    // 사용가능한 포인트 조회
-    @GetMapping("/usable")
-    public ResponseEntity<Integer> usablePointCheck(@ExtractPayload Long userNumber){
-        Point point = pointService.getPoint(userNumber);
-        return new ResponseEntity<>(point.getUsablePoint(),HttpStatus.OK);
-    }
+//    // 사용가능한 포인트 조회
+//    @GetMapping("/usable")
+//    public ResponseEntity<Integer> usablePointCheck(@ExtractPayload Long userNumber){
+//        Point point = pointService.getPoint(userNumber);
+//        return new ResponseEntity<>(point.getUsablePoint(),HttpStatus.OK);
+//    }
 
     // 계좌이체 포인트 충전 결제
     @PutMapping("/charge")
@@ -61,7 +61,7 @@ public class PointController {
     }
 
     // 카카오페이 포인트 충전 결제 승인
-    @GetMapping("/charge/kakao/approve")
+    @GetMapping("/charge/kakao/success")
     public ResponseEntity<Void> kakaopayApprove(@RequestParam("pg_token") String pgToken,@RequestParam("order_id") String orderId){
 
         kakaoPayService.kakaoApprove(pgToken,orderId);
