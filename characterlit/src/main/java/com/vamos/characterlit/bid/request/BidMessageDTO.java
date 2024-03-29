@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 @Builder
 public class BidMessageDTO {
     private Long bidId;
-    private Long userId;
+    private Long sessionId;
+    private Long userNumber;
     private int requestBid;
     private LocalDateTime bidTime;
 

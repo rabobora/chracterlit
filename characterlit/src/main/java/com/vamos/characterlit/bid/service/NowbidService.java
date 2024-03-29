@@ -45,7 +45,7 @@ public class NowbidService {
         Optional<Bidlogs> highestBidlog = bidlogsRepository.findTopByBidIdOrderByRequestBidDesc(messageDTO.getBidId());
         if(highestBidlog.isPresent()){
             Bidlogs targetLog = highestBidlog.get();
-            if(targetLog.getUserId().equals(messageDTO.getUserId())){
+            if(targetLog.getUserNumber().equals(messageDTO.getUserNumber())){
                 //예외저치가 아닌 메시지 처리해야하나 임의 작성
                 throw new RuntimeException("you are the highest bidder.");
             }
@@ -58,9 +58,10 @@ public class NowbidService {
                 throw new RuntimeException("The bid is lower than the current bid.");
             }
             bidTarget.setPresentBid(messageDTO.getRequestBid());
+            log.info("nowbid updated: bidId: {}, presentBid: {}", bidTarget.getBidId(), bidTarget.getPresentBid());
             Bidlogs bidLog = Bidlogs.builder()
                     .bidId(messageDTO.getBidId())
-                    .userId(messageDTO.getUserId())
+                    .userNumber(messageDTO.getUserNumber())
                     .requestBid(messageDTO.getRequestBid())
                     .bidTime(messageDTO.getBidTime())
                     .build();
@@ -73,7 +74,7 @@ public class NowbidService {
             newBid.setPresentBid(messageDTO.getRequestBid());
             Bidlogs bidLog = Bidlogs.builder()
                     .bidId(messageDTO.getBidId())
-                    .userId(messageDTO.getUserId())
+                    .userNumber(messageDTO.getUserNumber())
                     .requestBid(messageDTO.getRequestBid())
                     .bidTime(messageDTO.getBidTime())
                     .build();
@@ -81,12 +82,12 @@ public class NowbidService {
             bidlogsRepository.save(bidLog);
         }
         log.info("Bidding event process started for bidId={}", messageDTO.getBidId());
-        BidEvent event = new BidEvent(this, messageDTO.getBidId(), messageDTO.getUserId(), messageDTO.getRequestBid(), "BROADCAST");
-        BidEvent biddingEvent = new BidEvent(this, messageDTO.getBidId(), messageDTO.getUserId(), messageDTO.getRequestBid(), "SINGLE");
+        BidEvent event = new BidEvent(this, messageDTO.getBidId(), messageDTO.getSessionId(), messageDTO.getUserNumber(), messageDTO.getRequestBid(), "BROADCAST");
+        BidEvent biddingEvent = new BidEvent(this, messageDTO.getBidId(),  messageDTO.getSessionId(), messageDTO.getUserNumber(), messageDTO.getRequestBid(), "SINGLE");
         log.info(String.valueOf(event));
         log.info(String.valueOf(biddingEvent));
         eventPublisher.publishEvent(event);
-//        eventPublisher.publishEvent(biddingEvent);
+        eventPublisher.publishEvent(biddingEvent);
     }
 
     public int readPrice(Long bidId) {

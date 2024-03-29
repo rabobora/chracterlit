@@ -56,7 +56,7 @@ public class BankService {
 
         Map<String, Object> request = new HashMap<>();
         request.put("apiKey", apiKey);
-        request.put("userNumber", email);
+        request.put("userId", email);
 
         try {
 

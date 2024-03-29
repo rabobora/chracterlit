@@ -5,10 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.vamos.characterlit.chat.dto.mongoDBChatDTO;
 import com.vamos.characterlit.chat.service.ChatRoomService;
@@ -21,8 +18,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
-    List<mongoDBChatDTO> testChatStack=new ArrayList<>();
-
     private final mongoDBChatService mongoDBchatService;;
 
     // 메시지를 도착지까지 보내는 MessageSendingOperations를 Spring 프레임에 맞춘 것
@@ -37,15 +32,19 @@ public class ChatController {
     // 메시지 전송
     @MessageMapping("/api/chat/{chatRoomId}") // Send Destination Queue
     public void sendMessage(@RequestBody mongoDBChatDTO mongoDBchatDTO) {
-        template.convertAndSend("/sub/"+mongoDBchatDTO.getChatroomId(), mongoDBchatDTO.getContent());
-        testChatStack.add(mongoDBchatDTO);
+        template.convertAndSend("/sub/"+mongoDBchatDTO.getChatroomId(), mongoDBchatDTO);
     }
 
-    // 메시지 저장 테스트
-    @GetMapping("/api/chat/save/{chatroomId}")
-    public ResponseEntity saveMessage(@PathVariable Long chatroomId){
-        mongoDBchatService.saveMongoDBChat(testChatStack);
-        testChatStack=new ArrayList<>(); // 초기화
+    // 메시지 저장
+    @PostMapping("/api/chat/save")
+    public ResponseEntity saveMessage(@RequestBody List<mongoDBChatDTO> mongoDBChatDTOList){
+        mongoDBchatService.saveMongoDBChat(mongoDBChatDTOList);
+
+        System.out.println("메시지 저장 프로세스 작동");
+
+        for(mongoDBChatDTO chat:mongoDBChatDTOList){
+            System.out.println(chat);
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body("메시지 저장 완료");
     }
