@@ -1,32 +1,43 @@
 <template>
-    <div id="chatroomListBox">
-        <h1>105번 사용자의 채팅방 목록</h1>
-        <ul style="list-style:none;">
-            <li v-for="item in chatroomList" :key="item">
-                <div class="bubble">
-                    <p class="roomCard">{{item.chatroomId}}번 채팅방 물품 번호 {{ item.bidId }}/ 구매자: {{ item.buyerId }}, 판매자: {{ item.sellerId }}</p>
-                </div>
-            </li>
-        </ul>
+    <div id="chatroomListBox" class="component">
+        <div>
+            <h1>1번 사용자의 채팅방 목록</h1>
+            <ul style="list-style:none;">
+                <li v-for="item in chatroomList" :key="item">
+                    <div class="roomCard" @click="selectChatroom(item.chatroomId)">
+                        <p>{{item.chatroomId}}번 채팅방 물품 번호 {{ item.bidId }}/ 구매자: {{ item.buyerId }}, 판매자: {{ item.sellerId }}</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
+    <div>
+            <chatConversation v-bind:givenChatroomId="chatroomId" class="component"/>
+    </div>     
 </template>
+
 <script>
+import chatConversation from "./chatConversation.vue";
 const API_URL="http://localhost:8080/api/chatroomlist/";
 
 export default{
+    components:{
+        chatConversation,
+    },
     mounted(){
         this.getChatrooms();
     },
     data(){
         return {
             chatroomList:[],
+            chatroomId: null,
         }
     },
 
     methods:{
         getChatrooms(){
             // n번 user의 채팅방 목록 불러오기
-            fetch(API_URL + "105", {
+            fetch(API_URL + "1", {
                 method: "GET",
                 headers: {
                 "Content-Type": "application/json",
@@ -52,16 +63,25 @@ export default{
             .catch((error) => {
                 console.error("에러가 났어요.", error);
             });
+        },
+        selectChatroom(chatroomId){
+            this.chatroomId=chatroomId;
+            console.log("선택찬 채팅방 번호:"+chatroomId);
         }
     }
 }
 </script>
 <style scopped>
+.component{
+    display:flex;
+    flex-direction: row;
+}
 #chatroomListBox{
     border:1px solid pink;
 }
 .roomCard{
-    border-radius:20px;
+    padding:20px;
+    border-radius:15px;
     border:1px solid black;
 }
 </style>
