@@ -10,7 +10,7 @@ export const useUsersStore = defineStore(
 		const isLogin = ref(true);
 		const loginUser = ref({
 			userNumber: '',
-			loginService: '',
+			loginServer: '',
 			userId: '',
 			role: '',
 			email: '',
