@@ -35,7 +35,15 @@
       <div class="bid-category-group">
         <div class="bid-input">
           <label for="start-bid">시작가 </label>
-          <input id="start-bid" type="number" placeholder="시작 입찰 가격" v-model.number="product.startBid"> ₩
+          <label for="start-bid">시작가 </label>
+          <input
+            id="start-bid"
+            type="number"
+            placeholder="시작 입찰 가격"
+            v-model.number="product.startBid"
+            @input="validateStartBid"
+            min="0"
+            > ₩
         </div>
         <div class="category-select">
           <label for="category">카테고리 </label>
@@ -116,7 +124,7 @@
         product.value.endDate = `${endDate.value}T${endTime.value}:00Z`;
         
         await store.updateProduct(product.value, bidId); // 수정된 상품 정보를 API를 통해 업데이트
-        router.push(`/product/${bidId}`);
+        
         // window.location.reload()
     };
 
@@ -143,7 +151,6 @@
             }
         }, []);
 
-        // Debugging: 선택한 파일의 정보를 콘솔에 출력
         console.log(selectedImages.value);
         };
     
@@ -154,7 +161,6 @@
             // store의 s3ImageUpload 함수를 호출하여 이미지 업로드
             const urls = await store.s3ImageUpload(selectedImages.value);
 
-            // Debugging: 받아온 URL들을 콘솔에 출력
             console.log(urls);
 
             if (urls.length > 0) {
@@ -184,7 +190,12 @@
         }
     };
     
-   
+    const validateStartBid = () => {
+      if (product.value.startBid < 0) {
+        alert('입찰 가격은 0부터 입력해야 합니다.');
+        product.value.startBid = 0;
+      }
+    };
 
     const backtolist = () => {
         router.push('/product/list'); 

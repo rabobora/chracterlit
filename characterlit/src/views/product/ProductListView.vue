@@ -2,14 +2,14 @@
     <div class="product-view">
       
       <header>
-        <h1>헤더가 들어갈자리</h1>
+        <TheHeader/>
       </header>
       <div class="searchbar">
         <SearchBarView />
         
       </div>
       <div class="buttonbox">
-        <button class="buttons" @click="goToCreate">상품등록</button>
+        <button v-if="accessToken" class="buttons" @click="goToCreate">상품등록</button>
         <button class="buttons" @click="viewAll">전체보기</button>
         
         <select v-model="selectedSortOption" @change="applySort" class="buttons">
@@ -19,11 +19,8 @@
             <option value="1">경매 중</option>
             <option value="2">경매 종료</option> -->
         </select>
-    </div>
-  
-      
-      
-  
+    </div>     
+       
       <!-- 카테고리 네비게이션 바 -->
       <div class="category-navbar">
         <ul>
@@ -63,11 +60,13 @@
   import { useProductStore } from '../../stores/product';
   import SearchBarView from './SearchBarView.vue';
   import router from '@/router';
+  import TheHeader from '@/components/common/TheHeader.vue';
   const productStore = useProductStore();
   const selectedSortOption = ref('newest');
+  const accessToken = localStorage.getItem('access-token')
 
   onMounted(() => {
-    productStore.researchAllProduct();
+    productStore.researchAllProduct();    
     applySort();
   });
 
