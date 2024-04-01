@@ -49,22 +49,24 @@ const doSearch = async () => {
 
 .search-input {
   width: 100%;
-  border-radius: 45px;
-  border: 1px solid #EFEFEF;
-  padding: 10px 40px 10px 20px; /* 오른쪽 패딩을 늘려서 버튼의 공간 확보 */
+  border-radius: 10px; 
+  border: none; /* 기존 테두리 제거 */
+  border-bottom: 1px solid #EFEFEF; /* 아래쪽 테두리만 설정 */
+  padding: 10px 40px 10px 20px; /* 오른쪽 패딩을 늘려서 버튼 공간 확보 */
   font-size: 1rem;
-  box-shadow: 0px 4px 4px 0px black;
-  outline: none; /* 입력 필드 선택 시 테두리 제거 */
+  box-shadow: 0px 4px 0px 0px black; /* 박스 그림자 */
+  outline: none; 
 }
+
 
 .search-button {
   background: none;
   border: none;
   position: absolute;
-  right: 0; /* 입력 필드의 오른쪽 끝에 맞춤 */
-  padding: 10px; /* 클릭 가능 영역 확장 */
-  border-radius: 0 45px 45px 0; /* 오른쪽 상단과 하단 모서리 둥글게 */
+  right: 0; 
+  padding: 10px; 
   cursor: pointer;
+  
 }
 
 </style>

@@ -172,7 +172,7 @@
     product.value.endDate = `${endDate.value}T${endTime.value}:00Z`;
     store.createProduct(product.value);
     router.push('/product/list'); 
-    window.location.reload()
+    // window.location.reload()
   };
 
   const backtolist = () => {

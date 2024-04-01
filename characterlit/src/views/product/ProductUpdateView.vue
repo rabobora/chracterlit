@@ -116,7 +116,7 @@
         product.value.endDate = `${endDate.value}T${endTime.value}:00Z`;
         
         await store.updateProduct(product.value, bidId); // 수정된 상품 정보를 API를 통해 업데이트
-        router.push(`/product/${bidId}`);
+        
         // window.location.reload()
     };
 
@@ -143,7 +143,6 @@
             }
         }, []);
 
-        // Debugging: 선택한 파일의 정보를 콘솔에 출력
         console.log(selectedImages.value);
         };
     
@@ -154,7 +153,6 @@
             // store의 s3ImageUpload 함수를 호출하여 이미지 업로드
             const urls = await store.s3ImageUpload(selectedImages.value);
 
-            // Debugging: 받아온 URL들을 콘솔에 출력
             console.log(urls);
 
             if (urls.length > 0) {

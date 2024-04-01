@@ -2,7 +2,7 @@
     <div class="product-view">
       
       <header>
-        <h1>헤더가 들어갈자리</h1>
+        <TheHeader/>
       </header>
       <div class="searchbar">
         <SearchBarView />
@@ -19,11 +19,8 @@
             <option value="1">경매 중</option>
             <option value="2">경매 종료</option> -->
         </select>
-    </div>
-  
-      
-      
-  
+    </div>     
+       
       <!-- 카테고리 네비게이션 바 -->
       <div class="category-navbar">
         <ul>
@@ -63,11 +60,12 @@
   import { useProductStore } from '../../stores/product';
   import SearchBarView from './SearchBarView.vue';
   import router from '@/router';
+import TheHeader from '@/components/common/TheHeader.vue';
   const productStore = useProductStore();
   const selectedSortOption = ref('newest');
 
   onMounted(() => {
-    productStore.researchAllProduct();
+    productStore.researchAllProduct();    
     applySort();
   });
 
@@ -282,11 +280,12 @@ border-radius: 2%;
   justify-content: flex-end; /* 요소들을 오른쪽으로 정렬 */
   align-items: center; /* 세로 중앙 정렬 */
   margin-top: 3%; /* 상단 여백 */
-  margin-right: 15%; /* 우측 여백 - 필요에 따라 조정 가능 */
+  margin-right: 13%; /* 우측 여백 - 필요에 따라 조정 가능 */
 }
 .buttonbox{
+  padding-top: 10px;
     margin-top: 10px;
-    margin-right: 15%;    
+    margin-right: 13%;    
     text-align: right;
     
 }

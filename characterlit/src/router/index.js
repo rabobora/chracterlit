@@ -7,6 +7,7 @@ import ProductListView from '@/views/product/ProductListView.vue'
 import SearchBarView from '@/views/product/SearchBarView.vue'
 import ReadView from '@/views/product/ReadView.vue'
 import MainPageView from '@/views/main/MainPageView.vue'
+import LoginView from '@/views/LoginView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,6 +53,18 @@ const router = createRouter({
       name: 'ReadView',
       component: ReadView,
     },
+
+    {
+			path: '/login',
+			component: LoginView,
+			children: [
+				{
+					path: '/login',
+					name: 'login',
+					component: LoginView,
+				},
+			],
+		},
 
 
    
