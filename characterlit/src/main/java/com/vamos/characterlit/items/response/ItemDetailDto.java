@@ -12,7 +12,6 @@ import java.util.List;
 public class ItemDetailDto {
     private Long bidId;
     private String nickname;
-    private Long userNumber;
     private String title;
     private String content;
     private List<String> image;
@@ -25,14 +24,14 @@ public class ItemDetailDto {
     private Integer bidStatus;
     private Integer category;
     private Integer viewCount;
+    private Long userNumber;
 
     @Builder
-    public ItemDetailDto(Long bidId, String nickname, Long userNumber, String title, String content, List<String> image, String thumbnail,
+    public ItemDetailDto(Long bidId, String nickname, String title, String content, List<String> image, String thumbnail,
                          LocalDateTime regDate, LocalDateTime startDate, LocalDateTime endDate, Integer startBid, Integer finalBid,
-                         Integer bidStatus, Integer category, Integer viewCount) {
+                         Integer bidStatus, Integer category, Integer viewCount, Long userNumber) {
         this.bidId = bidId;
         this.nickname = nickname;
-        this.userNumber = userNumber;
         this.title = title;
         this.content = content;
         this.image = image;
@@ -45,13 +44,13 @@ public class ItemDetailDto {
         this.bidStatus = bidStatus;
         this.category = category;
         this.viewCount = viewCount;
+        this.userNumber = userNumber;
     }
 
     public static ItemDetailDto fromEntity(Items items) {
         return ItemDetailDto.builder()
                 .bidId(items.getBidId())
                 .nickname(items.getNickname())
-                .userNumber(items.getUserNumber())
                 .title(items.getTitle())
                 .content(items.getContent())
                 .image(items.getImage())
@@ -64,6 +63,8 @@ public class ItemDetailDto {
                 .bidStatus(items.getBidStatus())
                 .category(items.getCategory())
                 .viewCount(items.getViewCount())
+                .userNumber(items.getUsers().getUserNumber())
                 .build();
     }
+
 }

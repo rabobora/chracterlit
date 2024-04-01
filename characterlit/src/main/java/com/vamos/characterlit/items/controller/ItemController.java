@@ -1,6 +1,8 @@
 package com.vamos.characterlit.items.controller;
 
 
+import com.vamos.characterlit.auth2.annotation.ExtractPayload;
+import com.vamos.characterlit.auth2.security.jwt.JWTUtil;
 import com.vamos.characterlit.items.domain.Items;
 import com.vamos.characterlit.items.request.ItemCreateDto;
 import com.vamos.characterlit.items.request.ItemUpdateDto;
@@ -19,11 +21,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
+    private final JWTUtil jwtUtil;
 
     // 상품 글 생성
+
+
     @PostMapping("/create")
-    public ResponseEntity<?> createItem(@RequestBody ItemCreateDto request) {
-        return ResponseEntity.ok(itemService.createItem(request));
+    public ResponseEntity<?> createItem(@RequestBody ItemCreateDto request, @ExtractPayload Long userNumber ) {
+        return ResponseEntity.ok(itemService.createItem(request, userNumber));
     }
 
     // 전체 상품 조회

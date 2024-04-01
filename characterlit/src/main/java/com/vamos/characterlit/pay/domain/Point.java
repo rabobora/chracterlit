@@ -14,7 +14,6 @@ import lombok.*;
 public class Point {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userNumber;
     @Setter
     private int allPoint;

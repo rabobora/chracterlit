@@ -6,8 +6,11 @@ import com.vamos.characterlit.items.request.ItemUpdateDto;
 import com.vamos.characterlit.items.response.ItemDetailDto;
 import com.vamos.characterlit.items.response.ItemListDto;
 import com.vamos.characterlit.items.repository.ItemRepository;
+import com.vamos.characterlit.users.domain.Users;
+import com.vamos.characterlit.users.repository.UsersRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
@@ -24,37 +27,37 @@ import java.util.stream.Collectors;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+    private final UsersRepository usersRepository;
 
     // 상품 게시글 생성
-    public Items createItem(ItemCreateDto itemCreateDto) {
-        Items items = ItemCreateDto.toEntity(itemCreateDto);
-        // db에 글 저장
-        return itemRepository.save(items);
-
-    }
+//    public Items createItem(ItemCreateDto itemCreateDto) {
+//        Items items = ItemCreateDto.toEntity(itemCreateDto);
+//        // db에 글 저장
+//        return itemRepository.save(items);
+//
+//    }
 
     // 상품 게시글 생성 -> 로그인 후 로직
-//    public Items createItem(ItemCreateDto itemCreateDto, String username) {
-//        User user = userRepository.findByUsername(username)
-//                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-//
-//        Items items = ItemCreateDto.toEntity(itemCreateDto);
-//        items.setNickname(user.getNickname());
-//
-//        return itemRepository.save(items);
-//    }
+    public Items createItem(ItemCreateDto itemCreateDto, Long usernumber) {
+        Users users = usersRepository.findByUserNumber(usernumber);
+
+        Items items = ItemCreateDto.toEntity(itemCreateDto, users);
+        items.setNickname(users.getNickname());
+
+        return itemRepository.save(items);
+    }
 
 
     // 상품 게시글 수정
+    @Transactional
     public Items updateItem(Long bidId, ItemUpdateDto itemUpdateDto) {
         Items item = itemRepository.findById(bidId)
                 .orElseThrow(() -> new EntityNotFoundException("상품 정보를 찾을 수 없습니다: " + bidId));
 
         // 경매 시작 시간 전에만 수정 가능
-        if (item.getStartDate().isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("경매 시작 시간 이후에는 상품 정보를 수정할 수 없습니다.");
-        }
-
+//        if (item.getStartDate().isBefore(LocalDateTime.now())) {
+//            throw new IllegalStateException("경매 시작 시간 이후에는 상품 정보를 수정할 수 없습니다.");
+//        }
         ItemUpdateDto.updateEntity(item, itemUpdateDto);
         return itemRepository.save(item);
     }
@@ -89,9 +92,9 @@ public class ItemService {
                 .orElseThrow(() -> new EntityNotFoundException("삭제하려는 상품 정보를 찾을 수 없습니다: " + bidId));
 
         // 경매 시작 시간 전에만 삭제 가능
-        if (item.getStartDate().isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("경매 시작 시간 이후에는 상품 정보를 삭제할 수 없습니다.");
-        }
+//        if (item.getStartDate().isBefore(LocalDateTime.now())) {
+//            throw new IllegalStateException("경매 시작 시간 이후에는 상품 정보를 삭제할 수 없습니다.");
+//        }
 
         itemRepository.delete(item);
     }

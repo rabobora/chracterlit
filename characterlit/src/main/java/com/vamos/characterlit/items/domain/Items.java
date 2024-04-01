@@ -1,5 +1,7 @@
 package com.vamos.characterlit.items.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vamos.characterlit.users.domain.Users;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,13 +20,10 @@ public class Items {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bidId;
 
-    // 테스트를 위해 일단 userid를 참조키가 아닌 상품 테이블의 칼럼으로 넣어둠
-    @Column
-    private Long userNumber;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_number")
-//    private User user;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_number")
+    private Users users;
 
     @Column(length = 30)
     private String nickname;
@@ -72,6 +71,7 @@ public class Items {
     private Long winnerNumber;
 
     @PrePersist
+
     protected void onCreate() {
         this.regDate = LocalDateTime.now();
     }
@@ -82,6 +82,11 @@ public class Items {
         this.viewCount++;
 
     }
+
+    public Long getUserNumber() {
+        return this.users != null ? this.users.getUserNumber() : null;
+    }
+
 
     @Builder
     public Items(String title, String content, List<String> image, String thumbnail,

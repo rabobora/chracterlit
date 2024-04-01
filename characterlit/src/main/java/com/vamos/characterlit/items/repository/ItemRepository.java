@@ -34,5 +34,5 @@ public interface ItemRepository extends JpaRepository<Items, Long> {
     @Query("SELECT i FROM Items i WHERE i.endDate <= :now AND i.bidStatus = 1")
     List<Items> findItemsToClose(LocalDateTime now);
 
-    List<Items> findAllByUserNumber(Long userNumber);
+    List<Items> findAllByUsersUserNumber(Long userNumber);
 }
