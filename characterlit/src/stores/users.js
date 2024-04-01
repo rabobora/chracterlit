@@ -7,23 +7,31 @@ export const useUsersStore = defineStore(
 	() => {
 		// =========== STATE ===============
 
-		const user = ref({});
-		const userNumber = ref('');
-		const userId = ref('');
 		const isLogin = ref(true);
+		const loginUser = ref({
+			userNumber: '',
+			loginServer: '',
+			userId: '',
+			role: '',
+			email: '',
+			name: '',
+			nickname: '',
+			phoneNumber: '',
+			address: '',
+			profileImg: '',
+			credit: '',
+			createdDate: '',
+			deletedDate: '',
+		});
 
 		// =========== GETTER ===============
 
-		const getUser = computed(() => {
-			return user.value;
+		const getLoginUser = computed(() => {
+			return loginUser.value;
 		});
 
-		const getUserNumber = computed(() => {
-			return userNumber.value;
-		});
-
-		const getUserId = computed(() => {
-			return userId.value;
+		const getIsLogin = computed(() => {
+			return isLogin.value;
 		});
 
 		// =========== ACTION ===============
@@ -45,11 +53,33 @@ export const useUsersStore = defineStore(
 
 		const saveTokenToLocalStorage = () => {
 			let token = getCookie('access_token');
-			deleteCookie(token);
+			deleteCookie('access_token');
 			if (token != null && token !== 'undefined')
 				localStorage.setItem('access-token', token);
 			token = null;
+			checkLoginStatus();
 		};
+
+		const checkLoginStatus = () => {
+			let token = localStorage.getItem('access-token');
+			if (token) {
+				isLogin.value = true;
+			} else {
+				isLogin.value = false;
+			}
+			console.log(isLogin.value);
+		};
+
+		const fetchLoginUser = async () => {
+			try {
+				const userData = await searchLoginUser();
+				loginUser.value = userData; // getLoginUser 함수에서 반환된 사용자 데이터를 loginUser ref에 할당
+			} catch (error) {
+				console.error('Failed to fetch login user:', error);
+			}
+		};
+
+		// =========== FETCH ===============
 
 		const onLogout = () => {
 			fetch('http://localhost:8080/logout', {
@@ -58,15 +88,16 @@ export const useUsersStore = defineStore(
 			})
 				.then(() => {
 					localStorage.removeItem('access-token');
+					isLogin.value = false;
 				})
 				.catch((error) => {
 					console.log(error);
 				});
 		};
 
-		const getLoginUser = () => {
+		const searchLoginUser = () => {
 			saveTokenToLocalStorage();
-			return fetch('http://localhost:8080/api/users/loginuser', {
+			return fetch('http://localhost:8080/api/users/login', {
 				method: 'GET',
 				headers: {
 					'access_token': localStorage.getItem('access-token'),
@@ -88,7 +119,7 @@ export const useUsersStore = defineStore(
 
 		const updateLoginUser = (userInfo) => {
 			saveTokenToLocalStorage();
-			return fetch('http://localhost:8080/api/users/loginuser', {
+			return fetch('http://localhost:8080/api/users/login', {
 				method: 'PATCH',
 				headers: {
 					'access_token': localStorage.getItem('access-token'),
@@ -109,17 +140,44 @@ export const useUsersStore = defineStore(
 				});
 		};
 
+		const isExistNickname = (nickname) => {
+			saveTokenToLocalStorage();
+			return fetch(
+				`http://localhost:8080/api/users/find/nickname/${nickname}`,
+				{
+					method: 'GET',
+					headers: {
+						'access_token': localStorage.getItem('access-token'),
+					},
+					credentials: 'include',
+				},
+			)
+				.then((res) => {
+					return res.json();
+				})
+				.then((data) => {
+					return data;
+				})
+				.catch((error) => {
+					console.log(error);
+					throw error;
+				});
+		};
+
 		return {
-			user,
-			userId,
-			userNumber,
 			isLogin,
-			getUser,
-			getUserNumber,
-			getUserId,
+			loginUser,
+			getIsLogin,
 			getLoginUser,
-			updateLoginUser,
+			getCookie,
+			deleteCookie,
+			saveTokenToLocalStorage,
+			checkLoginStatus,
+			fetchLoginUser,
 			onLogout,
+			searchLoginUser,
+			updateLoginUser,
+			isExistNickname,
 		};
 	},
 	{ persist: true },
