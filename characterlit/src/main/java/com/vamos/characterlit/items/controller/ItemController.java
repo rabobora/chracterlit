@@ -20,8 +20,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
+    private final JWTUtil jwtUtil;
 
     // 상품 글 생성
+
+
     @PostMapping("/create")
     public ResponseEntity<?> createItem(@RequestBody ItemCreateDto request, @ExtractPayload Long userNumber ) {
         return ResponseEntity.ok(itemService.createItem(request, userNumber));

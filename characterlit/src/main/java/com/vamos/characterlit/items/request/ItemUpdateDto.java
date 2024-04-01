@@ -20,7 +20,6 @@ public class ItemUpdateDto {
     private Integer startBid;
     private Integer category;
 
-
     // 상품을 수정했을때, 예를 들어 클라이언트가 여러 항목중 카테고리만 수정 요청을 보낸다면
     // 다른 변화 없는 항목들은 그대로 유지하고 카테고리만 수정 가능하게 함
     // 수정할 때는 빌더 패턴을 쓸 필요가 없다해서 여기서는 안 씀

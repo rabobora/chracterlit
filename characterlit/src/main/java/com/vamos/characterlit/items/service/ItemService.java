@@ -49,6 +49,7 @@ public class ItemService {
 
 
     // 상품 게시글 수정
+    @Transactional
     public Items updateItem(Long bidId, ItemUpdateDto itemUpdateDto) {
         Items item = itemRepository.findById(bidId)
                 .orElseThrow(() -> new EntityNotFoundException("상품 정보를 찾을 수 없습니다: " + bidId));
