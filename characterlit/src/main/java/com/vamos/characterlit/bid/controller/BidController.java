@@ -6,6 +6,7 @@ import com.vamos.characterlit.bid.repository.NowbidRepository;
 import com.vamos.characterlit.bid.request.BidMessageDTO;
 import com.vamos.characterlit.bid.request.BidRequestDTO;
 import com.vamos.characterlit.bid.response.MyBidList;
+import com.vamos.characterlit.bid.response.MySellListDTO;
 import com.vamos.characterlit.bid.service.MyBidService;
 import com.vamos.characterlit.bid.service.NowbidService;
 import com.vamos.characterlit.items.domain.Items;
@@ -97,8 +98,8 @@ public class BidController {
     public ResponseEntity<?> mysell(@ExtractPayload Long userNumber){
         try {
             log.info("read my sell");
-            List<Items> mySellList = myBidService.mysell(userNumber);
-            return new ResponseEntity<List<Items> >(mySellList, HttpStatus.OK);
+            List<MySellListDTO> mySellList = myBidService.mysell(userNumber);
+            return new ResponseEntity<List<MySellListDTO>>(mySellList, HttpStatus.OK);
         } catch (Exception e) {
             return new  ResponseEntity<>("Error in my sell: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

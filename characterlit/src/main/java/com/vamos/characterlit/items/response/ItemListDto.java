@@ -43,10 +43,12 @@ public class ItemListDto {
     // Entity를 DTO로 변환하는 메소드
     // 메소드명은 통상적으로 사용되는 것으로 명명함
     public static ItemListDto fromEntity(Items items) {
+        // Users 엔티티를 미리 초기화하거나 필요한 정보를 조회하는 로직이 필요합니다.
+        Long userNumber = (items.getUsers() != null) ? items.getUsers().getUserNumber() : null;
         return ItemListDto.builder()
                 .bidId(items.getBidId())
                 .nickname(items.getNickname())
-                .userNumber(items.getUserNumber())
+                .userNumber(userNumber) // 수정된 부분
                 .title(items.getTitle())
                 .thumbnail(items.getThumbnail())
                 .regDate(items.getRegDate())
@@ -58,4 +60,5 @@ public class ItemListDto {
                 .category(items.getCategory())
                 .build();
     }
+
 }
