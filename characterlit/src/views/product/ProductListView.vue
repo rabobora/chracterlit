@@ -9,7 +9,7 @@
         
       </div>
       <div class="buttonbox">
-        <button class="buttons" @click="goToCreate">상품등록</button>
+        <button v-if="accessToken" class="buttons" @click="goToCreate">상품등록</button>
         <button class="buttons" @click="viewAll">전체보기</button>
         
         <select v-model="selectedSortOption" @change="applySort" class="buttons">
@@ -60,9 +60,10 @@
   import { useProductStore } from '../../stores/product';
   import SearchBarView from './SearchBarView.vue';
   import router from '@/router';
-import TheHeader from '@/components/common/TheHeader.vue';
+  import TheHeader from '@/components/common/TheHeader.vue';
   const productStore = useProductStore();
   const selectedSortOption = ref('newest');
+  const accessToken = localStorage.getItem('access-token')
 
   onMounted(() => {
     productStore.researchAllProduct();    

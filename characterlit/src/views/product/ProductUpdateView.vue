@@ -35,7 +35,15 @@
       <div class="bid-category-group">
         <div class="bid-input">
           <label for="start-bid">시작가 </label>
-          <input id="start-bid" type="number" placeholder="시작 입찰 가격" v-model.number="product.startBid"> ₩
+          <label for="start-bid">시작가 </label>
+          <input
+            id="start-bid"
+            type="number"
+            placeholder="시작 입찰 가격"
+            v-model.number="product.startBid"
+            @input="validateStartBid"
+            min="0"
+            > ₩
         </div>
         <div class="category-select">
           <label for="category">카테고리 </label>
@@ -182,7 +190,12 @@
         }
     };
     
-   
+    const validateStartBid = () => {
+      if (product.value.startBid < 0) {
+        alert('입찰 가격은 0부터 입력해야 합니다.');
+        product.value.startBid = 0;
+      }
+    };
 
     const backtolist = () => {
         router.push('/product/list'); 

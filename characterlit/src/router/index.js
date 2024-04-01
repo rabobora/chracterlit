@@ -7,6 +7,8 @@ import ProductListView from '@/views/product/ProductListView.vue'
 import SearchBarView from '@/views/product/SearchBarView.vue'
 import ReadView from '@/views/product/ReadView.vue'
 import MainPageView from '@/views/main/MainPageView.vue'
+import MyBiddingView from '@/views/my/MyBiddingView.vue'
+import MySellingView from '@/views/my/MySellingView.vue'
 import LoginView from '@/views/LoginView.vue';
 
 const router = createRouter({
@@ -53,21 +55,27 @@ const router = createRouter({
       name: 'ReadView',
       component: ReadView,
     },
-
     {
-			path: '/login',
-			component: LoginView,
-			children: [
-				{
-					path: '/login',
-					name: 'login',
-					component: LoginView,
-				},
-			],
-		},
-
-
-   
+      path: '/my/mybid',
+      name: 'MyBiddingView',
+      component: MyBiddingView,
+    },
+    {
+      path: '/my/mysell',
+      name: 'MySellingView',
+      component: MySellingView,
+    },
+    {
+      path: '/login',
+      component: LoginView,
+      children: [
+          {
+              path: '/login',
+              name: 'login',
+              component: LoginView,
+          },
+      ],
+  },   
   ]
 })
 
