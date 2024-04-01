@@ -21,19 +21,13 @@ public class UsersController {
     private final UsersRepository usersRepository;
     private final CustomOAuth2CookieService customOAuth2CookieService;
 
-    @GetMapping("/login")
+    @GetMapping("/loginuser")
     public ResponseEntity<?> loginUser(HttpServletRequest request) {
         String token = customOAuth2CookieService.getCookie(request);
         if (token == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         Users user = usersService.getLoginUser(token);
         return new ResponseEntity<Users>(user, HttpStatus.OK);
-    }
-
-    @PatchMapping("/login")
-    public ResponseEntity<Users> updateUser(@RequestBody UserUpdate userUpdate) {
-        Users updatedUser = usersService.updateUser(userUpdate);
-        return ResponseEntity.ok(updatedUser);
     }
 
     @PostMapping("/id")
@@ -45,10 +39,9 @@ public class UsersController {
         return new ResponseEntity<Users>(user, HttpStatus.OK);
     }
 
-    @GetMapping("/find/nickname/{nickname}")
-    public ResponseEntity<Boolean> isExistNickname(@PathVariable String nickname) {
-        boolean isExist = usersRepository.existsUserByNickname(nickname);
-        System.out.println(isExist + " " + nickname);
-        return new ResponseEntity<>(isExist, HttpStatus.OK);
+    @PatchMapping("/loginuser")
+    public ResponseEntity<Users> updateUser(@RequestBody UserUpdate userUpdate) {
+        Users updatedUser = usersService.updateUser(userUpdate);
+        return ResponseEntity.ok(updatedUser);
     }
 }

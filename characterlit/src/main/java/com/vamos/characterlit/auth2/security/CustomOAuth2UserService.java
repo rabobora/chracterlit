@@ -3,7 +3,6 @@ package com.vamos.characterlit.auth2.security;
 import com.vamos.characterlit.auth2.response.KakaoResponse;
 import com.vamos.characterlit.auth2.response.NaverResponse;
 import com.vamos.characterlit.auth2.response.OAuth2Response;
-import com.vamos.characterlit.pay.service.BankService;
 import com.vamos.characterlit.users.domain.Users;
 import com.vamos.characterlit.users.repository.UsersRepository;
 import com.vamos.characterlit.users.response.UsersResponseDTO;
@@ -20,12 +19,12 @@ import java.sql.Timestamp;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UsersRepository usersRepository;
-    private final BankService bankService;
 
-    public CustomOAuth2UserService(UsersRepository usersRepository, BankService bankService) {
+
+    public CustomOAuth2UserService(UsersRepository usersRepository) {
 
         this.usersRepository = usersRepository;
-        this.bankService = bankService;
+
     }
 
     @Override
@@ -57,7 +56,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user.setRole("USER");
             user.setEmail(oAuth2Response.getEmail());
             user.setName(oAuth2Response.getName());
-            user.setNickname("!user_" + userId.substring(0, 10));
 
             if (registrationId.equals("naver")) {
                 user.setLoginServer(1);
