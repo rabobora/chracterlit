@@ -9,13 +9,13 @@
 		>
 			<div class="item-thumbnail">
 				<img
-					:src="item.thumbnail || '/default-thumbnail.png'"
+					:src="item.thumbnail || defaultImage"
 					alt="Item Thumbnail"
 				/>
 			</div>
 			<div class="item-details">
 				<h2>{{ item.title }}</h2>
-				<p>시작 가격: ₩{{ item.startBid }}</p>
+				<p>시작 가격: {{ item.startBid }} 원</p>
 				<P>시작 시간: {{ item.endDate }}</P>
 				<p>종료 시간: {{ item.endDate }}</p>
 				<p>조회 수: {{ item.viewCount }}</p>
@@ -53,6 +53,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import defaultImage from '@/assets/default_image.png';
 const router = useRouter();
 
 const sellingList = ref([]);
