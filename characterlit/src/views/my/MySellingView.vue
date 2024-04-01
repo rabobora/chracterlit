@@ -1,5 +1,6 @@
 <template>
     <div class="selling-list-container">
+      <h2>나의 판매 내역</h2>
       <div v-for="item in sellingList" :key="item.bidId" class="bid-item" @click="navigateToItem(item.bidId)">
         <div class="item-thumbnail">
           <img :src="item.thumbnail || '/default-thumbnail.png'" alt="Item Thumbnail">
@@ -7,18 +8,22 @@
         <div class="item-details">
           <h2>{{ item.title }}</h2>
           <p>시작 가격: ₩{{ item.startBid }}</p>
-          <!-- <p class="presentBid">현재 가격: ₩{{ item.presentBid }}</p>
-          <p class="requestBid">나의 입찰: ₩{{ item.requestBid }}</p> -->
+          <P>시작 시간: {{ item.endDate }}</P>
           <p>종료 시간: {{ item.endDate }}</p>
           <p>조회 수: {{ item.viewCount }}</p>
         </div>
-
+        <div class="status-box">
         <div class="item-status" :class="{'pre-auction': item.bidStatus === 0, 'in-auction': item.bidStatus === 1, 'post-auction': item.bidStatus === 2}">
           <span v-if="item.bidStatus === 0">경매 이전</span>
           <span v-else-if="item.bidStatus === 1">경매 진행</span>
           <span v-else-if="item.bidStatus === 2">경매 종료</span>
-    </div>
-
+        </div>
+        <div class="item-status" :class="{'hidden-element': item.bidStatus !== 2, 'pre-auction': !item.isPaid, 'post-auction': item.isPaid}">
+          <span v-if="item.winnerNumber === null">경매 유찰</span>
+          <span v-else-if="!item.isPaid">결제 대기</span>
+          <span v-else-if="item.isPaid">결제 완료</span>
+        </div>
+        </div>
 
       </div>
     </div>
@@ -57,8 +62,6 @@ onMounted(async () => {
   await fetchSellingList();
 });
 
-
-
 </script>
 
 <style>
@@ -68,7 +71,7 @@ onMounted(async () => {
   max-width: 800px;
   margin: auto;
   padding: 20px;
-  gap: 20px; /* Adds space between items */
+  gap: 20px;
 }
 
 .bid-item {
@@ -87,6 +90,8 @@ onMounted(async () => {
   height: 150px;
   object-fit: cover;
   border: 1px solid #e5e7eb; /* Light gray border for the image */
+  box-shadow: 0px 4px 4px 0px rgb(63, 62, 62);
+  border-radius: 10px;
 }
 
 .item-details {
@@ -100,6 +105,10 @@ onMounted(async () => {
   font-weight: 600; /* Semi-bold */
   margin: 0 0 15px 0;
   word-break: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px; /* Adjust the width as needed */
 }
 
 .item-details p {
@@ -125,11 +134,23 @@ onMounted(async () => {
   cursor: pointer; /* Change cursor to indicate clickable */
 }
 
+.status-box .item-status {
+  margin-bottom: 10px;
+}
+
+.status-box .item-status:last-child {
+  margin-bottom: 0;
+}
+
 .item-status {
   flex: none;
   padding: 24px;
   border-radius: 4px;
   color: white;
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  max-width: 100px; 
 }
 
 .pre-auction {
@@ -149,5 +170,9 @@ onMounted(async () => {
 
 .post-auction {
   background-color: #000000;
+}
+
+.hidden-element {
+  visibility: hidden;
 }
 </style>

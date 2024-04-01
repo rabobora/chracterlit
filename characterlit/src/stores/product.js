@@ -37,7 +37,7 @@ export const useProductStore = defineStore("product", () => {
         axios({
           url: `${import.meta.env.VITE_REST_API}/bid/search/all`,
           method: "GET",
-          withCredentials: true,
+          withCredentials:true
         })
           .then((res) => {
             allProductList.value = res.data
@@ -52,7 +52,7 @@ export const useProductStore = defineStore("product", () => {
       // 검색된 상품의 정보 가져오기
     const researchSearchResult = async (word) => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_REST_API}/bid/search/${word}`, {withCredentials: true})
+            const res = await axios.get(`${import.meta.env.VITE_REST_API}/bid/search/${word}`,{withCredentials:true})
             searchProductList.value = res.data
             
             return res.data.length > 0
@@ -66,6 +66,7 @@ export const useProductStore = defineStore("product", () => {
         axios({
             url: `${import.meta.env.VITE_REST_API}/bid/search/category/${categoryid}`,
             method: "GET",
+            withCredentials:true
         })
         .then((res) => {
             searchCategoryList.value = res.data;
@@ -78,7 +79,7 @@ export const useProductStore = defineStore("product", () => {
     // 상품 상세정보 글 보기
     const researchProductDetail = async (bidid) => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_REST_API}/bid/read/${bidid}`, {withCredentials: true});
+            const response = await axios.get(`${import.meta.env.VITE_REST_API}/bid/read/${bidid}`, {withCredentials:true});
             if (response.data) {
                 return response.data; 
             } else {
@@ -91,36 +92,104 @@ export const useProductStore = defineStore("product", () => {
         }
     };
 
-    // 상품 글 등록
-    const createProduct = function (product) {
-        axios({
-          url: `${import.meta.env.VITE_REST_API}/bid/create`,
-          method: "POST",
-          data: product,
-        })
-          .then((res) => {})
-          .catch((err) => {
+    // // 상품 글 등록
+    // const createProduct = function (product) {
+    //     axios({
+    //       url: `${import.meta.env.VITE_REST_API}/bid/create`,
+    //       method: "POST",
+    //       data: product,
+    //       withCredentials:true
+    //     })
+    //       .then((res) => {})
+    //       .catch((err) => {
             
-          });
-      };
+    //       });
+    //   };
+
+    // 상품 글 등록
+const createProduct = function (product) {
+    
+    const accessToken = localStorage.getItem('access-token');    
+   
+    if (!accessToken) {
+        console.error('Access token is not available.');
+        return; 
+    }
+    
+    axios({
+        url: `${import.meta.env.VITE_REST_API}/bid/create`,
+        method: "POST",
+        headers: {
+            'access_token': accessToken 
+        },
+        data: product,
+        withCredentials:true
+    })
+    .then((res) => {
+        window.location.reload()
+    })
+    .catch((err) => {
+        console.error(err);
+        // 오류 처리 로직
+    });
+};
+
 
     // 상품 글 수정
-    const updateProduct = function (product, bidid) {
-        axios({
-          url: `${import.meta.env.VITE_REST_API}/bid/modify/${bidid}`,
-          method: "PUT",
-          data: product,
-          withCredentials: true
-        })
-          .then((res) => {
+    // const updateProduct = function (product, bidid) {
+    //     axios({
+    //       url: `${import.meta.env.VITE_REST_API}/bid/modify/${bidid}`,
+    //       method: "PUT",
+    //       data: product,
+    //       withCredentials: true
+    //     })
+    //       .then((res) => {
               
-              alert("상품 정보가 성공적으로 수정되었습니다.")
-          })
-          .catch((err) => {           
-              console.log(product)
-              alert("상품 정보 수정에 실패했습니다.")
-          })
+    //           alert("상품 정보가 성공적으로 수정되었습니다.")
+    //       })
+    //       .catch((err) => {           
+    //           console.log(product)
+    //           alert("상품 정보 수정에 실패했습니다.")
+    //       })
+    // }
+
+    // 상품 글 수정
+const updateProduct = function (productData, bidid) {
+    const accessToken = localStorage.getItem('access-token');
+    
+    if (!accessToken) {
+        console.error('Access token is not available.');
+        return;
     }
+
+    const { nickname, ...product } = productData;
+
+    // 여기서 product 객체를 콘솔에 출력합니다.
+    // console.log('Updating product with data:', product);
+    
+    axios({
+        url: `${import.meta.env.VITE_REST_API}/bid/modify/${bidid}`,
+        method: "PUT",
+        headers: {
+            'access_token': accessToken // 요청 헤더에 access_token 추가
+        },
+        data: product,
+        withCredentials: true
+    })
+    .then((res) => {
+        alert("상품 정보가 성공적으로 수정되었습니다.");
+        router.push(`/product/${bidid}`);
+        // window.location.reload()
+    })
+    .catch((err) => {
+        console.error(err);
+        alert("상품 정보 수정에 실패했습니다.");
+        router.push(`/product/${bidid}`);
+        
+
+    });
+};
+
     
 
 
@@ -154,7 +223,9 @@ export const useProductStore = defineStore("product", () => {
             const response = await axios.post(`${import.meta.env.VITE_REST_API}/s3/upload`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
+                     
                 },
+                withCredentials:true
             });
             return response.data // 이미지 URL 목록 반환
         } catch (err) {
@@ -174,6 +245,7 @@ export const useProductStore = defineStore("product", () => {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
+                withCredentials:true
             });
             return response.data // 썸네일 이미지 URL 반환
         } catch (err) {
@@ -188,11 +260,11 @@ export const useProductStore = defineStore("product", () => {
     });
     
     const getSortedProductList = computed(() => {
-        const selectedList = searchProductList.value.length > 0 
-        ? searchProductList.value
-        : (searchCategoryList.value.length > 0 
-            ? searchCategoryList.value
-            : allProductList.value);
+        const selectedList = getSearchProductList.value.length > 0 
+        ? getSearchProductList.value
+        : (getCategoryList.value.length > 0 
+            ? getCategoryList.value
+            : getAllProductList.value);
     
     selectedList.forEach(product => {
         product.auctionStatusText = getAuctionStatusText(product.bid_status);

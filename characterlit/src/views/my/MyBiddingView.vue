@@ -1,26 +1,27 @@
 <template>
     <div class="bidding-list-container">
+      <h2>나의 구매 및 입찰 내역</h2>
       <div v-for="item in combinedList" :key="item.bidId" class="bid-item">
         <div class="item-thumbnail" @click="navigateToItem(item.bidId)">
           <img :src="item.thumbnail || '/default-thumbnail.png'" alt="Item Thumbnail">
         </div>
         <div class="item-details" @click="navigateToItem(item.bidId)">
-          <h2>{{ item.title }}</h2>
+          <h2 :title="item.title">{{ item.title }}</h2>
           <p>시작 가격: ₩{{ item.startBid }}</p>
           <p class="presentBid">현재 가격: ₩{{ item.presentBid }}</p>
           <p class="requestBid">나의 입찰: ₩{{ item.requestBid }}</p>
           <p>종료 시간: {{ item.endDate }}</p>
           <p>조회 수: {{ item.viewCount }}</p>
         </div>
-        <div>
+        <div class="status-box">
         <div class="item-status" :class="{'pre-auction': item.bidStatus === 0, 'in-auction': item.bidStatus === 1, 'post-auction': item.bidStatus === 2}" @click="navigateToItem(item.bidId)">
           <span v-if="item.bidStatus === 0">경매 이전</span>
           <span v-else-if="item.bidStatus === 1">경매 진행</span>
           <span v-else-if="item.bidStatus === 2">경매 종료</span>
     </div>
-    <div class="item-status" :class="{'pre-auction': item.bidStatus === 0, 'in-auction': item.bidStatus === 1, 'post-auction': item.bidStatus === 2}" @click="paypay(item.bidId, $event)">
-          <span v-if="item.bidStatus === 2">결제 하기</span>
-          <span v-else-if="item.bidStatus === 1">결제 안돼</span>
+    <div class="item-status" :class="{'hidden-element': item.bidStatus !== 2, 'pre-auction': item.bidStatus === 0, 'in-auction': !item.isPaid, 'post-auction': item.isPaid}" @click="paypay(item.bidId, $event)">
+          <span v-if="item.bidStatus === 2 && !item.isPaid">결제 하기</span>
+          <span v-else-if="item.bidStatus === 2 && item.isPaid">결제 완료</span>
         </div>
       </div>
       </div>
@@ -113,6 +114,8 @@ const combinedList = computed(() => {
   height: 150px;
   object-fit: cover;
   border: 1px solid #e5e7eb; /* Light gray border for the image */
+  box-shadow: 0px 4px 4px 0px rgb(63, 62, 62);
+  border-radius: 10px;
 }
 
 .item-details {
@@ -126,12 +129,20 @@ const combinedList = computed(() => {
   font-weight: 600; /* Semi-bold */
   margin: 0 0 15px 0;
   word-break: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px; /* Adjust the width as needed */
 }
 
 .item-details p {
   font-size: 0.875rem; /* Small text size */
   line-height: 1; /* No additional line height */
   margin: 5px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px; /* Adjust the width as needed */
 }
 
 /* Adding a border between items for visual separation */
@@ -151,11 +162,23 @@ const combinedList = computed(() => {
   cursor: pointer; /* Change cursor to indicate clickable */
 }
 
+.status-box .item-status {
+  margin-bottom: 10px;
+}
+
+.status-box .item-status:last-child {
+  margin-bottom: 0;
+}
+
 .item-status {
-  flex: none;
+  flex: none;  
   padding: 24px;
   border-radius: 4px;
   color: white;
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  max-width: 100px; 
 }
 
 .pre-auction {
@@ -175,5 +198,9 @@ const combinedList = computed(() => {
 
 .post-auction {
   background-color: #000000;
+}
+
+.hidden-element {
+  visibility: hidden;
 }
 </style>

@@ -8,11 +8,17 @@ export const useBiddingStore = defineStore(
 
     const bidId = ref(null);
     const itemDetail = ref({
+      userNumber: null,
+      nickname: null,
       title: null,
+      startDate: null,
+      endDate: null,
       startBid: null,
       thumbnail: null,
+      image: null,
       content: null,
-      startBidFormatted: null
+      startBidFormatted: null,
+      finalBid: null
     });
     const latestEvent = ref({
       requestBid: null,
@@ -46,13 +52,20 @@ export const useBiddingStore = defineStore(
 
   const getSendRequestStatus = computed(() => sendRequestStatus.value = isLoggedIn.value ? '입찰' : '로그인해주세요');
 
+  const formattedStartDate = computed(() => {
+    return formatDateTime(itemDetail.value.startDate);
+  });
+  
+  const formattedEndDate = computed(() => {
+    return formatDateTime(itemDetail.value.endDate);
+  });
 
     // =========== ACTION ===============
 
     // 서버로부터 bidId에 해당하는 글 정보 호출
     const fetchItemDetail = async () => {
         try {
-          const response = await fetch(`http://localhost:8080/api/bid/read/${bidId.value}`, {
+          const response = await fetch(`${import.meta.env.VITE_REST_API}/bid/read/${bidId.value}`, {
             method: 'GET',            
             credentials: 'include'
           });
@@ -68,7 +81,7 @@ export const useBiddingStore = defineStore(
     // 서버로부터 현재 입찰가를 가져오는 함수
     const loadInitialEvent = async () => {
         try {
-          const response = await fetch(`http://localhost:8080/api/bid/read/now/${bidId.value}`, {
+          const response = await fetch(`${import.meta.env.VITE_REST_API}/bid/read/now/${bidId.value}`, {
             credentials: 'include'
           });
           const data = await response.json();
@@ -83,7 +96,7 @@ export const useBiddingStore = defineStore(
     // 서버 SSE 연결 함수
     const subscribe = () => {
             const sessionId = sessionStorage.getItem('userSession');
-            const url = `http://localhost:8080/api/sse/subscribe/${bidId.value}?sessionId=${sessionId}`;
+            const url = `${import.meta.env.VITE_REST_API}/sse/subscribe/${bidId.value}?sessionId=${sessionId}`;
             eventSource = new EventSource(url, { withCredentials: true });
       
             eventSource.addEventListener('first connect', (event) => {  
@@ -140,11 +153,11 @@ export const useBiddingStore = defineStore(
             }
           
         const data = {
-        bidId: Number(bidId.value), // 확실히 숫자로 변환
+        bidId: Number(bidId.value),
         sessionId: sessionId,
         };
         const payload = new Blob([JSON.stringify(data)], { type: 'application/json' });
-        const url = 'http://localhost:8080/api/sse/disconnect';
+        const url = `${import.meta.env.VITE_REST_API}/sse/disconnect`;
         console.log("request sent:", bidId.value);
         const sent = navigator.sendBeacon(url, payload);
         console.log("Disconnect request sent:", sent ? "Success" : "Failed");
@@ -166,15 +179,14 @@ export const useBiddingStore = defineStore(
         console.log(localStorage.getItem('access-token'));
       
         try {
-          const response = await fetch(`http://localhost:8080/api/bid/read/${bidId.value}`, {
-            method: 'POST', // HTTP 메소드 지정
+          const response = await fetch(`${import.meta.env.VITE_REST_API}/bid/read/${bidId.value}`, {
+            method: 'POST',
             headers: {
-              'Content-Type': 'application/json', // 콘텐츠 타입 지정
-              // 'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+              'Content-Type': 'application/json',
               'access_token': localStorage.getItem('access-token')
             },
-            body: JSON.stringify(data), // 요청 본문에 데이터 첨부
-            credentials: 'include', // 쿠키를 포함시키기 위해 credentials 옵션 사용
+            body: JSON.stringify(data), 
+            credentials: 'include',
           });
           
           const responseData = await response.text();
@@ -182,7 +194,18 @@ export const useBiddingStore = defineStore(
         } catch (error) {
           console.error("Request error:", error);
         }
-      };  
+      };
+      
+      function formatDateTime(isoString) {
+        const date = new Date(isoString);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const hour = date.getHours().toString().padStart(2, '0');
+        const minute = date.getMinutes().toString().padStart(2, '0');
+
+        return `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분`;
+      }
 
     return {
       bidId,
@@ -200,10 +223,13 @@ export const useBiddingStore = defineStore(
       getIsBidValid,
       getSendRequestStatus,
       getRequestBid,
+      formattedStartDate,
+      formattedEndDate,
       fetchItemDetail,
       loadInitialEvent,
       subscribe,
       disconnect,
       sendRequest,
+      formatDateTime,
     };
   }, { persist: true })
