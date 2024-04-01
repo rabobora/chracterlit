@@ -52,9 +52,9 @@
         </div>
         <div class="bid-input">
           <input type="number" v-model="biddingStore.getRequestBid" :placeholder="`${biddingStore.latestEvent.requestBidFormatted || ''}`">
-          <button @click="biddingStore.sendRequest" :disabled="!biddingStore.getIsLoggedIn || !biddingStore.getIsBidValid">{{ biddingStore.getSendRequestStatus }}</button>
+          <button @click="biddingStore.sendRequest" :disabled="!biddingStore.getIsLoggedIn || !biddingStore.getIsBidValid || isOwner">{{ biddingStore.getSendRequestStatus }}</button>
         </div>
-        <div class="modify-button-box" :class="{'hidden-element': !isOwner}">
+        <div class="modify-button-box" :class="{'hidden-element': !isOwner || biddingStore.itemDetail.bidStatus !== 0}">
         <button @click="deleteSelectedProduct" class="deletebutton">상품 삭제</button>
         <button @click="updateproduct" class="updatebutton">상품수정</button>
         </div>
@@ -85,7 +85,7 @@ const usersStore = useUsersStore();
 const productDetail = ref(null); 
 
 const isOwner = computed(() => {
-  return biddingStore.itemDetail.userNumber === usersStore.loginUser.userNumber && biddingStore.itemDetail.bidStatus === 0;
+  return biddingStore.itemDetail.userNumber === usersStore.loginUser.userNumber;
 });
 
 const viewAll = () => {
