@@ -1,5 +1,6 @@
 package com.vamos.characterlit.items.domain;
 
+import com.vamos.characterlit.users.domain.Users;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,12 +20,12 @@ public class Items {
     private Long bidId;
 
     // 테스트를 위해 일단 userid를 참조키가 아닌 상품 테이블의 칼럼으로 넣어둠
-    @Column
-    private Long userNumber;
+//    @Column
+//    private Long userNumber;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_number")
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_number")
+    private Users users;
 
     @Column(length = 30)
     private String nickname;
