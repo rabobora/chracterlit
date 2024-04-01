@@ -75,7 +75,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userDTO.setRole("USER");
             userDTO.setName(oAuth2Response.getName());
             System.out.println(usersRepository.findByUserId(userId).getUserNumber());
-            // bankService.registBankUser(usersRepository.findByUserId(userId).getUserNumber());
+             bankService.registBankUser(usersRepository.findByUserId(userId).getUserNumber());
 
             return new CustomOAuth2User(userDTO);
         } else {
