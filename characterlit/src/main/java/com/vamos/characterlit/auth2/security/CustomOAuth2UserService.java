@@ -3,7 +3,7 @@ package com.vamos.characterlit.auth2.security;
 import com.vamos.characterlit.auth2.response.KakaoResponse;
 import com.vamos.characterlit.auth2.response.NaverResponse;
 import com.vamos.characterlit.auth2.response.OAuth2Response;
-//import com.vamos.characterlit.pay.service.BankService;
+import com.vamos.characterlit.pay.service.BankService;
 import com.vamos.characterlit.users.domain.Users;
 import com.vamos.characterlit.users.repository.UsersRepository;
 import com.vamos.characterlit.users.response.UsersResponseDTO;
