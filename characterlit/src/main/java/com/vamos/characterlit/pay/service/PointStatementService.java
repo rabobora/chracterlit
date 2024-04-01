@@ -94,7 +94,5 @@ public class PointStatementService {
         int plus = statements.getPoint();
         point.setUsablePoint(usablePoint + plus);
     }
-
-
 }
 
