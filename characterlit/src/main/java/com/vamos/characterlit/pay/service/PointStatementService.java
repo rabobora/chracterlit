@@ -87,7 +87,7 @@ public class PointStatementService {
     public void pointConfirm(Long bidId) {
 
         Items item = itemRepository.findByBidId(bidId);
-        PointStatements statements = pointStatementRepository.findByUserNumberAndBidId(item.getUserNumber(), item.getBidId());
+        PointStatements statements = pointStatementRepository.findByUserNumberAndBidId(item.getUsers.getUserNumber(), item.getBidId());
         statements.setPointStatus(5);
         Point point = pointRepository.findByuserNumber(item.getUserNumber());
         int usablePoint = point.getUsablePoint();
