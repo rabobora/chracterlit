@@ -1,8 +1,6 @@
 <template>
-	<div class="app">
-		<div class="main-content">
-			<RouterView />
-		</div>
+	<div>
+		<RouterView />
 	</div>
 </template>
 

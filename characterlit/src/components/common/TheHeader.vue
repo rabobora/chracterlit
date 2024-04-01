@@ -81,7 +81,7 @@ const toLogout = async () => {
 };
 
 const toUserInfo = () => {
-	router.push('/user/update');
+	router.push('/mypage');
 };
 
 onMounted(async () => {
