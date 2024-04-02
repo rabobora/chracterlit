@@ -38,7 +38,7 @@
               <p class="product-status" :class="getStatusClass(product.bidStatus)">
                   {{ getAuctionStatusText(product.bidStatus) }}
               </p>
-              <p class="product-price">시작가: ₩ {{ product.startBid }}</p>
+              <p class="product-price">시작가: ₩ {{ product.startBid.toLocaleString() }}</p>
             </div>
         </div>
       </div>
