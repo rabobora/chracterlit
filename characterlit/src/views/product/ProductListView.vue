@@ -281,12 +281,12 @@ border-radius: 2%;
   color: red; 
 }
 
-  .searchbar {
-  display: flex;
-  justify-content: flex-end; 
-  align-items: center; 
-  margin-top: -2%;
-  margin-right: 13%; 
+.searchbar {
+display: flex;
+justify-content: flex-end; 
+align-items: center; 
+margin-top: -2%;
+margin-right: 13%; 
 }
 .buttonbox{
   padding-top: 10px;

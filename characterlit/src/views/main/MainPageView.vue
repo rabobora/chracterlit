@@ -216,11 +216,17 @@ const navigateToItem = (bidId) => {
   transform: translateY(0);
 }
 
+@keyframes burning {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
 .moreproduct{
 	margin-top: 5%;
 	font-size: 25px;
 	color: #ffffff;
 	margin-left: 40%;
 	cursor: pointer;
+	animation: burning 1s infinite;
 }
 </style>
