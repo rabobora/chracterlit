@@ -15,9 +15,13 @@
 			</div>
 			<div class="item-details">
 				<h2>{{ item.title }}</h2>
-				<p>시작 가격: {{ item.startBid }} 원</p>
-				<P>시작 시간: {{ item.endDate }}</P>
-				<p>종료 시간: {{ item.endDate }}</p>
+				<div>
+					<p v-if="item.bidStatus !== 2">시작 가격: {{ item.startBid }} 원</p>
+					<p v-else-if="item.bidStatus === 2 && item.finalBid !== null"> 낙찰 가격: {{ item.finalBid }} 원</p>
+					<p v-else-if="item.bidStatus === 2 && item.finalBid === null"> 유찰되었습니다</p>
+				</div>
+				<P>시작 시간: {{ formatDateTime(item.startDate) }}</P>
+				<p>종료 시간: {{ formatDateTime(item.endDate) }}</p>
 				<p>조회 수: {{ item.viewCount }}</p>
 			</div>
 			<div class="status-box">
@@ -62,6 +66,17 @@ const navigateToItem = (bidId) => {
 	router.push({ name: 'ReadView', params: { number: bidId } });
 };
 
+function formatDateTime(isoString) {
+        const date = new Date(isoString);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const hour = date.getHours().toString().padStart(2, '0');
+        const minute = date.getMinutes().toString().padStart(2, '0');
+
+        return `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분`;
+      }
+
 const fetchSellingList = async () => {
 	try {
 		const response = await fetch(`http://localhost:8080/api/bid/mysell`, {
@@ -73,7 +88,7 @@ const fetchSellingList = async () => {
 			credentials: 'include',
 		});
 		const data = await response.json();
-		sellingList.value = data;
+		sellingList.value = data.sort((a, b) => b.bidId - a.bidId);
 		console.log('My Bid List fetched successfully', data);
 	} catch (error) {
 		console.error('Failed to fetch my bid list:', error);

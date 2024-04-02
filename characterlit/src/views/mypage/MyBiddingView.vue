@@ -19,7 +19,7 @@
           <span v-else-if="item.bidStatus === 1">경매 진행</span>
           <span v-else-if="item.bidStatus === 2">경매 종료</span>
     </div>
-    <div class="item-status" :class="{'hidden-element': item.bidStatus !== 2, 'pre-auction': item.winnerNumber !== usersStore.loginUser.userNumber, 'in-auction': !item.isPaid, 'post-auction': item.isPaid}" @click="paypay(item.bidId, $event)">
+    <div class="item-status" :class="{'hidden-element': item.bidStatus !== 2, 'pre-auction': item.winnerNumber !== usersStore.loginUser.userNumber, 'in-auction': !item.isPaid, 'post-auction': item.isPaid}" @click="paypay(item, $event)">
           <span v-if="item.bidStatus === 2 && !item.isPaid && item.winnerNumber === usersStore.loginUser.userNumber">결제 하기</span>
           <span v-else-if="item.bidStatus === 2 && item.isPaid && item.winnerNumber === usersStore.loginUser.userNumber">결제 완료</span>
           <span v-else-if="item.bidStatus === 2 && item.winnerNumber !== usersStore.loginUser.userNumber">입찰 실패</span>
@@ -57,12 +57,12 @@ onMounted(async () => {
       }
 
 //결제 함수 작동 전 임시 코드
-const paypay = (bidId, event) => {
+const paypay = (item, event) => {
   if (!(item.bidStatus === 2 && !item.isPaid && item.winnerNumber === usersStore.loginUser.userNumber)) {
     event.preventDefault();
     return;
   }
-  console.log(bidId);
+  console.log(item.bidId);
   //라우터 푸시 추가 구현 필요
 };
 
@@ -93,7 +93,7 @@ const fetchBiddingList = async () => {
 };
 
 const combinedList = computed(() => {
-  return itemsList.value.map(item => {
+  const mergedList =  itemsList.value.map(item => {
     const log = logList.value.find(log => log.bidId === item.bidId);
     const nowbid = nowbidList.value.find(bid => bid.bidId === item.bidId);
 
@@ -103,6 +103,7 @@ const combinedList = computed(() => {
       presentBid: nowbid?.presentBid
     };
   });
+  return mergedList.sort((a, b) => b.bidId - a.bidId);
 });
 
 
