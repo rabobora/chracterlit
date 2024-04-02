@@ -38,6 +38,7 @@ public class KakaoPayService {
     private final PointStatementService pointStatementService;
     private final PaymentRepository paymentRepository;
     private final PointRepository pointRepository;
+    private final PointService pointService;
 
     @Value("${spring.pay.cid}")
     private String cid;
@@ -154,7 +155,7 @@ public class KakaoPayService {
         payment.setPaymentDate(localDateTime);
         paymentRepository.save(payment);
 
-        Point point = pointRepository.findByuserNumber(payment.getUserNumber());
+        Point point = pointService.getPoint(payment.getUserNumber());
         Point updatePoint = Point.builder()
                 .userNumber(payment.getUserNumber())
                 .allPoint(point.getAllPoint() + (payment.getMoney()-(int)(payment.getMoney()*0.005)))
