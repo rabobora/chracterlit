@@ -27,41 +27,7 @@ import { useUsersStore } from '@/stores/users';
 import router from '@/router';
 import { RouterLink } from 'vue-router';
 
-// const isLoggedIn = ref(false);
 const store = useUsersStore();
-// const getCookie = (name) => {
-// 	let matches = document.cookie.match(
-// 		new RegExp(
-// 			'(?:^|; )' +
-// 				name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') +
-// 				'=([^;]*)',
-// 		),
-// 	);
-// 	return matches ? decodeURIComponent(matches[1]) : undefined;
-// };
-
-// const deleteCookie = (name) => {
-// 	document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-// };
-
-// const saveTokenToLocalStorage = async () => {
-// 	let token = getCookie('access_token');
-// 	deleteCookie('access_token');
-// 	if (token != null && token !== 'undefined')
-// 		localStorage.setItem('access-token', token);
-// 	token = null;
-// 	checkLoginStatus();
-// };
-
-// const checkLoginStatus = () => {
-// 	let token = localStorage.getItem('access-token');
-// 	if (token) {
-// 		store.isLogIn = true;
-// 	} else {
-// 		store.isLogIn = false;
-// 	}
-// 	console.log(store.isLogIn);
-// };
 
 const toLogin = async () => {
 	try {

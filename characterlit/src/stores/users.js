@@ -1,6 +1,5 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
-import router from '@/router';
 
 export const useUsersStore = defineStore(
 	'users',
@@ -82,7 +81,7 @@ export const useUsersStore = defineStore(
 		// =========== FETCH ===============
 
 		const onLogout = () => {
-			fetch('http://localhost:8080/logout', {
+			fetch(`${import.meta.env.VITE_REST_URL}/logout`, {
 				method: 'POST',
 				credentials: 'include',
 			})
@@ -97,7 +96,7 @@ export const useUsersStore = defineStore(
 
 		const searchLoginUser = () => {
 			saveTokenToLocalStorage();
-			return fetch('http://localhost:8080/api/users/login', {
+			return fetch(`${import.meta.env.VITE_REST_API}/users/login`, {
 				method: 'GET',
 				headers: {
 					'access_token': localStorage.getItem('access-token'),
@@ -119,7 +118,7 @@ export const useUsersStore = defineStore(
 
 		const updateLoginUser = (userInfo) => {
 			saveTokenToLocalStorage();
-			return fetch('http://localhost:8080/api/users/login', {
+			return fetch(`${import.meta.env.VITE_REST_API}/users/login`, {
 				method: 'PATCH',
 				headers: {
 					'access_token': localStorage.getItem('access-token'),
@@ -143,7 +142,7 @@ export const useUsersStore = defineStore(
 		const isExistNickname = (nickname) => {
 			saveTokenToLocalStorage();
 			return fetch(
-				`http://localhost:8080/api/users/find/nickname/${nickname}`,
+				`${import.meta.env.VITE_REST_API}/users/find/nickname/${nickname}`,
 				{
 					method: 'GET',
 					headers: {
