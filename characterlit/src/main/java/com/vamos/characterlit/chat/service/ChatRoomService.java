@@ -2,6 +2,7 @@ package com.vamos.characterlit.chat.service;
 
 import com.vamos.characterlit.chat.dto.ChatRoomDTO;
 import com.vamos.characterlit.chat.repository.ChatRoomRepository;
+import com.vamos.characterlit.users.domain.Users;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -13,15 +14,10 @@ import java.util.List;
 public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
 
-    public Long createChatRoom(ChatRoomDTO chatRoomDTO){
-        return chatRoomRepository.save(chatRoomDTO).getChatroomId();
+    public ChatRoomDTO createChatRoom(ChatRoomDTO chatRoomDTO){
+        return chatRoomRepository.save(chatRoomDTO);
     }
-
-    public List<ChatRoomDTO> listChatRoom(Long userId){
-        return chatRoomRepository.findByBuyerIdOrSellerId(userId, userId);
-    }
-
-    public ChatRoomDTO selectChatRoom(Long buyerId, Long sellerId, Long bidId){
-        return chatRoomRepository.findByBuyerIdAndSellerIdAndBidId(buyerId, sellerId, bidId);
+    public List<ChatRoomDTO> selectChatRooms(Users user){
+        return chatRoomRepository.findByUser(user);
     }
 }

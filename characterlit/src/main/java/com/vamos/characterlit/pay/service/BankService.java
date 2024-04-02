@@ -93,10 +93,12 @@ public class BankService {
     public String findBankUser(Long userNumber) {
 
         String email = usersRepository.findByUserNumber(userNumber).getEmail();
+        System.out.println("email : "+email);
 
         Map<String, Object> request = new HashMap<>();
-        request.put("userNumber", email);
+        request.put("userId", email);
         request.put("apiKey", apiKey);
+        System.out.println("request : "+request);
 
         try {
             WebClient wc = WebClient.create(findUserUrl);
@@ -108,6 +110,8 @@ public class BankService {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
+
+            System.out.println("response : "+response);
 
             JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
             Gson gson = new Gson();
@@ -151,6 +155,8 @@ public class BankService {
         request.put("Header", Header);
         request.put("bankCode", bankCode);
         request.put("accountNo", account);
+
+        System.out.println("request : "+request);
 
         try {
             WebClient wc = WebClient.create(accountInfoUrl);
@@ -215,6 +221,8 @@ public class BankService {
         request.put("withdrawalAccountNo", accountrequest.getWithdrawalAccountNo());
         request.put("depositTransactionSummary", accountrequest.getDepositTransactionSummary()); // 거래내용요약(입금)
         request.put("withdrawalTransactionSummary", accountrequest.getWithdrawalTransactionSummary()); // 거래내용요약(출금)
+
+
 
         try {
             WebClient wc = WebClient.create(accountTransferUrl);
