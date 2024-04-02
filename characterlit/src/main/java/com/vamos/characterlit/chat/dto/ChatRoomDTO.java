@@ -1,7 +1,12 @@
 package com.vamos.characterlit.chat.dto;
 
+import com.vamos.characterlit.items.domain.Items;
+import com.vamos.characterlit.users.domain.Users;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @ToString
 @Getter
@@ -10,12 +15,17 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "chatrooms")
-public class ChatRoomDTO { // FK 수정중입니다.
+public class ChatRoomDTO {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     Long chatroomId;
-    Long bidId;
-    Long buyerId;
-    Long sellerId;
+
+    @ManyToOne
+    @JoinColumn(name="bid_id")
+    Items item; // 경매 id
+
+    @ManyToOne
+    @JoinColumn(name="user_number")
+    Users user; // 구매자 id
 }
 
