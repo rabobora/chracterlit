@@ -46,7 +46,7 @@
           <p class="start-price">시작가: <span class="bid-price">{{ biddingStore.itemDetail.startBidFormatted || 'Loading...' }}</span></p>
           <div>
             <p v-if="biddingStore.itemDetail.bidStatus === 1" class="current-price" :class="{'hidden-element': biddingStore.itemDetail.bidStatus !== 1}" >현재가: <span class="bid-price">{{ biddingStore.latestEvent.requestBidFormatted || 'Loading...' }}</span></p>
-            <p v-else-if="biddingStore.itemDetail.bidStatus === 2" class="final-price" :class="{'hidden-element': biddingStore.itemDetail.bidStatus !== 2 &&  biddingStore.itemDetail.finalBid === null }">낙찰가: <span class="bid-price">{{ biddingStore.itemDetail.finalBid }}원</span></p>
+            <p v-else-if="biddingStore.itemDetail.bidStatus === 2" class="final-price" :class="{'hidden-element': biddingStore.itemDetail.bidStatus !== 2 &&  biddingStore.itemDetail.finalBid === null }">낙찰가: <span class="bid-price">{{ biddingStore.itemDetail.finalBid ? biddingStore.itemDetail.finalBid + '원' : '유찰' }}</span></p>
             <p v-else-if="biddingStore.itemDetail.bidStatus === 0" class="wait-price"><span class="bid-price">경매가 아직 열리지 않았습니다.</span></p>
           </div>
         </div>
@@ -466,6 +466,9 @@ border-radius: 2%;
   }
 
   .image-gallery {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-top: 25px;
   }
   
