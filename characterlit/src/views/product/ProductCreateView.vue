@@ -1,6 +1,5 @@
 <template>
     <div class="product-create-view">
-      <!-- <label for="title">제목</label> -->
       <input id="title" type="text" placeholder="상품명을 입력하세요" v-model="product.title" class="titleformcolor">
   
       <div class="file-upload-group">
@@ -18,8 +17,7 @@
       <div class="date-time-group">
         <div class="date-time">
           <label for="start-date">시작일 </label>
-          <input id="start-date" type="date" v-model="startDate">
-          <!-- <input type="time" v-model="startTime" class="datemargin"> -->
+          <input id="start-date" type="date" v-model="startDate">   
           <select v-model="startTime" class="datemargin">
             <option v-for="hour in Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'))"
                     :key="hour"
@@ -67,9 +65,8 @@
             <option value="7">기타</option>
           </select>
         </div>
-      </div>
-  
-      <!-- <label for="content">본문</label> -->
+      </div>  
+     
       <textarea id="content" placeholder="상품의 상세정보를 입력하세요" v-model="product.content"></textarea>
   
       <div class="submit-button">
@@ -126,19 +123,13 @@
         }
     }, []);
 
-    // Debugging: 선택한 파일의 정보를 콘솔에 출력
-    console.log(selectedImages.value);
     };
 
 
     const uploadImagesToS3 = async () => {
         if (selectedImages.value.length > 0) {
             try {
-            // store의 s3ImageUpload 함수를 호출하여 이미지 업로드
             const urls = await store.s3ImageUpload(selectedImages.value);
-
-            // Debugging: 받아온 URL들을 콘솔에 출력
-            console.log(urls);
 
             if (urls.length > 0) {
                 
@@ -157,13 +148,6 @@
             alert('업로드할 이미지를 선택해주세요.');
         }
      };
-
-
-//   const handleImageUpload = async (event) => {
-//     const images = event.target.files;
-//     const urls = await store.s3ImageUpload(images);
-//     product.value.image = urls;
-//   };
   
   const handleThumbnailUpload = async (event) => {
     const thumbnail = event.target.files[0];
@@ -175,16 +159,28 @@
   };
   
   const submitProduct = () => {
-    product.value.startDate = `${startDate.value}T${startTime.value}:00Z`;
-    product.value.endDate = `${endDate.value}T${endTime.value}:00Z`;
+    const startDateTime = `${startDate.value}T${startTime.value}:00Z`;
+    const endDateTime = `${endDate.value}T${endTime.value}:00Z`;
+
+    const start = new Date(startDateTime);
+    const end = new Date(endDateTime);
+
+    if (end <= start) {
+      alert('경매 종료일은 경매 시작일보다 늦게 설정해야 합니다.');
+      return; 
+    }
+
+    product.value.startDate = startDateTime;
+    product.value.endDate = endDateTime;
+
     store.createProduct(product.value);
     router.push('/product/list'); 
-    // window.location.reload()
   };
+
 
   const backtolist = () => {
     router.push('/product/list'); 
-    // window.location.reload()
+    
   }
 
   const validateStartBid = () => {
