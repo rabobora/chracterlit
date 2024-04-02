@@ -1,6 +1,5 @@
 <template>   
-    <div class="product-create-view">
-      <!-- <label for="title">제목</label> -->
+    <div class="product-create-view"> 
       <input id="title" type="text" placeholder="상품명을 입력하세요" v-model="product.title" class="titleformcolor">
   
       <div class="file-upload-group">
@@ -60,7 +59,7 @@
         </div>
       </div>
   
-      <!-- <label for="content">본문</label> -->
+     
       <textarea id="content" placeholder="상품의 상세정보를 입력하세요" v-model="product.content"></textarea>
       
       <div class="submit-button">
@@ -76,8 +75,7 @@
     import { ref,onMounted } from 'vue';
     import { useProductStore } from '../../stores/product';
     import { useRoute, useRouter } from 'vue-router';
-    import axios from 'axios';
-    // import router from '@/router';
+    import axios from 'axios';   
     const store = useProductStore();
     const router = useRouter();
     const route = useRoute();
@@ -108,25 +106,33 @@
         const detail = await store.researchProductDetail(bidId);
         if (detail) {
             product.value = { ...detail };
-            // YYYY-MM-DD 형식으로 날짜 초기화
+            
             startDate.value = detail.startDate.split("T")[0];
             endDate.value = detail.endDate.split("T")[0];
-            // HH:MM 형식으로 시간 초기화
+           
             startTime.value = detail.startDate.split("T")[1].slice(0, 5);
             endTime.value = detail.endDate.split("T")[1].slice(0, 5);
             }
         }
     });
 
+   
     const submitProduct = async () => {
-        // 날짜와 시간을 조합하여 ISO 8601 형식으로 설정
         product.value.startDate = `${startDate.value}T${startTime.value}:00Z`;
         product.value.endDate = `${endDate.value}T${endTime.value}:00Z`;
+
+        const start = new Date(product.value.startDate);
+      const end = new Date(product.value.endDate);
+
+      if (end <= start) {
+        alert('경매 종료일은 경매 시작일보다 늦게 설정해야 합니다.');
+        return; 
+      }
         
-        await store.updateProduct(product.value, bidId); // 수정된 상품 정보를 API를 통해 업데이트
-        
-        // window.location.reload()
+        await store.updateProduct(product.value, bidId);         
+
     };
+
 
     
     const previewImages = (event) => {
@@ -157,8 +163,7 @@
  
     const uploadImagesToS3 = async () => {
         if (selectedImages.value.length > 0) {
-            try {
-            // store의 s3ImageUpload 함수를 호출하여 이미지 업로드
+            try {          
             const urls = await store.s3ImageUpload(selectedImages.value);
 
             console.log(urls);
@@ -198,8 +203,7 @@
     };
 
     const backtolist = () => {
-        router.push('/product/list'); 
-        // window.location.reload()
+        router.push('/product/list');        
     }
   </script>
   

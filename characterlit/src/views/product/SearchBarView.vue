@@ -42,19 +42,19 @@ const doSearch = async () => {
 .search-container {
   display: flex;
   align-items: center;
-  position: relative; /* 버튼을 입력 필드에 대해 절대 위치시키기 위함 */
+  position: relative; 
   width: 100%;
-  max-width: 550px; /* 최대 너비 설정, 필요에 따라 조정 */
+  max-width: 550px; 
 }
 
 .search-input {
   width: 100%;
   border-radius: 10px; 
-  border: none; /* 기존 테두리 제거 */
-  border-bottom: 1px solid #EFEFEF; /* 아래쪽 테두리만 설정 */
-  padding: 10px 40px 10px 20px; /* 오른쪽 패딩을 늘려서 버튼 공간 확보 */
+  border: none; 
+  border-bottom: 1px solid #EFEFEF; 
+  padding: 10px 40px 10px 20px; 
   font-size: 1rem;
-  box-shadow: 0px 4px 0px 0px black; /* 박스 그림자 */
+  box-shadow: 0px 4px 0px 0px black;
   outline: none; 
 }
 
