@@ -77,7 +77,6 @@ onMounted(async () => {
     const bidId = route.params.number;
     const pd = await productStore.researchProductDetail(bidId);
     detail.value = pd
-    console.log(bidId);  
     await payStore.pointCheck();
 });
 
