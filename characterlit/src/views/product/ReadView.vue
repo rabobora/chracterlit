@@ -1,6 +1,5 @@
 <template>
   <div class="read-page-container">
-
     <header>
       <h1>헤더 자리입니다 {{ biddingStore.bidId }}</h1>
       <!-- <router-link to="/" class="home-button">HomeView로 돌아가기</router-link> -->
