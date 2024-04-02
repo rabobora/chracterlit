@@ -130,8 +130,7 @@ export const usePayStore = defineStore(
             await axios({
                 url: `${import.meta.env.VITE_REST_KAKAO_API}/success`,
                 method: "GET",
-                params: { order_id: order_id },
-                params: { pg_token: pg_token},
+                params: { order_id: order_id, pg_token: pg_token},
                 headers: {
 					'access_token': localStorage.getItem('access-token'),
 					'Content-type': 'application/json',

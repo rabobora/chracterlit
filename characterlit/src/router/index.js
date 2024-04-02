@@ -20,7 +20,6 @@ import ChargeView from "@/views/pay/ChargeView.vue";
 import WithdrawView from "@/views/pay/WithdrawView.vue";
 import PayLoadingView from "@/views/pay/PayLoadingView.vue";
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -40,49 +39,22 @@ const router = createRouter({
           component: MypageMainView,
         },
         {
-          path: "update", // 수정됨: 상대 경로 사용
+          path: "update",
           name: "MypageUpdateView",
           component: MypageUpdateView,
         },
+        {
+          path: "mybid",
+          name: "MyBiddingView",
+          component: MyBiddingView,
+        },
+        {
+          path: "mysell",
+          name: "MySellingView",
+          component: MySellingView,
+        },
       ],
     },
-    //////
-    {
-      path: "/paystatement",
-      name: "payStatement",
-      component: PayStatementView,
-    },
-    {
-      path: "/charge",
-      name: "charge",
-      component: ChargeView,
-    },
-    {
-      path: "/loading",
-      name: "approveKakao",
-      component: PayLoadingView,
-      props: (route) => (
-        { order_id: route.query.order_id }, { pg_token: route.query.pg_token }
-      ),
-    },
-    {
-      path: "/buyitem/:number",
-      name: "buyItem",
-      component: BuyItemView,
-    },
-    {
-      path: "/withdraw",
-      name: "withdraw",
-      component: WithdrawView,
-    },
-    //////////
-
-    {
-      path: "/product/category",
-      name: "productCategory",
-      component: CategorySelectView,
-    },
-
     {
       path: "/product/update/:bidId",
       name: "productUpdate",
@@ -112,20 +84,39 @@ const router = createRouter({
       name: "ReadView",
       component: ReadView,
     },
-    // {
-    //   path: '/my/mybid',
-    //   name: 'MyBiddingView',
-    //   component: MyBiddingView,
-    // },
-    // {
-    //   path: '/my/mysell',
-    //   name: 'MySellingView',
-    //   component: MySellingView,
-    // },
     {
       path: "/login",
       name: "login",
       component: LoginView,
+    },
+    //////
+    {
+      path: "/paystatement",
+      name: "payStatement",
+      component: PayStatementView,
+    },
+    {
+      path: "/charge",
+      name: "charge",
+      component: ChargeView,
+    },
+    {
+      path: "/loading",
+      name: "approveKakao",
+      component: PayLoadingView,
+      props: (route) => (
+        { order_id: route.query.order_id }, { pg_token: route.query.pg_token }
+      ),
+    },
+    {
+      path: "/buyitem/:number",
+      name: "buyItem",
+      component: BuyItemView,
+    },
+    {
+      path: "/withdraw",
+      name: "withdraw",
+      component: WithdrawView,
     },
   ],
 });

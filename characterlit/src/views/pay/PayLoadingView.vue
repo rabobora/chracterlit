@@ -11,10 +11,18 @@
 
 <script setup>
 import { onMounted } from 'vue';
+import { usePayStore } from '@/stores/pay';
+import { useRoute } from 'vue-router';
+const payStore = usePayStore();
+
+const route = useRoute()
 
 onMounted(() => {
-    
-    payStore.approveKakao(route.params.order_id,route.params.pg_token);
+    const order_id=route.query.order_id;
+    const pg_token =route.query.pg_token;
+    console.log(order_id);
+    console.log(pg_token);
+    payStore.approveKakao(order_id,pg_token);
 });
 
 </script>
