@@ -1,9 +1,8 @@
 <template>
+  <header>
+    <TheHeader/>
+  </header>
   <div class="read-page-container">
-    <header>
-      <h1>헤더 자리입니다 {{ biddingStore.bidId }}</h1>
-      <!-- <router-link to="/" class="home-button">HomeView로 돌아가기</router-link> -->
-    </header>
     <div class="search-box">
     <div class="searchbar">
         <SearchBarView />        
@@ -76,6 +75,7 @@ import { useBiddingStore } from '../../stores/bidding';
 import { useUsersStore } from '@/stores/users';
 import { useRoute,useRouter } from 'vue-router';
 import SearchBarView from './SearchBarView.vue';
+import TheHeader from '@/components/common/TheHeader.vue';
 const router = useRouter();
 const route = useRoute();
 const productStore = useProductStore();
