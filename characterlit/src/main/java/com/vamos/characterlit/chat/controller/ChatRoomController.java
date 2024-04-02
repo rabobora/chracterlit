@@ -2,6 +2,7 @@ package com.vamos.characterlit.chat.controller;
 
 import java.net.URI;
 
+import com.vamos.characterlit.auth2.annotation.ExtractPayload;
 import com.vamos.characterlit.chat.dto.ChatRoomRequestDTO;
 //import com.vamos.characterlit.chat.service.ParticipantsService;
 import com.vamos.characterlit.chat.service.mongoDBChatRoomService;
@@ -56,8 +57,10 @@ public class ChatRoomController {
     }
 
     // 사용자 채팅방 목록 조회
-    @GetMapping("/api/chatroomlist/{buyerId}")
-    public ResponseEntity chatRoomList(@PathVariable("buyerId") Long buyerId) {
+    @GetMapping("/api/chatroomlist")
+    public ResponseEntity chatRoomList(@ExtractPayload Long buyerId) {
+        System.out.println(buyerId);
+
         Users user=usersRepository.findByUserNumber(buyerId);
 
         return ResponseEntity.ok(chatRoomService.selectChatRooms(user));
