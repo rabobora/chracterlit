@@ -55,4 +55,101 @@
 
 <script setup></script>
 
-<style></style>
+<style>
+.mypage-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 20px;
+}
+
+.point-section {
+	background-color: #f9f9f9;
+	border-radius: 10px;
+	padding: 20px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+}
+
+.point-title {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.point-icon {
+	font-size: 24px;
+	margin-right: 10px;
+}
+
+.point-button {
+	background-color: #4caf50;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	padding: 10px 20px;
+	margin-left: auto;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.point-button:hover {
+	background-color: #45a049;
+}
+
+hr {
+	border: 0;
+	border-top: 1px solid #ccc;
+	margin: 20px 0;
+}
+
+.point-first,
+.point-second {
+	display: flex;
+	justify-content: space-between;
+}
+
+.link-section {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.mypage-link {
+	background-color: #f9f9f9;
+	padding: 10px;
+	border-radius: 5px;
+	display: flex;
+	align-items: center;
+	transition: background-color 0.3s ease;
+}
+
+.mypage-link:hover {
+	background-color: #e6e6e6;
+}
+
+.link-icon {
+	font-size: 20px;
+	margin-right: 10px;
+}
+
+.link-section {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.mypage-link {
+	color: white;
+	text-decoration: none;
+}
+
+.mypage-link:hover {
+	text-decoration: none;
+}
+
+.link-icon {
+	font-size: 20px;
+	margin-right: 10px;
+}
+</style>
