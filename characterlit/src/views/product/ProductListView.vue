@@ -38,7 +38,7 @@
               <p class="product-status" :class="getStatusClass(product.bidStatus)">
                   {{ getAuctionStatusText(product.bidStatus) }}
               </p>
-              <p class="product-price">시작가: ₩ {{ product.startBid }}</p>
+              <p class="product-price">시작가: ₩ {{ product.startBid.toLocaleString() }}</p>
             </div>
         </div>
       </div>
@@ -163,6 +163,7 @@ const changePage = (page) => {
   .product-view {
     display: flex;
     flex-direction: column;
+   
   }
   
 .category-navbar {
@@ -280,12 +281,12 @@ border-radius: 2%;
   color: red; 
 }
 
-  .searchbar {
-  display: flex;
-  justify-content: flex-end; 
-  align-items: center; 
-  margin-top: 3%;
-  margin-right: 13%; 
+.searchbar {
+display: flex;
+justify-content: flex-end; 
+align-items: center; 
+margin-top: -2%;
+margin-right: 13%; 
 }
 .buttonbox{
   padding-top: 10px;
