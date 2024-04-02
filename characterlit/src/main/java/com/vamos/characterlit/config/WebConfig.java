@@ -22,7 +22,7 @@ public class WebConfig implements WebMvcConfigurer{
     @Override
     public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("http://localhost:5173")// 클라이언트의 주소
+                .allowedOriginPatterns("http://j10b105.p.ssafy.io:5173", "http://localhost:5173")// 클라이언트의 주소
                 .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
                 .allowCredentials(true)
                 .exposedHeaders(HttpHeaders.LOCATION);

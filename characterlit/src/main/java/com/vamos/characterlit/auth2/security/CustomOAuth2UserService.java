@@ -57,7 +57,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user.setRole("USER");
             user.setEmail(oAuth2Response.getEmail());
             user.setName(oAuth2Response.getName());
-            user.setNickname("!user_" + userId.substring(0, 10));
+            user.setNickname("!user_" + userId.substring(0, 14));
 
             if (registrationId.equals("naver")) {
                 user.setLoginServer(1);
