@@ -92,8 +92,8 @@ onMounted(async () => {
 
 <style scoped>
 .header {
-	background-color: #333;
-	color: white;
+	/* background-color: #333; */
+	color: black;
 	align-content: center;
 	padding: 1rem 0px;
 	width: 100%;

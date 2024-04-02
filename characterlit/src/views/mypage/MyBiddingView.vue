@@ -3,14 +3,14 @@
       <h2>나의 구매 및 입찰 내역</h2>
       <div v-for="item in combinedList" :key="item.bidId" class="bid-item">
         <div class="item-thumbnail" @click="navigateToItem(item.bidId)">
-          <img :src="item.thumbnail || '/default-thumbnail.png'" alt="Item Thumbnail">
+          <img :src="item.thumbnail || defaultImage" alt="Item Thumbnail">
         </div>
         <div class="item-details" @click="navigateToItem(item.bidId)">
           <h2 :title="item.title">{{ item.title }}</h2>
-          <p>시작 가격: ₩{{ item.startBid }}</p>
-          <p class="presentBid">현재 가격: ₩{{ item.presentBid }}</p>
-          <p class="requestBid">나의 입찰: ₩{{ item.requestBid }}</p>
-          <p>종료 시간: {{ item.endDate }}</p>
+          <p>시작 가격: {{ item.startBid }} 원</p>
+          <p class="presentBid">현재 가격: {{ item.presentBid }} 원</p>
+          <p class="requestBid" :class="{'bid-state': item.presentBid === item.requestBid}">나의 입찰: {{ item.requestBid }} 원</p>
+          <p>종료 시간: {{ formatDateTime(item.endDate) }}</p>
           <p>조회 수: {{ item.viewCount }}</p>
         </div>
         <div class="status-box">
@@ -19,9 +19,10 @@
           <span v-else-if="item.bidStatus === 1">경매 진행</span>
           <span v-else-if="item.bidStatus === 2">경매 종료</span>
     </div>
-    <div class="item-status" :class="{'hidden-element': item.bidStatus !== 2, 'pre-auction': item.bidStatus === 0, 'in-auction': !item.isPaid, 'post-auction': item.isPaid}" @click="paypay(item.bidId, $event)">
-          <span v-if="item.bidStatus === 2 && !item.isPaid">결제 하기</span>
-          <span v-else-if="item.bidStatus === 2 && item.isPaid">결제 완료</span>
+    <div class="item-status" :class="{'hidden-element': item.bidStatus !== 2, 'pre-auction': item.winnerNumber !== usersStore.loginUser.userNumber, 'in-auction': !item.isPaid, 'post-auction': item.isPaid}" @click="paypay(item, $event)">
+          <span v-if="item.bidStatus === 2 && !item.isPaid && item.winnerNumber === usersStore.loginUser.userNumber">결제 하기</span>
+          <span v-else-if="item.bidStatus === 2 && item.isPaid && item.winnerNumber === usersStore.loginUser.userNumber">결제 완료</span>
+          <span v-else-if="item.bidStatus === 2 && item.winnerNumber !== usersStore.loginUser.userNumber">입찰 실패</span>
         </div>
       </div>
       </div>
@@ -31,6 +32,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import defaultImage from '@/assets/default_image.png';
+import { useUsersStore } from '@/stores/users';
+const usersStore = useUsersStore();
 const router = useRouter();
 const itemsList = ref([]);
 const logList = ref([]);
@@ -38,12 +42,28 @@ const nowbidList = ref([]);
 
 onMounted(async () => {
   await fetchBiddingList();
+  await usersStore.fetchLoginUser();
 });
+  
+  function formatDateTime(isoString) {
+        const date = new Date(isoString);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const hour = date.getHours().toString().padStart(2, '0');
+        const minute = date.getMinutes().toString().padStart(2, '0');
+
+        return `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분`;
+      }
 
 //결제 함수 작동 전 임시 코드
-const paypay = (bidId, event) => {
-  console.log(bidId);
-  event.preventDefault();
+const paypay = (item, event) => {
+  if (!(item.bidStatus === 2 && !item.isPaid && item.winnerNumber === usersStore.loginUser.userNumber)) {
+    event.preventDefault();
+    return;
+  }
+  console.log(item.bidId);
+  //라우터 푸시 추가 구현 필요
 };
 
 const navigateToItem = (bidId) => {
@@ -66,14 +86,14 @@ const fetchBiddingList = async () => {
     logList.value = data.logList;
     nowbidList.value = data.nowbidList;
 
-    console.log("My Bid List fetched successfully", data);
+    console.log("My Bid List fetched successfully");
   } catch (error) {
     console.error("Failed to fetch my bid list:", error);
   }
 };
 
 const combinedList = computed(() => {
-  return itemsList.value.map(item => {
+  const mergedList =  itemsList.value.map(item => {
     const log = logList.value.find(log => log.bidId === item.bidId);
     const nowbid = nowbidList.value.find(bid => bid.bidId === item.bidId);
 
@@ -83,6 +103,7 @@ const combinedList = computed(() => {
       presentBid: nowbid?.presentBid
     };
   });
+  return mergedList.sort((a, b) => b.bidId - a.bidId);
 });
 
 
@@ -142,21 +163,21 @@ const combinedList = computed(() => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 200px; /* Adjust the width as needed */
+  max-width: 400px; /* Adjust the width as needed */
 }
 
-/* Adding a border between items for visual separation */
 .bidding-list-container > .bid-item:not(:last-child) {
   border-bottom: 1px solid #e5e7eb;
 }
 
-/* Styling for the 'Present Price' and 'My Bid Price' to differentiate */
 .presentBid, .requestBid {
   font-weight: 600;
-  color: #007bff; /* A shade of blue for emphasis */
+  color: #007bff; 
+}
+.bid-state {
+  animation: burning 1s infinite;
 }
 
-/* Optional: Adding hover effect for interaction feedback */
 .bid-item:hover {
   background-color: #f9fafb; /* Very light gray background on hover */
   cursor: pointer; /* Change cursor to indicate clickable */
