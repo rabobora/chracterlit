@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -40,12 +41,15 @@ public class PointStatementService {
     public List<StatementResponseDTO> pointStatementsList(Long userNumber) {
 
         List<PointStatements> statements = pointStatementRepository.findByUserNumber(userNumber);
+
+        System.out.println("statements : "+statements);
+
         List<StatementResponseDTO> result = new ArrayList<>();
         for (PointStatements statement : statements) {
             result.add(StatementResponseDTO.builder()
                     .statementId(statement.getStatementId())
                     .point(statement.getPoint())
-                    .statementDate(statement.getStatementDate())
+                    .statementDate(statement.getStatementDate().toLocalDate())
                     .pointStatus(statement.getPointStatus())
                     .build());
         }

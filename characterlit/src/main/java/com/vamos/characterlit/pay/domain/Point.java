@@ -1,9 +1,6 @@
 package com.vamos.characterlit.pay.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -14,6 +11,8 @@ import lombok.*;
 public class Point {
 
     @Id
+//    @OneToOne
+//    @JoinColumn(name = "userNumber")
     private Long userNumber;
     @Setter
     private int allPoint;

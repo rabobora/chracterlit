@@ -5,6 +5,7 @@ import com.vamos.characterlit.auth2.annotation.ExtractPayload;
 import com.vamos.characterlit.pay.domain.Point;
 import com.vamos.characterlit.pay.request.BuyRequestDTO;
 import com.vamos.characterlit.pay.request.ChargeRequestDTO;
+import com.vamos.characterlit.pay.request.MoneyRequestDTO;
 import com.vamos.characterlit.pay.response.KakaoReadyResponseDTO;
 import com.vamos.characterlit.pay.response.PointResponseDTO;
 import com.vamos.characterlit.pay.service.KakaoPayService;
@@ -47,15 +48,19 @@ public class PointController {
     // 계좌이체 포인트 충전 결제
     @PutMapping("/charge")
     public ResponseEntity<Void> pointCharge(@ExtractPayload Long userNumber, @RequestBody ChargeRequestDTO request){
+        System.out.println("------- 포인트 충전 결제 -------");
+        System.out.println("userNumber : "+userNumber);
+        System.out.println("request : "+request);
         pointService.charge(request,userNumber);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 카카오페이 포인트 충전 결제 준비
     @PostMapping("/charge/kakao/ready")
-    public ResponseEntity<KakaoReadyResponseDTO> kakaopayReady(@ExtractPayload Long userNumber, @RequestParam int money){
+    public ResponseEntity<KakaoReadyResponseDTO> kakaopayReady(@ExtractPayload Long userNumber, @RequestBody MoneyRequestDTO request){
 
-        KakaoReadyResponseDTO kakaoReadyResponseDTO = kakaoPayService.kakaoReady(money, userNumber);
+        System.out.println("------- 카카오 결제 준비 ---------");
+        KakaoReadyResponseDTO kakaoReadyResponseDTO = kakaoPayService.kakaoReady(request.getMoney(), userNumber);
 
         return new ResponseEntity<>(kakaoReadyResponseDTO,HttpStatus.OK);
     }
@@ -63,7 +68,8 @@ public class PointController {
     // 카카오페이 포인트 충전 결제 승인
     @GetMapping("/charge/kakao/success")
     public ResponseEntity<Void> kakaopayApprove(@RequestParam("pg_token") String pgToken,@RequestParam("order_id") String orderId){
-
+        System.out.println("------- 카카오 결제 승인 ---------");
+        System.out.println("pgToken : "+pgToken+" //// orderId : "+orderId);
         kakaoPayService.kakaoApprove(pgToken,orderId);
 
         return new ResponseEntity<>(HttpStatus.OK);
