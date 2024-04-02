@@ -1,14 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-
 import ProductUpdateView from '@/views/product/ProductUpdateView.vue';
 import ProductCreateView from '@/views/product/ProductCreateView.vue';
 import ProductListView from '@/views/product/ProductListView.vue';
 import SearchBarView from '@/views/product/SearchBarView.vue';
 import ReadView from '@/views/product/ReadView.vue';
 import MainPageView from '@/views/main/MainPageView.vue';
-import MyBiddingView from '@/views/mypage/MyBiddingView.vue'
-import MySellingView from '@/views/mypage/MySellingView.vue'
+import MyBiddingView from '@/views/mypage/MyBiddingView.vue';
+import MySellingView from '@/views/mypage/MySellingView.vue';
 import LoginView from '@/views/LoginView.vue';
 import MypageView from '@/views/mypage/MypageView.vue';
 import MypageMainView from '@/views/mypage/MypageMainView.vue';
@@ -33,13 +32,22 @@ const router = createRouter({
 					component: MypageMainView,
 				},
 				{
-					path: 'update', // 수정됨: 상대 경로 사용
+					path: 'update',
 					name: 'MypageUpdateView',
 					component: MypageUpdateView,
 				},
+				{
+					path: 'mybid',
+					name: 'MyBiddingView',
+					component: MyBiddingView,
+				},
+				{
+					path: 'mysell',
+					name: 'MySellingView',
+					component: MySellingView,
+				},
 			],
 		},
-	
 
 		{
 			path: '/product/update/:bidId',
@@ -69,16 +77,6 @@ const router = createRouter({
 			path: '/product/:number',
 			name: 'ReadView',
 			component: ReadView,
-		},
-		{
-		  path: '/my/mybid',
-		  name: 'MyBiddingView',
-		  component: MyBiddingView,
-		},
-		{
-		  path: '/my/mysell',
-		  name: 'MySellingView',
-		  component: MySellingView,
 		},
 		{
 			path: '/login',
