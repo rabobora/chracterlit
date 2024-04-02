@@ -44,21 +44,24 @@
           <p class="bid-time">시작 시간: <span>{{ biddingStore.formattedStartDate || 'Loading...' }}</span></p>
           <p class="bid-time">종료 시간: <span>{{ biddingStore.formattedEndDate || 'Loading...' }}</span></p>
           <p class="start-price">시작가: <span class="bid-price">{{ biddingStore.itemDetail.startBidFormatted || 'Loading...' }}</span></p>
-          <p class="current-price" :class="{'hidden-element': biddingStore.itemDetail.bidStatus !== 1}" >현재가: <span class="bid-price">{{ biddingStore.latestEvent.requestBidFormatted || 'Loading...' }}</span></p>
-          <p class="final-price" :class="{'hidden-element': biddingStore.itemDetail.bidStatus !== 2 &&  biddingStore.itemDetail.finalBid === null }">낙찰가: <span class="bid-price">{{ biddingStore.itemDetail.finalBid }}원</span></p>
+          <div>
+            <p v-if="biddingStore.itemDetail.bidStatus === 1" class="current-price" :class="{'hidden-element': biddingStore.itemDetail.bidStatus !== 1}" >현재가: <span class="bid-price">{{ biddingStore.latestEvent.requestBidFormatted || 'Loading...' }}</span></p>
+            <p v-else-if="biddingStore.itemDetail.bidStatus === 2" class="final-price" :class="{'hidden-element': biddingStore.itemDetail.bidStatus !== 2 &&  biddingStore.itemDetail.finalBid === null }">낙찰가: <span class="bid-price">{{ biddingStore.itemDetail.finalBid ? biddingStore.itemDetail.finalBid + '원' : '유찰' }}</span></p>
+            <p v-else-if="biddingStore.itemDetail.bidStatus === 0" class="wait-price"><span class="bid-price">경매가 아직 열리지 않았습니다.</span></p>
+          </div>
         </div>
         <div class="bid-input">
-          <input type="number" v-model="biddingStore.getRequestBid" :placeholder="`${biddingStore.latestEvent.requestBidFormatted}`">
-          <button @click="biddingStore.sendRequest" :disabled="!biddingStore.getIsLoggedIn || !biddingStore.getIsBidValid">{{ biddingStore.getSendRequestStatus }}</button>
+          <input type="number" v-model="biddingStore.getRequestBid" :placeholder="`${biddingStore.latestEvent.requestBidFormatted || ''}`">
+          <button @click="biddingStore.sendRequest" :disabled="!biddingStore.getIsLoggedIn || !biddingStore.getIsBidValid || isOwner">{{ biddingStore.getSendRequestStatus }}</button>
         </div>
-        <div class="modify-button-box">
+        <div class="modify-button-box" :class="{'hidden-element': !isOwner || biddingStore.itemDetail.bidStatus !== 0}">
         <button @click="deleteSelectedProduct" class="deletebutton">상품 삭제</button>
         <button @click="updateproduct" class="updatebutton">상품수정</button>
         </div>
       </div>
     </div>
     <div class="description">
-      <h2>상세설명</h2>
+      <h1>상세설명</h1>
       <div class="image-gallery">
       <img v-for="imageUrl in biddingStore.itemDetail.image" :key="imageUrl" :src="imageUrl" alt="Product Image" class="product-image"/>
     </div>
@@ -81,10 +84,9 @@ const biddingStore = useBiddingStore();
 const usersStore = useUsersStore();
 const productDetail = ref(null); 
 
-// const isOwner = computed(() => {
-//   console.log("check", biddingStore.itemDetail.userNumber, usersStore.getUserNumber);
-//   return biddingStore.itemDetail.userNumber === usersStore.getUserNumber;
-// });
+const isOwner = computed(() => {
+  return biddingStore.itemDetail.userNumber === usersStore.loginUser.userNumber;
+});
 
 const viewAll = () => {
   router.push({ name: 'productList' });
@@ -97,20 +99,24 @@ const goToCreate = () => {
 onMounted(async () => {
     const bidId = route.params.number;
     biddingStore.bidId = route.params.number;
-    await usersStore.getLoginUser();
+    await usersStore.fetchLoginUser();
 await biddingStore.fetchItemDetail();
-await biddingStore.loadInitialEvent();
-biddingStore.subscribe();
-window.addEventListener('beforeunload', biddingStore.disconnect);
-    try {
-        const detail = await productStore.researchProductDetail(bidId);
-        if (detail) {
-            productDetail.value = detail;
-            console.log("추가요청");
 
-        } else {
-            console.error('No product:', bidId);
-        }
+try {
+  const detail = await productStore.researchProductDetail(bidId);
+  if (detail) {
+    productDetail.value = detail;
+    console.log("추가요청");
+    
+  } else {
+    console.error('No product:', bidId);
+  }
+  if(biddingStore.itemDetail.bidStatus === 1){
+    await biddingStore.loadInitialEvent();
+    biddingStore.subscribe();
+    window.addEventListener('beforeunload', biddingStore.disconnect);    
+    }
+
     } catch (error) {
         console.error('Error:', error);
     }
@@ -246,15 +252,19 @@ border-radius: 2%;
 
 
 .deletebutton {
- background-color: brown;
- color: bisque;
+ background-color: rgb(0, 0, 0);
+ color: rgb(255, 255, 255);
  cursor: pointer;
- /* visibility: hidden; */
+ margin-right: 10px;
+ border-radius: 15px; 
+ width: 83px;
 }
 .updatebutton{
-  background-color: blueviolet;
+  background-color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
   cursor: pointer;
-  /* visibility: hidden; */
+  border-radius: 15px;
+  width: 83px;  
 }
 
 .read-page-container {
@@ -266,12 +276,13 @@ border-radius: 2%;
   
   .item-image {
     text-align: center; /* 이미지를 중앙 정렬 */
+    margin-top: 5%;
   }
   
   .image-style {
     width: 100%;
     max-width: 300px;
-    height: auto;
+    height: 400px;
     box-shadow: 0px 4px 4px 0px rgb(63, 62, 62);
     border-radius: 10px;
   }
@@ -312,7 +323,8 @@ border-radius: 2%;
   color: white;
   border: none;
   cursor: pointer;
-  margin-top: 5px;  
+  margin-top: 5px;
+  margin-right: 20px;  
   width: 83px;
   background-color: #000; /* 검은색 배경 */
   color: white;
@@ -332,6 +344,12 @@ border-radius: 2%;
     color: #333;
   }
 
+  .wait-price {
+    padding-top: 2px;
+    font-size: 1em;
+    color: #b4b4b4;
+  }
+
   .bid-price {
     font-weight: bold;
     font-size: large;
@@ -342,15 +360,19 @@ border-radius: 2%;
     text-align: center;
   }
   
-  .description h2 {
-    font-size: 1.2em;
-    border-top: 1px solid #ccc;
+  .description h1 {
+    border-top: 3px solid #333;
     padding-top: 10px;
   }
   
   .description p {
     font-size: 1em;
     color: #666;
+  }
+
+  .product-image {
+    max-width: 480px;
+    margin-bottom: 15px;
   }
   
   .bid-input {
@@ -371,7 +393,7 @@ border-radius: 2%;
   
   .bid-input button {
   margin-top: 5px;  
-  padding: 15px 25px;
+  padding: 5px 25px;
   width: 83px;
   background-color: #000; /* 검은색 배경 */
   color: white;
@@ -391,22 +413,7 @@ border-radius: 2%;
   background-color: #cccccc; /* 비활성화 상태의 배경색 */
   color: #666666; /* 비활성화 상태의 텍스트 색상 */
   cursor: not-allowed; /* 비활성화 상태일 때 마우스 커서를 not-allowed로 변경 */
-}
-  
-  .home-button {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    color: #fff;
-    background-color: #007bff;
-    text-decoration: none;
-    border-radius: 5px;
-  }
-  
-  .home-button:hover {
-    background-color: #0056b3;
-  }
-  
+}  
   .message-overlay {
     position: fixed;
     top: 0;
@@ -454,10 +461,14 @@ border-radius: 2%;
   }
 
   .modify-button-box {
-    margin-top: 15px;
+    margin-top: 35px;
+    margin-left: 64.5%;
   }
 
   .image-gallery {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-top: 25px;
   }
   
