@@ -7,8 +7,8 @@ import ProductListView from '@/views/product/ProductListView.vue';
 import SearchBarView from '@/views/product/SearchBarView.vue';
 import ReadView from '@/views/product/ReadView.vue';
 import MainPageView from '@/views/main/MainPageView.vue';
-// import MyBiddingView from '@/views/my/MyBiddingView.vue'
-// import MySellingView from '@/views/my/MySellingView.vue'
+import MyBiddingView from '@/views/mypage/MyBiddingView.vue'
+import MySellingView from '@/views/mypage/MySellingView.vue'
 import LoginView from '@/views/LoginView.vue';
 import MypageView from '@/views/mypage/MypageView.vue';
 import MypageMainView from '@/views/mypage/MypageMainView.vue';
@@ -70,16 +70,16 @@ const router = createRouter({
 			name: 'ReadView',
 			component: ReadView,
 		},
-		// {
-		//   path: '/my/mybid',
-		//   name: 'MyBiddingView',
-		//   component: MyBiddingView,
-		// },
-		// {
-		//   path: '/my/mysell',
-		//   name: 'MySellingView',
-		//   component: MySellingView,
-		// },
+		{
+		  path: '/my/mybid',
+		  name: 'MyBiddingView',
+		  component: MyBiddingView,
+		},
+		{
+		  path: '/my/mysell',
+		  name: 'MySellingView',
+		  component: MySellingView,
+		},
 		{
 			path: '/login',
 			name: 'login',
