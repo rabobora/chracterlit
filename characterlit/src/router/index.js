@@ -13,6 +13,7 @@ import LoginView from '@/views/LoginView.vue';
 import MypageView from '@/views/mypage/MypageView.vue';
 import MypageMainView from '@/views/mypage/MypageMainView.vue';
 import MypageUpdateView from '@/views/mypage/MypageUpdateView.vue';
+import chatView from '@/views/chat/chatView.vue';
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,7 +23,11 @@ const router = createRouter({
 			name: 'mainPage',
 			component: MainPageView,
 		},
-
+		{
+			path:'/chatPage',
+			name: 'chatPage',
+			component: chatView,
+		},
 		{
 			path: '/mypage',
 			component: MypageView,
