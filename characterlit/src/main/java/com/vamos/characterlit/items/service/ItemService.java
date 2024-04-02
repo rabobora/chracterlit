@@ -10,6 +10,7 @@ import com.vamos.characterlit.users.domain.Users;
 import com.vamos.characterlit.users.repository.UsersRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,14 +29,6 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final UsersRepository usersRepository;
-
-    // 상품 게시글 생성
-//    public Items createItem(ItemCreateDto itemCreateDto) {
-//        Items items = ItemCreateDto.toEntity(itemCreateDto);
-//        // db에 글 저장
-//        return itemRepository.save(items);
-//
-//    }
 
     // 상품 게시글 생성 -> 로그인 후 로직
     public Items createItem(ItemCreateDto itemCreateDto, Long usernumber) {
@@ -118,6 +111,24 @@ public class ItemService {
         for (Items item : categoryItems) {
             itemDtoList.add(ItemListDto.fromEntity(item));
         }
+        return itemDtoList;
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<ItemListDto> Top3ItemsByViewCount() {
+        List<Items> items = itemRepository.findAll(Sort.by(Sort.Direction.DESC, "viewCount"));
+        List<ItemListDto> itemDtoList = new ArrayList<>();
+
+        // 최대 3개의 아이템만 반환
+        int count = 0;
+        for (Items item : items) {
+            if (count >= 3) break;
+            ItemListDto itemListDto = ItemListDto.fromEntity(item);
+            itemDtoList.add(itemListDto);
+            count++;
+        }
+
         return itemDtoList;
     }
 
