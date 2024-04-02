@@ -203,8 +203,8 @@ public class PointService {
     // 구매하기
 public boolean buyItem(BuyRequestDTO request){
 
-    Point seller = pointRepository.findByuserNumber(request.getUserNumber());
-    Point buyer = pointRepository.findByuserNumber(request.getWinnerId());
+    Point seller = getPoint(request.getUserNumber());
+    Point buyer =getPoint(request.getWinnerId());
 
     if(buyer.getUsablePoint()< request.getFinalBid()){
         return false;
