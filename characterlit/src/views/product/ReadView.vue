@@ -34,18 +34,32 @@
 
       <div class="item-info">
         <div class="item-details">
-          <h1 class="title">{{ biddingStore.itemDetail.title || 'Loading...' }}</h1>
-          <div class="seller-info">
-          <p class="nick-name">판매자 <span>{{ biddingStore.itemDetail.nickname ||  'Loading...'  }}</span></p>
-          <button class="chat-request-button" :class="{'hidden-element': isOwner}" @click="sendChatToSeller">문의하기</button>
-          </div>
-          <p class="bid-time">시작 시간 <span>{{ biddingStore.formattedStartDate || 'Loading...' }}</span></p>
-          <p class="bid-time">종료 시간 <span>{{ biddingStore.formattedEndDate || 'Loading...' }}</span></p>
-          <p class="start-price">시작가  <span class="bid-price">{{ biddingStore.itemDetail.startBidFormatted || 'Loading...' }}</span></p>
+          <h1 class="title">{{ biddingStore.itemDetail.title || 'Loading...' }}</h1>        
           <div>
-            <p v-if="biddingStore.itemDetail.bidStatus === 1" class="current-price" :class="{'hidden-element': biddingStore.itemDetail.bidStatus !== 1}" >현재가 <span class="bid-price">{{ biddingStore.latestEvent.requestBidFormatted || 'Loading...' }}</span></p>
-            <p v-else-if="biddingStore.itemDetail.bidStatus === 2" class="final-price" :class="{'hidden-element': biddingStore.itemDetail.bidStatus !== 2 &&  biddingStore.itemDetail.finalBid === null }">낙찰가 <span class="bid-price">{{ biddingStore.itemDetail.finalBid ? biddingStore.itemDetail.finalBid + '원' : '유찰' }}</span></p>
-            <p v-else-if="biddingStore.itemDetail.bidStatus === 0" class="wait-price"><span class="bid-price">경매가 아직 열리지 않았습니다.</span></p>
+            <div class="seller-info">
+            <div  class="nick-name">
+              판매자
+            </div>
+            
+            <div  class="usernickname">
+              {{ biddingStore.itemDetail.nickname ||  'Loading...'  }}
+            </div>
+            <button class="chat-request-button" :class="{'hidden-element': isOwner}" @click="sendChatToSeller">문의하기</button>
+            </div>
+            <div class = "margins">
+            <p class="bid-time">시작 시간 <span class="bidtimevalue">{{ biddingStore.formattedStartDate || 'Loading...' }}</span></p>
+            </div>
+            <div class = "margins">
+            <p class="bid-time">종료 시간 <span class="bidtimevalue">{{ biddingStore.formattedEndDate || 'Loading...' }}</span></p>
+           </div>
+           <div class = "margins">
+            <p class="start-price">시작가  <span class="bid-price bidtimevalue2">{{ biddingStore.itemDetail.startBidFormatted || 'Loading...' }}</span></p>
+          </div>
+            <div>
+          </div>
+            <p v-if="biddingStore.itemDetail.bidStatus === 1" class="current-price" :class="{'hidden-element': biddingStore.itemDetail.bidStatus !== 1}" >현재가 <span class="bid-price bidtimevalue2">{{ biddingStore.latestEvent.requestBidFormatted || 'Loading...' }}</span></p>
+            <p v-else-if="biddingStore.itemDetail.bidStatus === 2" class="final-price" :class="{'hidden-element': biddingStore.itemDetail.bidStatus !== 2 &&  biddingStore.itemDetail.finalBid === null }">낙찰가 <span class="bid-price bidtimevalue2">{{ biddingStore.itemDetail.finalBid ? biddingStore.itemDetail.finalBid + '원' : '유찰' }}</span></p>
+            <p v-else-if="biddingStore.itemDetail.bidStatus === 0" class="wait-price"><span class="bid-price bidtimevalue2">경매가 아직 열리지 않았습니다.</span></p>
           </div>
         </div>
         <div class="bid-input">
@@ -175,6 +189,10 @@ const sendChatToSeller = () => {
 
 
 <style scoped>
+.usernickname{
+  margin-right: 275px;
+  font-weight: bolder;
+}
 
 .product-view {
     display: flex;
@@ -281,6 +299,7 @@ border-radius: 2%;
     margin: auto; /* 중앙 정렬 */
     padding: 20px;
     font-family: 'Arial', sans-serif;
+    margin-top: -5%;
   }
   
   .item-image {
@@ -352,9 +371,11 @@ border-radius: 2%;
     margin: 20px 0;
   }
   
-  .start-price, .current-price, .bid-time, .nick-name, .final-price {
+  .start-price, .current-price, .bid-time, .nick-name,.usernickname, .final-price {
     font-size: 1em;
     color: #333;
+    margin-left: 20px;
+    margin-bottom: 20px;
   }
 
   .wait-price {
@@ -491,5 +512,20 @@ border-radius: 2%;
 .font-all{    
     font-family: 'Toss Product Sans';    
   }
+
+  .bidtimevalue{
+    margin-left: 25px;
+    font-weight: bolder;
+  }
+  .bidtimevalue2{
+    margin-left: 45px;
+    font-weight: bolder;
+  }
+
+  .margins{
+    margin-bottom: 25px;
+  }
+
+  
 
 </style>
