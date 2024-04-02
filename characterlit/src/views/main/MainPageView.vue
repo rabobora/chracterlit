@@ -27,6 +27,10 @@
 			<div class="title">{{ product.title }}</div>
 			</div>
 		</div>
+
+		<div @click="gotoproductlist" class="moreproduct">
+			더 많은 상품이 궁금하다면?
+		</div>
 	</div>
 
 
@@ -54,7 +58,7 @@ onMounted(() => {
       // 요소가 뷰포트에 들어오면 true, 아니면 false로 설정
       top3ContainerVisible.value = entry.isIntersecting;
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.3 });
 
   const top3ContainerEl = document.querySelector('.top3-container');
   observer.observe(top3ContainerEl);
@@ -75,16 +79,16 @@ const navigateToItem = (bidId) => {
 
 @keyframes fade-in {
 	from {
-		opacity: 0; /* 시작 시 요소가 완전히 투명 */
+		opacity: 0; 
 	}
 	to {
-		opacity: 1; /* 종료 시 요소가 완전히 불투명 */
+		opacity: 1; 
 	}
 }
 
 .fadecomponents > div {
-	animation: fade-in 2.5s ease-out 0.5s; /* 애니메이션 이름, 지속 시간, 타이밍 함수, 시작 지연 */
-	animation-fill-mode: forwards; /* 애니메이션 종료 시 요소가 최종 상태를 유지하도록 설정 */
+	animation: fade-in 2.5s ease-out 0.5s;
+	animation-fill-mode: forwards; 
 }
 
 .productlist {
@@ -145,15 +149,15 @@ const navigateToItem = (bidId) => {
 }
 
 .items-container {
-  display: flex; /* 아이템을 가로로 나열 */
-  justify-content: center; /* 아이템들을 컨테이너 중앙에 정렬 */
-  gap: 20px; /* 아이템 사이의 간격 조정 */
+  display: flex; 
+  justify-content: center; 
+  gap: 20px; 
 }
 
 .top3-container {
   display: flex;
-  flex-direction: column; /* 내부 요소를 세로로 정렬 */
-  align-items: center; /* 내부 요소를 가운데 정렬 */
+  flex-direction: column; 
+  align-items: center; 
   justify-content: center;
   padding: 20px;
   background-color: #3e78e5;
@@ -162,8 +166,7 @@ const navigateToItem = (bidId) => {
 
 .item {
   width: 250px;
-  height: 300px;
-  /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
+  height: 300px;  
   border-radius: 5px;
   overflow: hidden;
   background: #fff;
@@ -178,7 +181,7 @@ const navigateToItem = (bidId) => {
   margin-top: 8%;
   font-size: 22px;
   font-weight: bold;
-  /* margin-bottom: 10px; */
+  
 }
 
 .thumbnail {
@@ -193,23 +196,31 @@ const navigateToItem = (bidId) => {
 	font-weight: bolder;
 }
 .ranktitle {
-  font-size: 28px; /* 폰트 크기 조정 */
-  color: #ffffff; /* 글자 색상을 변경하여 가독성 향상 */
-  margin-bottom: 20px; /* 상품 카드와의 간격 조정 */
-  text-align: center; /* 제목을 가운데 정렬 */
+  font-size: 41px; 
+  color: #ffffff; 
+  margin-bottom: 12%; 
+  text-align: center;
+
 }
 
-/* 초기 상태: 요소가 화면에 등장하기 전 */
+
 .top3-container {
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.5s ease-out, transform 0.5s ease-out;
 }
 
-/* 화면에 등장했을 때 적용될 스타일 */
+
 .top3-container.visible {
   opacity: 1;
   transform: translateY(0);
 }
 
+.moreproduct{
+	margin-top: 5%;
+	font-size: 25px;
+	color: #ffffff;
+	margin-left: 40%;
+	cursor: pointer;
+}
 </style>
