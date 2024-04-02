@@ -1,9 +1,8 @@
 <template>
+  <header>
+    <TheHeader/>
+  </header>
   <div class="read-page-container">
-    <header>
-      <h1>헤더 자리입니다 {{ biddingStore.bidId }}</h1>
-      <!-- <router-link to="/" class="home-button">HomeView로 돌아가기</router-link> -->
-    </header>
     <div class="search-box">
     <div class="searchbar">
         <SearchBarView />        
@@ -19,13 +18,13 @@
       </div>
     </div>
 
-    <div class="category-navbar">
+    <!-- <div class="category-navbar">
         <ul>
             <li v-for="category in categories" :key="category.id" @click="selectCategory(category.id)">
               <i class="fa-solid fa-paper-plane"></i>  {{ category.name }}
             </li>
         </ul>
-      </div>
+      </div> -->
 
     <div class="content">
       <div class="item-image">
@@ -35,22 +34,36 @@
 
       <div class="item-info">
         <div class="item-details">
-          <h1 class="title">{{ biddingStore.itemDetail.title || 'Loading...' }}</h1>
-          <div class="seller-info">
-          <p class="nick-name">판매자: <span>{{ biddingStore.itemDetail.nickname ||  'Loading...'  }}</span></p>
-          <button class="chat-request-button" @click="sendChatToSeller">문의하기</button>
-          </div>
-          <p class="bid-time">시작 시간: <span>{{ biddingStore.formattedStartDate || 'Loading...' }}</span></p>
-          <p class="bid-time">종료 시간: <span>{{ biddingStore.formattedEndDate || 'Loading...' }}</span></p>
-          <p class="start-price">시작가: <span class="bid-price">{{ biddingStore.itemDetail.startBidFormatted || 'Loading...' }}</span></p>
+          <h1 class="title">{{ biddingStore.itemDetail.title || 'Loading...' }}</h1>        
           <div>
-            <p v-if="biddingStore.itemDetail.bidStatus === 1" class="current-price" :class="{'hidden-element': biddingStore.itemDetail.bidStatus !== 1}" >현재가: <span class="bid-price">{{ biddingStore.latestEvent.requestBidFormatted || 'Loading...' }}</span></p>
-            <p v-else-if="biddingStore.itemDetail.bidStatus === 2" class="final-price" :class="{'hidden-element': biddingStore.itemDetail.bidStatus !== 2 &&  biddingStore.itemDetail.finalBid === null }">낙찰가: <span class="bid-price">{{ biddingStore.itemDetail.finalBid ? biddingStore.itemDetail.finalBid + '원' : '유찰' }}</span></p>
-            <p v-else-if="biddingStore.itemDetail.bidStatus === 0" class="wait-price"><span class="bid-price">경매가 아직 열리지 않았습니다.</span></p>
+            <div class="seller-info">
+            <div  class="nick-name">
+              판매자
+            </div>
+            
+            <div  class="usernickname">
+              {{ biddingStore.itemDetail.nickname ||  'Loading...'  }}
+            </div>
+            <button class="chat-request-button" :class="{'hidden-element': isOwner}" @click="sendChatToSeller">문의하기</button>
+            </div>
+            <div class = "margins">
+            <p class="bid-time">시작 시간 <span class="bidtimevalue">{{ biddingStore.formattedStartDate || 'Loading...' }}</span></p>
+            </div>
+            <div class = "margins">
+            <p class="bid-time">종료 시간 <span class="bidtimevalue">{{ biddingStore.formattedEndDate || 'Loading...' }}</span></p>
+           </div>
+           <div class = "margins">
+            <p class="start-price">시작가  <span class="bid-price bidtimevalue2">{{ biddingStore.itemDetail.startBidFormatted || 'Loading...' }}</span></p>
+          </div>
+            <div>
+          </div>
+            <p v-if="biddingStore.itemDetail.bidStatus === 1" class="current-price" :class="{'hidden-element': biddingStore.itemDetail.bidStatus !== 1}" >현재가 <span class="bid-price bidtimevalue2">{{ biddingStore.latestEvent.requestBidFormatted || 'Loading...' }}</span></p>
+            <p v-else-if="biddingStore.itemDetail.bidStatus === 2" class="final-price" :class="{'hidden-element': biddingStore.itemDetail.bidStatus !== 2 &&  biddingStore.itemDetail.finalBid === null }">낙찰가 <span class="bid-price bidtimevalue2">{{ biddingStore.itemDetail.finalBid ? biddingStore.itemDetail.finalBid + '원' : '유찰' }}</span></p>
+            <p v-else-if="biddingStore.itemDetail.bidStatus === 0" class="wait-price"><span class="bid-price bidtimevalue2">경매가 아직 열리지 않았습니다.</span></p>
           </div>
         </div>
         <div class="bid-input">
-          <input type="number" v-model="biddingStore.getRequestBid" :placeholder="`${biddingStore.latestEvent.requestBidFormatted || ''}`">
+          <input type="number" v-model="biddingStore.getRequestBid" :placeholder="`${biddingStore.latestEvent.requestBidFormatted || ''}`" :disabled="biddingStore.itemDetail.bidStatus !== 1">
           <button @click="biddingStore.sendRequest" :disabled="!biddingStore.getIsLoggedIn || !biddingStore.getIsBidValid || isOwner">{{ biddingStore.getSendRequestStatus }}</button>
         </div>
         <div class="modify-button-box" :class="{'hidden-element': !isOwner || biddingStore.itemDetail.bidStatus !== 0}">
@@ -76,6 +89,7 @@ import { useBiddingStore } from '../../stores/bidding';
 import { useUsersStore } from '@/stores/users';
 import { useRoute,useRouter } from 'vue-router';
 import SearchBarView from './SearchBarView.vue';
+import TheHeader from '@/components/common/TheHeader.vue';
 const router = useRouter();
 const route = useRoute();
 const productStore = useProductStore();
@@ -161,10 +175,24 @@ const updateproduct = () => {
     console.error('상품 정보가 없습니다.');
   }
 };
+
+// 채팅방 생성
+const sendChatToSeller = () => {
+  if(usersStore.loginUser.userNumber === null){
+    return
+  }
+  // const bidIdQuery = biddingStore.itemDetail.bidId;
+  // router.push({ name: '페이지명', query: { bidId : bidIdQuery } })
+  console.log(biddingStore.itemDetail.bidId);
+};
 </script>
 
 
 <style scoped>
+.usernickname{
+  margin-right: 275px;
+  font-weight: bolder;
+}
 
 .product-view {
     display: flex;
@@ -271,6 +299,7 @@ border-radius: 2%;
     margin: auto; /* 중앙 정렬 */
     padding: 20px;
     font-family: 'Arial', sans-serif;
+    margin-top: -5%;
   }
   
   .item-image {
@@ -295,6 +324,9 @@ border-radius: 2%;
   
   .item-details {
     margin-top: 20px;
+    font-size: large;   
+    font-family: 'Toss Product Sans';    
+  
   }
 
   .item-details p {
@@ -304,9 +336,10 @@ border-radius: 2%;
   
   .title {
     font-size: 1.5em;
+    font-weight: 900;
     color: #333;
     text-align: left;
-    border-bottom: 1px solid #ccc;
+    /* border-bottom: 1px solid #ccc; */
     padding-bottom: 15px;
     margin-bottom: 30px;
   }
@@ -338,9 +371,11 @@ border-radius: 2%;
     margin: 20px 0;
   }
   
-  .start-price, .current-price, .bid-time, .nick-name, .final-price {
+  .start-price, .current-price, .bid-time, .nick-name,.usernickname, .final-price {
     font-size: 1em;
     color: #333;
+    margin-left: 20px;
+    margin-bottom: 20px;
   }
 
   .wait-price {
@@ -474,6 +509,23 @@ border-radius: 2%;
   .hidden-element {
   visibility: hidden;
 }
+.font-all{    
+    font-family: 'Toss Product Sans';    
+  }
 
+  .bidtimevalue{
+    margin-left: 25px;
+    font-weight: bolder;
+  }
+  .bidtimevalue2{
+    margin-left: 45px;
+    font-weight: bolder;
+  }
+
+  .margins{
+    margin-bottom: 25px;
+  }
+
+  
 
 </style>
