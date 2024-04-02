@@ -12,7 +12,7 @@ import LoginView from '@/views/LoginView.vue';
 import MypageView from '@/views/mypage/MypageView.vue';
 import MypageMainView from '@/views/mypage/MypageMainView.vue';
 import MypageUpdateView from '@/views/mypage/MypageUpdateView.vue';
-//////
+import chatView from '@/views/chat/chatView.vue';
 import BuyItemView from '@/views/pay/BuyItemView.vue';
 import PayStatementView from '@/views/pay/PayStatementView.vue';
 import ChargeView from '@/views/pay/ChargeView.vue';
@@ -115,6 +115,11 @@ const router = createRouter({
 			path: '/withdraw',
 			name: 'withdraw',
 			component: WithdrawView,
+		},
+		{
+			path: '/chatPage',
+			name: 'chatPage',
+			component: chatView,
 		},
 	],
 });
