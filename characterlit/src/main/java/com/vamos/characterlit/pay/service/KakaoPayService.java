@@ -1,7 +1,5 @@
 package com.vamos.characterlit.pay.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -10,20 +8,28 @@ import com.vamos.characterlit.pay.domain.Payment;
 import com.vamos.characterlit.pay.domain.Point;
 import com.vamos.characterlit.pay.repository.PaymentRepository;
 import com.vamos.characterlit.pay.repository.PointRepository;
-import com.vamos.characterlit.pay.response.FindUserkeyResponseDTO;
 import com.vamos.characterlit.pay.response.KaKaoApproveResponseDTO;
 import com.vamos.characterlit.pay.response.KakaoReadyResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +51,9 @@ public class KakaoPayService {
     @Value("${spring.pay.approveUrl}")
     private String approveUrl;
 
+    @Value("${spring.pay.host}")
+    private String host;
+
     // 결제 준비
     public KakaoReadyResponseDTO kakaoReady(int money, Long userNumber) {
 
@@ -52,38 +61,37 @@ public class KakaoPayService {
         String transmissionDate = now.format(DateTimeFormatter.ofPattern("yyMMdd"));
         String orderId = transmissionDate + pointStatementService.createOrderId();
 
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("cid", cid);
-        params.add("partner_order_id", orderId);
-        params.add("partner_user_id", String.valueOf(userNumber));
-        params.add("item_name", "Characterlit Point");
-        params.add("quantity", "1");
-        params.add("total_amount", String.valueOf(money));
-        params.add("tax_free_amount", String.valueOf(money));
-        params.add("approval_url", "http://localhost:8080/api/point/charge/kakao/success?order_id=" + orderId);
-        params.add("cancel_url", "http://localhost:8080/api/point/charge/kakao/cancel");
-        params.add("fail_url", "http://localhost:8080/api/point/charge/kakao/fail");
-        params.add("payment_method_type", "MONEY");
+        Map<String, Object> params = new HashMap<>();
+        params.put("cid", cid);
+        params.put("partner_order_id", orderId);
+        params.put("partner_user_id",userNumber.toString());
+        params.put("item_name", "Characterlit Point");
+        params.put("quantity", "1");
+        params.put("total_amount", String.valueOf(money));
+        params.put("tax_free_amount", String.valueOf(money));
+        params.put("approval_url", host+"/loading?order_id=" + orderId);
+        params.put("cancel_url", host+"/api/point/charge/kakao/cancel");
+        params.put("fail_url", host+"/api/point/charge/kakao/fail");
+        params.put("payment_method_type", "MONEY");
 
-        WebClient wc = WebClient.create(readyUrl);
+        HttpHeaders headers = new HttpHeaders();
+        String auth = "SECRET_KEY " + secretKey;
+        headers.add("Content-type","application/json");
+        headers.add("Authorization",auth);
+
+        // 헤더와 바디 붙이기
+        HttpEntity<Map<String,Object>> body = new HttpEntity<>(params, headers);
+
+        System.out.println(" 카카오 준비 body : "+body);
+
         KakaoReadyResponseDTO kakaoResponse = null;
+        RestTemplate restTemplate = new RestTemplate();
+//        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
 
         try {
-            String response = wc.post()
-                    .uri(readyUrl)
-                    .body(BodyInserters.fromFormData(params))
-                    .header("Authorization", "SECRET_KEY " + secretKey)
-                    .header("Content-type", "application/json") //요청 헤더
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-
-            JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
-            Gson gson = new Gson();
-
-            kakaoResponse = gson.fromJson(jsonObject, KakaoReadyResponseDTO.class);
-        } catch (JsonParseException e) {
-            e.printStackTrace();
+            kakaoResponse = restTemplate.postForObject(readyUrl, body, KakaoReadyResponseDTO.class);
+        }catch (RestClientException e) {
+            System.out.println(e);
         }
 
         LocalDateTime localDateTime = kakaoResponse.getCreated_at().toInstant() // Date -> Instant
@@ -109,33 +117,33 @@ public class KakaoPayService {
 
         Payment payment = paymentRepository.findByPaymentId(orderId);
 
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("cid", cid);
-        params.add("tid", payment.getPgTid());
-        params.add("partner_order_id", orderId);
-        params.add("partner_user_id", String.valueOf(payment.getUserNumber()));
-        params.add("pg_token", pgToken);
-        params.add("total_amount", String.valueOf(payment.getMoney()));
+        Map<String, Object> params = new HashMap<>();
+        params.put("cid", cid);
+        params.put("tid", payment.getPgTid());
+        params.put("partner_order_id", orderId);
+        params.put("partner_user_id", String.valueOf(payment.getUserNumber()));
+        params.put("pg_token", pgToken);
+//        params.put("total_amount", String.valueOf(payment.getMoney()));
 
-        WebClient wc = WebClient.create(approveUrl);
+        HttpHeaders headers = new HttpHeaders();
+        String auth = "SECRET_KEY " + secretKey;
+        headers.add("Content-type","application/json");
+        headers.add("Authorization",auth);
+
+        // 헤더와 바디 붙이기
+        HttpEntity<Map<String,Object>> body = new HttpEntity<>(params, headers);
+
+        System.out.println(" 카카오 승인 body : "+body);
+
         KaKaoApproveResponseDTO kakaoResponse = null;
+        RestTemplate restTemplate = new RestTemplate();
 
         try {
-            String response = wc.post()
-                    .uri(approveUrl)
-                    .body(BodyInserters.fromFormData(params))
-                    .header("Authorization", "SECRET_KEY " + secretKey)
-                    .header("Content-type", "application/json") //요청 헤더
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
+            kakaoResponse = restTemplate.postForObject(approveUrl, body, KaKaoApproveResponseDTO.class);
 
-            JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
-            Gson gson = new Gson();
-
-            kakaoResponse = gson.fromJson(jsonObject, KaKaoApproveResponseDTO.class);
-        } catch (JsonParseException e) {
-            e.printStackTrace();
+            System.out.println(" 카카오 준비 response : "+kakaoResponse);
+        }catch (RestClientException e) {
+            System.out.println(e);
         }
 
         LocalDateTime localDateTime = kakaoResponse.getApproved_at().toInstant() // Date -> Instant
