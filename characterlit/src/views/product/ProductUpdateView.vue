@@ -122,24 +122,28 @@
         product.value.endDate = `${endDate.value}T${endTime.value}:00Z`;
 
         const start = new Date(product.value.startDate);
-      const end = new Date(product.value.endDate);
+        const end = new Date(product.value.endDate);
+        const now = new Date();
 
-      if (end <= start) {
-        alert('경매 종료일은 경매 시작일보다 늦게 설정해야 합니다.');
-        return; 
-      }
-        
-        await store.updateProduct(product.value, bidId);         
+        if (start <= now) {
+          alert('경매 시작일은 현재 시간보다 이후로 설정해야 합니다.');
+          return;
+        }
 
-    };
+          if (end <= start) {
+            alert('경매 종료일은 경매 시작일보다 늦게 설정해야 합니다.');
+            return; 
+          }
+            
+            await store.updateProduct(product.value, bidId);         
+
+        };
 
 
     
-    const previewImages = (event) => {
-        // 새로 선택된 파일을 기존 파일 배열에 추가
+    const previewImages = (event) => {        
         const newImages = Array.from(event.target.files);
-
-        // 새로운 이미지와 기존 이미지의 합이 5개를 초과하는지 검사
+      
         if (selectedImages.value.length + newImages.length > 5) {
             alert('최대 5장의 이미지만 첨부할 수 있습니다.');
             return;
@@ -147,7 +151,6 @@
 
         selectedImages.value = [...selectedImages.value, ...newImages];
 
-        // 중복 제거: 파일 이름으로 중복을 확인
         selectedImages.value = selectedImages.value.reduce((acc, current) => {
             const x = acc.find(item => item.name === current.name);
             if (!x) {

@@ -163,6 +163,7 @@ const changePage = (page) => {
   .product-view {
     display: flex;
     flex-direction: column;
+   
   }
   
 .category-navbar {
@@ -284,7 +285,7 @@ border-radius: 2%;
   display: flex;
   justify-content: flex-end; 
   align-items: center; 
-  margin-top: 3%;
+  margin-top: -2%;
   margin-right: 13%; 
 }
 .buttonbox{
