@@ -14,14 +14,10 @@
         
         <select v-model="selectedSortOption" @change="applySort" class="buttons">
             <option value="newest">최신순</option>
-            <option value="oldest">오래된순</option>
-            <!-- <option value="0">경매 전</option>
-            <option value="1">경매 중</option>
-            <option value="2">경매 종료</option> -->
+            <option value="oldest">오래된순</option>            
         </select>
-    </div>     
-       
-      <!-- 카테고리 네비게이션 바 -->
+    </div>            
+     
       <div class="category-navbar">
         <ul>
             <li v-for="category in categories" :key="category.id" @click="selectCategory(category.id)">
@@ -30,29 +26,38 @@
         </ul>
       </div>
       
-      <!-- 상품 목록 -->
-      <div class="product-list">
-    <div class="product-card"
-         v-for="product in paginatedProducts"
-         :key="product.bid_index"
-         @click="goToProductDetail(product.bidId)">
-          <img :src="product.thumbnail" alt="상품 이미지" class="product-image">
-          <div class="product-info">
-            <h1 class="product-title">{{ product.title }}</h1>            
-            <p class="product-status" :class="getStatusClass(product.bidStatus)">
-                {{ getAuctionStatusText(product.bidStatus) }}
-            </p>
-            <p class="product-price">시작가: ₩ {{ product.startBid }}</p>
-          </div>
+    
+    <div class="product-list">
+      <div class="product-card"
+          v-for="product in paginatedProducts"
+          :key="product.bid_index"
+          @click="goToProductDetail(product.bidId)">
+            <img :src="product.thumbnail" alt="상품 이미지" class="product-image">
+            <div class="product-info">
+              <h1 class="product-title">{{ product.title }}</h1>            
+              <p class="product-status" :class="getStatusClass(product.bidStatus)">
+                  {{ getAuctionStatusText(product.bidStatus) }}
+              </p>
+              <p class="product-price">시작가: ₩ {{ product.startBid }}</p>
+            </div>
         </div>
       </div>
     </div>
+    
+    <!-- <div>
+      <select v-model="selectedAuctionStatus">
+        <option value="">모든 상태</option>
+        <option value="0">경매전</option>
+        <option value="1">경매중</option>
+        <option value="2">경매종료</option>
+      </select>
+    </div> -->
 
     <div class="pagination">
-    <button @click="changePage(currentPage - 1)" :disabled="currentPage <= 1">이전</button>
-    <span>페이지 {{ currentPage }} / {{ totalPage }}</span>
-    <button @click="changePage(currentPage + 1)" :disabled="currentPage >= totalPage">다음</button>
-  </div>
+      <button @click="changePage(currentPage - 1)" :disabled="currentPage <= 1">이전</button>
+      <span>페이지 {{ currentPage }} / {{ totalPage }}</span>
+      <button @click="changePage(currentPage + 1)" :disabled="currentPage >= totalPage">다음</button>
+    </div>
   </template>
   
   <script setup>
@@ -161,50 +166,50 @@ const changePage = (page) => {
   }
   
 .category-navbar {
-position: fixed; /* 고정 위치 */
-top: 50%; /* 뷰포트의 중앙에 배치 */
-transform: translateY(-25%); /* 요소의 중심을 정확히 뷰포트 중앙에 맞춤 */
-left: 0; /* 왼쪽 가장자리에 배치 */
-width: 200px; /* 네비게이션 바의 너비 */
-background-color: #000; /* 검정색 배경 */
-color: #fff; /* 텍스트 색상을 흰색으로 */
-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+position: fixed; 
+top: 50%; 
+transform: translateY(-25%); 
+left: 0; 
+width: 200px; 
+background-color: #000; 
+color: #fff; 
+box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); 
 z-index: 1000; 
 margin-left: 2%;
 border-radius: 2%;
 }
 
 .category-navbar ul {
-  list-style: none; /* 목록 스타일 제거 */
-  padding: 0; /* 내부 여백 제거 */
-  margin: 0; /* 외부 여백 제거 */
+  list-style: none; 
+  padding: 0; 
+  margin: 0; 
 }
 
 .category-navbar li {
-  cursor: pointer; /* 마우스 오버 시 커서 변경 */
-  padding: 10px; /* 패딩으로 여백 추가 */
-  border-bottom: 1px solid #fff; /* 경계선 추가 */
+  cursor: pointer; 
+  padding: 10px; 
+  border-bottom: 1px solid #fff; 
 }
 
 .category-navbar li:last-child {
-  border-bottom: none; /* 마지막 요소의 하단 경계선 제거 */
+  border-bottom: none; 
 }
 
   
 .product-list {
   margin-top: 3%;
-  margin-left: calc(280px + 2%); /* 네비게이션 바 너비와 간격 조정 */
+  margin-left: calc(280px + 2%); 
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  justify-content: flex-start; /* 시작점에서 정렬 */
-  align-content: flex-start; /* 여러 줄 정렬시 상단부터 시작 */
-  padding-right: 2%; /* 오른쪽 여백 추가 */
+  justify-content: flex-start; 
+  align-content: flex-start;  
+  padding-right: 2%; 
 }
 
 .product-card {
-  width: calc(33.3333% - 16px - 2%); /* 너비 조정, 추가된 margin-left 고려 */
-  margin: 8px 0; /* 상단과 하단에만 마진을 추가 */
+  width: calc(33.3333% - 16px - 2%); 
+  margin: 8px 0; 
   cursor: pointer;
 }
 
@@ -214,25 +219,24 @@ border-radius: 2%;
   }
 
   .product-list {
-    margin-left: 2%; /* 좌측 여백 추가 */
-    justify-content: center; /* 중앙 정렬로 변경 */
+    margin-left: 2%; 
+    justify-content: center; 
   }
 
   .product-card {
-    width: calc(50% - 16px); /* 모바일 뷰에서 카드의 너비를 두 개씩 나오게 조정 */
+    width: calc(50% - 16px);
   }
 }
 
 @media (max-width: 1024px) {
   .category-navbar {
-    position: fixed; /* 화면 줄어도 고정 위치 유지 */
-    width: 200px; /* 네비게이션 바 너비 고정 */
-    /* 필요한 경우 여기에 추가 스타일 속성 */
+    position: fixed; 
+    width: 200px;
+   
   }
 }  
   
-  .product-image {
-    /* max-width: 100%; */
+  .product-image {  
     height: 320px;
     width: 270px;
     display: block;
@@ -265,23 +269,23 @@ border-radius: 2%;
   }
 
   .status-pre-auction {
-  color: #666; /* 회색 */
+  color: #666; 
 }
 
 .status-in-auction {
-  color: green; /* 초록색 */
+  color: green; 
 }
 
 .status-post-auction {
-  color: red; /* 빨간색 */
+  color: red; 
 }
 
   .searchbar {
   display: flex;
-  justify-content: flex-end; /* 요소들을 오른쪽으로 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
-  margin-top: 3%; /* 상단 여백 */
-  margin-right: 13%; /* 우측 여백 - 필요에 따라 조정 가능 */
+  justify-content: flex-end; 
+  align-items: center; 
+  margin-top: 3%;
+  margin-right: 13%; 
 }
 .buttonbox{
   padding-top: 10px;
@@ -308,7 +312,7 @@ border-radius: 2%;
 
 .pagination {
   display: flex;
-  justify-content: center; /* 중앙 정렬 */
+  justify-content: center; 
   padding: 20px;
 }
 
@@ -321,10 +325,10 @@ border-radius: 2%;
   cursor: pointer;
   height: 30px;
   width: 67px;
-  display: flex; /* Flexbox를 활성화합니다 */
-  justify-content: center; /* 수평 정렬을 중앙으로 설정합니다 */
-  align-items: center; /* 수직 정렬을 중앙으로 설정합니다 */
-  text-align: center; /* 텍스트를 중앙으로 정렬합니다 */
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  text-align: center;
   border-radius: 5px
 }
 

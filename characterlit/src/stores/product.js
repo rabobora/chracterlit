@@ -92,103 +92,68 @@ export const useProductStore = defineStore("product", () => {
         }
     };
 
-    // // 상품 글 등록
-    // const createProduct = function (product) {
-    //     axios({
-    //       url: `${import.meta.env.VITE_REST_API}/bid/create`,
-    //       method: "POST",
-    //       data: product,
-    //       withCredentials:true
-    //     })
-    //       .then((res) => {})
-    //       .catch((err) => {
-            
-    //       });
-    //   };
-
-    // 상품 글 등록
-const createProduct = function (product) {
-    
-    const accessToken = localStorage.getItem('access-token');    
-   
-    if (!accessToken) {
-        console.error('Access token is not available.');
-        return; 
-    }
-    
-    axios({
-        url: `${import.meta.env.VITE_REST_API}/bid/create`,
-        method: "POST",
-        headers: {
-            'access_token': accessToken 
-        },
-        data: product,
-        withCredentials:true
-    })
-    .then((res) => {
-        window.location.reload()
-    })
-    .catch((err) => {
-        console.error(err);
-        // 오류 처리 로직
-    });
-};
-
-
-    // 상품 글 수정
-    // const updateProduct = function (product, bidid) {
-    //     axios({
-    //       url: `${import.meta.env.VITE_REST_API}/bid/modify/${bidid}`,
-    //       method: "PUT",
-    //       data: product,
-    //       withCredentials: true
-    //     })
-    //       .then((res) => {
-              
-    //           alert("상품 정보가 성공적으로 수정되었습니다.")
-    //       })
-    //       .catch((err) => {           
-    //           console.log(product)
-    //           alert("상품 정보 수정에 실패했습니다.")
-    //       })
-    // }
-
-    // 상품 글 수정
-const updateProduct = function (productData, bidid) {
-    const accessToken = localStorage.getItem('access-token');
-    
-    if (!accessToken) {
-        console.error('Access token is not available.');
-        return;
-    }
-
-    const { nickname, ...product } = productData;
-
-    // 여기서 product 객체를 콘솔에 출력합니다.
-    // console.log('Updating product with data:', product);
-    
-    axios({
-        url: `${import.meta.env.VITE_REST_API}/bid/modify/${bidid}`,
-        method: "PUT",
-        headers: {
-            'access_token': accessToken // 요청 헤더에 access_token 추가
-        },
-        data: product,
-        withCredentials: true
-    })
-    .then((res) => {
-        alert("상품 정보가 성공적으로 수정되었습니다.");
-        router.push(`/product/${bidid}`);
-        // window.location.reload()
-    })
-    .catch((err) => {
-        console.error(err);
-        alert("상품 정보 수정에 실패했습니다.");
-        router.push(`/product/${bidid}`);
+    const createProduct = function (product) {
         
+        const accessToken = localStorage.getItem('access-token');    
+    
+        if (!accessToken) {
+            console.error('Access token is not available.');
+            return; 
+        }
+        
+        axios({
+            url: `${import.meta.env.VITE_REST_API}/bid/create`,
+            method: "POST",
+            headers: {
+                'access_token': accessToken 
+            },
+            data: product,
+            withCredentials:true
+        })
+        .then((res) => {
+            window.location.reload()
+        })
+        .catch((err) => {
+            console.error(err);
+            // 오류 처리 로직
+        });
+    };
 
-    });
-};
+    
+
+        // 상품 글 수정
+    const updateProduct = function (productData, bidid) {
+        const accessToken = localStorage.getItem('access-token');
+        
+        if (!accessToken) {
+            console.error('Access token is not available.');
+            return;
+        }
+
+        const { nickname, ...product } = productData;
+        
+        axios({
+            url: `${import.meta.env.VITE_REST_API}/bid/modify/${bidid}`,
+            method: "PUT",
+            headers: {
+                'access_token': accessToken
+            },
+            data: product,
+            withCredentials: true
+        })
+        .then((res) => {
+            alert("상품 정보가 성공적으로 수정되었습니다.");
+            router.push(`/product/${bidid}`);
+            
+        })
+        .catch((err) => {
+            console.error(err);
+            alert("상품 정보 수정에 실패했습니다.");
+            router.push(`/product/${bidid}`);
+            
+
+        });
+    };
 
     
 
@@ -260,21 +225,22 @@ const updateProduct = function (productData, bidid) {
     });
     
     const getSortedProductList = computed(() => {
-        const selectedList = getSearchProductList.value.length > 0 
-        ? getSearchProductList.value
-        : (getCategoryList.value.length > 0 
-            ? getCategoryList.value
-            : getAllProductList.value);
-    
-    selectedList.forEach(product => {
-        product.auctionStatusText = getAuctionStatusText(product.bid_status);
+        // 배열 여부를 확인하고, 배열이 아니면 빈 배열을 사용
+        const selectedList = Array.isArray(getSearchProductList.value) && getSearchProductList.value.length > 0 
+            ? getSearchProductList.value
+            : (Array.isArray(getCategoryList.value) && getCategoryList.value.length > 0 
+                ? getCategoryList.value
+                : Array.isArray(getAllProductList.value) ? getAllProductList.value : []);    
+     
+        selectedList.forEach(product => {
+            product.auctionStatusText = getAuctionStatusText(product.bid_status);
         });
-    
+        
         return selectedList.sort((a, b) => {
-        if (sortState.value.sortOrder === 'desc') {
-            return b[sortState.value.sortField] - a[sortState.value.sortField];
-        }
-        return a[sortState.value.sortField] - b[sortState.value.sortField];
+            if (sortState.value.sortOrder === 'desc') {
+                return b[sortState.value.sortField] - a[sortState.value.sortField];
+            }
+            return a[sortState.value.sortField] - b[sortState.value.sortField];
         });
     });
     
@@ -282,7 +248,7 @@ const updateProduct = function (productData, bidid) {
         switch (bidStatus) {
         case 1: return '경매 중';
         case 2: return '경매 종료';
-        default: return '경매 전'; // '상태 미정' 대신 '경매 전'을 기본값으로 설정
+        default: return '경매 전';
         }
     } 
     
@@ -294,7 +260,7 @@ const updateProduct = function (productData, bidid) {
     const filterByBidStatus = (status) => {
     
     if (status !== null) {
-        sortState.value.filterStatus = status; // 선택된 status 상태 업데이트
+        sortState.value.filterStatus = status; 
     } else {
         sortState.value.filterStatus = null;
     }

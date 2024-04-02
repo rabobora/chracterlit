@@ -1,6 +1,5 @@
 <template>
   <div class="read-page-container">
-
     <header>
       <h1>헤더 자리입니다 {{ biddingStore.bidId }}</h1>
       <!-- <router-link to="/" class="home-button">HomeView로 돌아가기</router-link> -->
@@ -97,7 +96,7 @@ const goToCreate = () => {
 onMounted(async () => {
     const bidId = route.params.number;
     biddingStore.bidId = route.params.number;
-    await usersStore.getLoginUser();
+    // await usersStore.getLoginUser();
 await biddingStore.fetchItemDetail();
 await biddingStore.loadInitialEvent();
 biddingStore.subscribe();
@@ -249,12 +248,14 @@ border-radius: 2%;
  background-color: brown;
  color: bisque;
  cursor: pointer;
- /* visibility: hidden; */
+ margin-right: 10px;
+ border-radius: 15px;
 }
 .updatebutton{
   background-color: blueviolet;
   cursor: pointer;
-  /* visibility: hidden; */
+  border-radius: 15px;
+  
 }
 
 .read-page-container {
@@ -266,6 +267,7 @@ border-radius: 2%;
   
   .item-image {
     text-align: center; /* 이미지를 중앙 정렬 */
+    margin-top: 5%;
   }
   
   .image-style {
@@ -454,7 +456,8 @@ border-radius: 2%;
   }
 
   .modify-button-box {
-    margin-top: 15px;
+    margin-top: 35px;
+    margin-left: 70%;    
   }
 
   .image-gallery {
