@@ -29,10 +29,14 @@
 export default {
 	methods: {
 		onNaverLogin() {
-			window.location.href = 'http://localhost:8080/oauth2/authorization/naver';
+			window.location.href = `${
+				import.meta.env.VITE_REST_URL
+			}/oauth2/authorization/naver`;
 		},
 		onKakaoLogin() {
-			window.location.href = 'http://localhost:8080/oauth2/authorization/kakao';
+			window.location.href = `${
+				import.meta.env.VITE_REST_URL
+			}/oauth2/authorization/kakao`;
 		},
 	},
 };
@@ -53,8 +57,6 @@ export default {
 	align-items: center;
 	margin-top: 20px;
 	padding: 50px;
-	/* border-radius: 8px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
 }
 
 .logo {
