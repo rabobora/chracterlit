@@ -112,9 +112,9 @@ onMounted(async () => {
 
 .bid-item {
 	display: flex;
-	align-items: center; /* 이미지를 포함한 모든 항목을 중앙으로 정렬 */
+	align-items: center;
 	justify-content: flex-start;
-	gap: 16px; /* 썸네일과 세부 정보 사이의 간격 */
+	gap: 16px; 
 	padding: 16px;
 	border: 1px solid #e5e7eb;
 	border-radius: 8px;
@@ -125,7 +125,7 @@ onMounted(async () => {
 	width: 150px;
 	height: 150px;
 	object-fit: cover;
-	border: 1px solid #e5e7eb; /* Light gray border for the image */
+	border: 1px solid #e5e7eb;
 	box-shadow: 0px 4px 4px 0px rgb(63, 62, 62);
 	border-radius: 10px;
 }
@@ -137,38 +137,35 @@ onMounted(async () => {
 }
 
 .item-details h2 {
-	font-size: 20px; /* Large text size */
-	font-weight: 600; /* Semi-bold */
+	font-size: 20px; 
+	font-weight: 600; 
 	margin: 0 0 15px 0;
 	word-break: break-word;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	max-width: 200px; /* Adjust the width as needed */
+	max-width: 200px; 
 }
 
 .item-details p {
-	font-size: 0.875rem; /* Small text size */
-	line-height: 1; /* No additional line height */
+	font-size: 0.875rem; 
+	line-height: 1; 
 	margin: 5px 0;
 }
 
-/* Adding a border between items for visual separation */
 .bidding-list-container > .bid-item:not(:last-child) {
 	border-bottom: 1px solid #e5e7eb;
 }
 
-/* Styling for the 'Present Price' and 'My Bid Price' to differentiate */
 .presentBid,
 .requestBid {
 	font-weight: 600;
-	color: #007bff; /* A shade of blue for emphasis */
+	color: #007bff;
 }
 
-/* Optional: Adding hover effect for interaction feedback */
 .bid-item:hover {
-	background-color: #f9fafb; /* Very light gray background on hover */
-	cursor: pointer; /* Change cursor to indicate clickable */
+	background-color: #f9fafb;
+	cursor: pointer; 
 }
 
 .status-box .item-status {
