@@ -54,7 +54,7 @@ const router = createRouter({
         },
         {
           path: "paystatement",
-          name: "payStatement",
+          name: "PayStatement",
           component: PayStatementView,
         },
       ],

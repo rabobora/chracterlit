@@ -8,4 +8,5 @@
 import { RouterView } from 'vue-router';
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>
