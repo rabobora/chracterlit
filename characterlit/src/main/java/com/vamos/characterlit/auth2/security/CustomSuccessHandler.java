@@ -43,7 +43,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = jwtUtil.createJwt("access", userNumber, userId, role, 3600000L);
         // 3600000L 4000L
         String refreshToken = jwtUtil.createJwt("refresh", userNumber, userId, role, 86400000L);
-        System.out.println(accessToken);
         //Refresh 토큰 저장
         CustomOAuth2TokenService.addRefresh(userId, refreshToken, 86400000L);
 

@@ -2,7 +2,7 @@ package com.vamos.characterlit.auth2.response;
 
 import java.util.Map;
 
-public class KakaoResponse implements OAuth2Response{
+public class KakaoResponse implements OAuth2Response {
 
     private final Map<String, Object> attribute;
 

@@ -38,7 +38,6 @@ public class UsersController {
 
     @PostMapping("/id")
     public ResponseEntity<?> getUserByNumber(@ExtractPayload long userNumber) {
-        System.out.println("getUserById : " + userNumber);
         Users user = usersRepository.findByUserNumber(userNumber);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -48,7 +47,6 @@ public class UsersController {
     @GetMapping("/find/nickname/{nickname}")
     public ResponseEntity<Boolean> isExistNickname(@PathVariable String nickname) {
         boolean isExist = usersRepository.existsUserByNickname(nickname);
-        System.out.println(isExist + " " + nickname);
         return new ResponseEntity<>(isExist, HttpStatus.OK);
     }
 }
