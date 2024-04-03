@@ -58,7 +58,7 @@ onMounted(() => {
       // 요소가 뷰포트에 들어오면 true, 아니면 false로 설정
       top3ContainerVisible.value = entry.isIntersecting;
     });
-  }, { threshold: 0.3 });
+  }, { threshold: 0.5 });
 
   const top3ContainerEl = document.querySelector('.top3-container');
   observer.observe(top3ContainerEl);
@@ -111,8 +111,8 @@ const navigateToItem = (bidId) => {
 }
 
 .productlist:hover {
-	background-color: #e2dddd;
-	color: #3e78e5;
+	background-color: #4a4660;
+	color: white
 }
 
 .searchandword {
@@ -123,7 +123,7 @@ const navigateToItem = (bidId) => {
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: center;
-	height: 100vh;
+	height: 90vh;
 	padding-top: 7%;
 	margin-top: -5%;
 }
@@ -177,6 +177,10 @@ const navigateToItem = (bidId) => {
   cursor: pointer;
 }
 
+.item:hover {
+	background-color: gainsboro;	
+}
+
 .title {
   margin-top: 8%;
   font-size: 22px;
@@ -228,5 +232,9 @@ const navigateToItem = (bidId) => {
 	margin-left: 40%;
 	cursor: pointer;
 	animation: burning 1s infinite;
+}
+.moreproduct:hover{
+	color: yellow;
+	animation: burning 3s infinite;
 }
 </style>

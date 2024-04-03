@@ -60,7 +60,7 @@
       </div>
   
      
-      <textarea id="content" placeholder="상품의 상세정보를 입력하세요" v-model="product.content"></textarea>
+      <textarea id="content" placeholder="상품의 상세정보를 입력하세요" v-model="product.content" style="white-space: pre-wrap;"></textarea>
       
       <div class="submit-button">
         <button @click="submitProduct" class="submit-button-margin">수정하기</button>
