@@ -16,4 +16,5 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoomDTO, Long> {
 //    List<Integer> findUserNumberByBidIdAndUserId(@Param("bidId") Long bidId, @Param("userNumber") Long userId);
     List<ChatRoomDTO> findByUser(Users user);
     List<ChatRoomDTO> findByItem(Items item);
+    ChatRoomDTO findByUser_UserNumberAndItem_BidId(Long userNumber, Long bidId);
 }
