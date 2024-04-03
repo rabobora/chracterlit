@@ -33,18 +33,24 @@ public class ChatController {
     @MessageMapping("/api/chat/{chatRoomId}") // Send Destination Queue
     public void sendMessage(@RequestBody mongoDBChatDTO mongoDBchatDTO) {
         template.convertAndSend("/sub/"+mongoDBchatDTO.getChatroomId(), mongoDBchatDTO);
+
+        System.out.println("전송 후 메시지 저장 프로세스 작동. "+mongoDBchatDTO);
+        mongoDBchatService.saveMongoDBChat(mongoDBchatDTO);
+
     }
 
     // 메시지 저장
     @PostMapping("/api/chat/save")
     public ResponseEntity saveMessage(@RequestBody List<mongoDBChatDTO> mongoDBChatDTOList){
-        mongoDBchatService.saveMongoDBChat(mongoDBChatDTOList);
+        mongoDBchatService.saveMongoDBChatList(mongoDBChatDTOList);
 
         System.out.println("메시지 저장 프로세스 작동");
 
         for(mongoDBChatDTO chat:mongoDBChatDTOList){
             System.out.println(chat);
         }
+
+//        System.out.println(mongoDBChatDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body("메시지 저장 완료");
     }
