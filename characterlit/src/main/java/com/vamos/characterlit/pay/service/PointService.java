@@ -76,37 +76,41 @@ public class PointService {
                 .depositBankCode("004")
                 .depositAccountNo(mainAccount)
                 .transactionBalance(request.getTransactionBalance())
-                .withdrawalBankCode(String.valueOf(request.getBankCode()))
-                .withdrawalAccountNo(String.valueOf(request.getAccountNo()))
+                .withdrawalBankCode(request.getBankCode())
+                .withdrawalAccountNo(request.getAccountNo())
                 .depositTransactionSummary("Characterlit 포인트 충전")
                 .withdrawalTransactionSummary("Characterlit 포인트 충전")
                 .build();
 
         boolean success = bankService.accountTransfer(chargeRequest, userkey);
 
+        int fee = (int)(request.getTransactionBalance()*0.005);
+
         AccountTransferRequestDTO divideFee = AccountTransferRequestDTO.builder()
                 .depositBankCode("004")
-                .depositAccountNo(feeAccount)
-                .transactionBalance((int)(request.getTransactionBalance()*0.005))
+                .depositAccountNo("0047672363735716")
+                .transactionBalance(fee)
                 .withdrawalBankCode("004")
                 .withdrawalAccountNo(mainAccount)
-                .depositTransactionSummary("Characterlit 포인트 충전(수수료)")
-                .withdrawalTransactionSummary("Characterlit 포인트 충전(수수료)")
+                .depositTransactionSummary("Characterlit 수수료")
+                .withdrawalTransactionSummary("Characterlit 수수료")
                 .build();
 
         boolean feeSuccess = bankService.accountTransfer(divideFee, accountKey);
 
+        int getpoint = request.getTransactionBalance()-fee;
+
         AccountTransferRequestDTO dividePoint = AccountTransferRequestDTO.builder()
                 .depositBankCode("004")
                 .depositAccountNo(pointAccount)
-                .transactionBalance(request.getTransactionBalance()-(int)(request.getTransactionBalance()*0.005))
+                .transactionBalance(getpoint)
                 .withdrawalBankCode("004")
                 .withdrawalAccountNo(mainAccount)
-                .depositTransactionSummary("Characterlit 포인트 충전(수수료 제외)")
-                .withdrawalTransactionSummary("Characterlit 포인트 충전(수수료 제외)")
+                .depositTransactionSummary("Characterlit 수수료 제외")
+                .withdrawalTransactionSummary("Characterlit 수수료 제외")
                 .build();
 
-        boolean pointSuccess = bankService.accountTransfer(divideFee, accountKey);
+        boolean pointSuccess = bankService.accountTransfer(dividePoint, accountKey);
 
         if (success && feeSuccess && pointSuccess) {
 
@@ -126,14 +130,14 @@ public class PointService {
 
             PointStatements pointStatements = PointStatements.builder()
                     .userNumber(userNumber)
-                    .point(request.getTransactionBalance())
+                    .point(getpoint)
                     .statementDate(payment.getPaymentDate())
                     .pointStatus(1)
                     .build();
 
             pointStatementRepository.save(pointStatements);
 
-            Point point = pointRepository.findByuserNumber(userNumber);
+            Point point = getPoint(userNumber);
             Point updatePoint = Point.builder()
                     .userNumber(userNumber)
                     .allPoint(point.getAllPoint()+ payment.getMoney())
@@ -149,11 +153,11 @@ public class PointService {
 
         String userkey = bankService.findBankUser(userNumber);
         AccountTransferRequestDTO withdrawRequest = AccountTransferRequestDTO.builder()
-                .depositBankCode("004")
-                .depositAccountNo(accountKey)
+                .depositBankCode(request.getBankCode())
+                .depositAccountNo(request.getAccountNo())
                 .transactionBalance(request.getTransactionBalance())
-                .withdrawalBankCode(String.valueOf(request.getBankCode()))
-                .withdrawalAccountNo(String.valueOf(request.getAccountNo()))
+                .withdrawalBankCode("004")
+                .withdrawalAccountNo(pointAccount)
                 .depositTransactionSummary("Characterlit 포인트 출금")
                 .withdrawalTransactionSummary("Characterlit 포인트 출금")
                 .build();
@@ -185,7 +189,7 @@ public class PointService {
 
             pointStatementRepository.save(pointStatements);
 
-            Point point = pointRepository.findByuserNumber(userNumber);
+            Point point = getPoint(userNumber);
             Point updatePoint = Point.builder()
                     .userNumber(userNumber)
                     .allPoint(point.getAllPoint()- payment.getMoney())
@@ -199,8 +203,8 @@ public class PointService {
     // 구매하기
 public boolean buyItem(BuyRequestDTO request){
 
-    Point seller = pointRepository.findByuserNumber(request.getUserNumber());
-    Point buyer = pointRepository.findByuserNumber(request.getWinnerId());
+    Point seller = getPoint(request.getUserNumber());
+    Point buyer =getPoint(request.getWinnerId());
 
     if(buyer.getUsablePoint()< request.getFinalBid()){
         return false;

@@ -6,7 +6,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class ChargeRequestDTO {
-    private int bankCode;
-    private int accountNo;
+    private String bankCode;
+    private String accountNo;
     private int transactionBalance;
 }

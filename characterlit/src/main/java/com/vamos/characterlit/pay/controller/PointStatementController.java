@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api/point")
 public class PointStatementController {
 
-    private PointStatementService pointStatementService;
+    private final PointStatementService pointStatementService;
 
     // 포인트 내역 조회
     @GetMapping("/statement")

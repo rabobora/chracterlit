@@ -57,7 +57,7 @@ public class BidController {
                     .requestBid(bidRequestDTO.getRequestBid())
                     .bidTime(LocalDateTime.now())
                     .build();
-            if(bidId%2==0){
+            if (bidId % 2 == 0) {
                 template.convertAndSend(direct.getName(), "queue_1_routing_key", bidMessage);
             } else {
                 template.convertAndSend(direct.getName(), "queue_2_routing_key", bidMessage);
@@ -71,19 +71,19 @@ public class BidController {
     }
 
     @GetMapping("/read/now/{bidId}")
-    public ResponseEntity<?> now(@PathVariable("bidId") Long bidId){
+    public ResponseEntity<?> now(@PathVariable("bidId") Long bidId) {
         try {
             int presentBid = nowbidService.readPrice(bidId);
             log.info("Page init, send present bid price : {}", presentBid);
             return new ResponseEntity<Integer>(presentBid, HttpStatus.OK);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error call : {}", e.getMessage());
             return new ResponseEntity<>("Error processing the bid: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/mybid")
-    public ResponseEntity<?> mybid(@ExtractPayload Long userNumber){
+    public ResponseEntity<?> mybid(@ExtractPayload Long userNumber) {
         try {
             log.info("read my bidlist userNumber: {}", userNumber);
             MyBidList biddingList = myBidService.show(userNumber);
@@ -95,16 +95,15 @@ public class BidController {
     }
 
     @GetMapping("/mysell")
-    public ResponseEntity<?> mysell(@ExtractPayload Long userNumber){
+    public ResponseEntity<?> mysell(@ExtractPayload Long userNumber) {
         try {
             log.info("read my sell");
             List<MySellListDTO> mySellList = myBidService.mysell(userNumber);
             return new ResponseEntity<List<MySellListDTO>>(mySellList, HttpStatus.OK);
         } catch (Exception e) {
-            return new  ResponseEntity<>("Error in my sell: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Error in my sell: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 
 }

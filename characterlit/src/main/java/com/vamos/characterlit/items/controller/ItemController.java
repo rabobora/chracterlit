@@ -2,6 +2,7 @@ package com.vamos.characterlit.items.controller;
 
 
 import com.vamos.characterlit.auth2.annotation.ExtractPayload;
+//import com.vamos.characterlit.auth2.security.jwt.JWTUtil;
 import com.vamos.characterlit.items.domain.Items;
 import com.vamos.characterlit.items.request.ItemCreateDto;
 import com.vamos.characterlit.items.request.ItemUpdateDto;
@@ -20,7 +21,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
-    private final JWTUtil jwtUtil;
 
     // 상품 글 생성
 
@@ -75,5 +75,13 @@ public class ItemController {
         List<ItemListDto> searchCategoryResults = itemService.searchCategories(categoryid);
         return ResponseEntity.ok(searchCategoryResults);
     }
+
+    // 조회수 top3 항목 출력
+    @GetMapping("/search/top3")
+    public ResponseEntity<List<ItemListDto>> Top3ItemsByViewCount() {
+        List<ItemListDto> items = itemService.Top3ItemsByViewCount();
+        return ResponseEntity.ok(items);
+    }
+
 
 }
