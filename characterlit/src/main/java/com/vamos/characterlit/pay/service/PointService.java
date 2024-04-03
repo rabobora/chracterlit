@@ -140,8 +140,8 @@ public class PointService {
             Point point = getPoint(userNumber);
             Point updatePoint = Point.builder()
                     .userNumber(userNumber)
-                    .allPoint(point.getAllPoint()+ payment.getMoney())
-                    .usablePoint(point.getUsablePoint()+ payment.getMoney())
+                    .allPoint(point.getAllPoint()+ getpoint)
+                    .usablePoint(point.getUsablePoint()+ getpoint)
                     .build();
 
             pointRepository.save(updatePoint);
@@ -176,7 +176,7 @@ public class PointService {
                     .money(request.getTransactionBalance())
                     .paymentDate(LocalDateTime.now())
                     .paymentStatus(1)
-                    .build();g
+                    .build();
 
             paymentRepository.save(payment);
 

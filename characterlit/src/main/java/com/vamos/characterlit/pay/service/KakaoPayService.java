@@ -71,8 +71,8 @@ public class KakaoPayService {
         params.put("total_amount", String.valueOf(money));
         params.put("tax_free_amount", String.valueOf(money));
         params.put("approval_url", host+"/loading?order_id=" + orderId);
-        params.put("cancel_url", host+"/api/point/charge/kakao/cancel");
-        params.put("fail_url", host+"/api/point/charge/kakao/fail");
+        params.put("cancel_url", host+"/mypage");
+        params.put("fail_url", host+"/mypage");
         params.put("payment_method_type", "MONEY");
 
         HttpHeaders headers = new HttpHeaders();
@@ -82,8 +82,6 @@ public class KakaoPayService {
 
         // 헤더와 바디 붙이기
         HttpEntity<Map<String,Object>> body = new HttpEntity<>(params, headers);
-
-        System.out.println(" 카카오 준비 body : "+body);
 
         KakaoReadyResponseDTO kakaoResponse = null;
         RestTemplate restTemplate = new RestTemplate();
@@ -134,15 +132,12 @@ public class KakaoPayService {
         // 헤더와 바디 붙이기
         HttpEntity<Map<String,Object>> body = new HttpEntity<>(params, headers);
 
-        System.out.println(" 카카오 승인 body : "+body);
-
         KaKaoApproveResponseDTO kakaoResponse = null;
         RestTemplate restTemplate = new RestTemplate();
 
         try {
             kakaoResponse = restTemplate.postForObject(approveUrl, body, KaKaoApproveResponseDTO.class);
 
-            System.out.println(" 카카오 준비 response : "+kakaoResponse);
         }catch (RestClientException e) {
             System.out.println(e);
         }
