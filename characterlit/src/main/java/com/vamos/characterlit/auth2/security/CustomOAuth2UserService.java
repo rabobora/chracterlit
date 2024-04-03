@@ -77,13 +77,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         } else {
 
             existData.setEmail(oAuth2Response.getEmail());
-            existData.setName(oAuth2Response.getName());
+            existData.setName(existData.getName());
             usersRepository.save(existData);
 
             UsersResponseDTO userDTO = new UsersResponseDTO();
             userDTO.setUserId(existData.getUserId());
             userDTO.setRole(existData.getRole());
-            userDTO.setName(oAuth2Response.getName());
+            userDTO.setName(existData.getName());
 
             return new CustomOAuth2User(userDTO);
         }
