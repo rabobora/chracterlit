@@ -48,9 +48,10 @@
 					<div class="form-group">
 						<label for="phoneNumber">전화번호</label>
 						<input
-							type="tel"
+							type="text"
 							id="phoneNumber"
 							v-model="loginUser.phoneNumber"
+							@input="onPhoneNumberInput"
 						/>
 					</div>
 					<div class="form-group">
@@ -178,6 +179,16 @@ function findAddress() {
 			address.value = data.address;
 		},
 	}).open();
+}
+
+function enforceNumeric(value) {
+	return value.replace(/[^\d]/g, '');
+}
+
+function onPhoneNumberInput(event) {
+	const input = event.target;
+	input.value = enforceNumeric(input.value);
+	loginUser.value.phoneNumber = input.value;
 }
 
 const submitForm = () => {
