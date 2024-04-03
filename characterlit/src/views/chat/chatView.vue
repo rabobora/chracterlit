@@ -2,10 +2,9 @@
     <header>
 		<TheHeader />
 	</header>
-  chatView-받은 비드아이디: {{ bidId }}
     <div class="container">
-        <div class="component">
-            <chatroomList :givenBidId="bidId" />
+        <div class="chatComponent">
+            <chatroomList :givenBidId="bidId"/>
         </div>
   </div>
 </template>
@@ -39,12 +38,15 @@ export default {
 </script>
 
 <style scopped>
+#chatroomListComponent{
+  float:left;
+}
 .container{
   border:1px solid black;
   border-radius:17px;
 }
-.component{
-  border:1px solid royalblue;
+.chatComponent{
+  border:1px solid black;
   border-radius:17px;
   height:500px;
 }

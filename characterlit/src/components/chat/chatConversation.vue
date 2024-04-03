@@ -6,7 +6,7 @@
       <ul style="list-style:none; padding-inline-start: 0px;">
         <!-- <h1>{{givenChatroomId}}번 채팅방 화면</h1> -->
         <div id="itemHeader">
-          <h2>{{ givenBidId }}번 물품</h2>
+          <h2>{{ givenBidTitle }}</h2>
         </div>
         <!-- <h2>접속한 유저:{{ givenUserNumber }}</h2> -->
         <div id="messages">
@@ -22,10 +22,10 @@
           </li>
         </div>
           <!-- input message form -->
-    <div class="mb-3 inputmsg">
+    <div>
       <div class="input-group">
-        <input @keyup.enter="send" type="text" id="message" v-model="content" class="form-control" placeholder="메세지를 입력하세요."/>
-          <button @click="send">
+        <input @keyup.enter="send" type="text" id="messageForm" v-model="content" class="form-control" placeholder="메세지를 입력하세요."/>
+          <button @click="send" class="generate">
             <div class="svg-wrapper-1">
               <div class="svg-wrapper">
                 <svg
@@ -57,7 +57,7 @@
     import SockJS from "sockjs-client/dist/sockjs.min.js";
     import Stomp from "webstomp-client";
     export default {
-      props: ['givenChatroomId', 'givenBidId', 'givenUserNumber'],
+      props: ['givenChatroomId', 'givenBidId', 'givenUserNumber', 'givenBidTitle'],
       watch:{
         givenChatroomId(chatroomId, oldChatroomId){
           console.log("채팅방 값이 변경되었습니다."+chatroomId);
@@ -214,18 +214,78 @@
 </script>
   
   <style scopped>
+  .generate {
+    width:55px;
+  font-family: inherit;
+  font-size: 20px;
+  background: #4098FF;
+  color: white;
+  padding: 0.7em 1em;
+  padding-left: 14px;
+  display: flex;
+  align-items: center;
+  border: none;
+  border-radius: 100%;
+  overflow: hidden;
+  transition: all 0.2s;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.generate span {
+  display: block;
+  margin-left: 0.3em;
+  transition: all 0.3s ease-in-out;
+}
+
+.generate svg {
+  display: block;
+  transform-origin: center center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.generate:hover .svg-wrapper {
+  animation: fly-1 0.6s ease-in-out infinite alternate;
+}
+
+.generate:hover svg {
+  transform: translateX(1.2em) rotate(45deg) scale(1.1);
+}
+
+.generate:hover span {
+  transform: translateX(5em);
+}
+
+.generate:active {
+  transform: scale(0.95);
+}
+
   .input-group{
-    border:1px solid salmon;
+    /* border:1px solid salmon; */
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px solid black;
     justify-content: center;
+    height:50px;
   }
   p{
     font-size:medium;
   }
   #itemHeader{
-    border:1px solid firebrick;
+    /* border:1px solid firebrick; */
+    border-bottom:1px solid black;
   }
+  #messageForm{
+    width:70%;
+    border-radius:50px;
+  }
+  #messageForm:focus {
+    border-color: #007bff; /* 선택되었을 때의 테두리 색상을 변경합니다. */
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* 선택되었을 때의 그림자 효과를 추가합니다. */
+    outline: 0; /* 기본 선택 효과를 제거합니다. */
+}
   #messages{
-    border:1px solid khaki;
+    /* border:1px solid khaki; */
     height:350px;
   }
   #messageBox{
@@ -233,7 +293,7 @@
     height:500px;
   }
   .chatroomBox{
-    border:1px solid blue;
+    /* border:1px solid blue; */
     width:300px;
     height:100%;
     text-align: center;
@@ -268,19 +328,19 @@
   
   p.from-me {
     align-self: flex-end;
-    background-color: #ffb3be;
+    background-color: #7EAAFF;
     color: #000;
   }
   
   p.from-me::before {
     border-bottom-left-radius: 0.8rem 0.7rem;
-    border-right: 1rem solid #ffb3be;
+    border-right: 1rem solid #7EAAFF;
     right: -0.35rem;
     transform: translate(0, -0.1rem);
   }
   
   p.from-me::after {
-    background-color: #fff7f1;
+    background-color: #ffffff;
     border-bottom-left-radius: 0.5rem;
     right: -40px;
     transform: translate(-30px, -2px);
@@ -306,20 +366,20 @@
   
   p.from-them {
     align-items: flex-start;
-    background-color: #ffebbb;
+    background-color: #ABD7FF;
     color: #000;
     z-index: 1;
   }
   
   p.from-them:before {
     border-bottom-right-radius: 0.8rem 0.7rem;
-    border-left: 1rem solid #ffebbb;
+    border-left: 1rem solid #ABD7FF;
     left: -0.35rem;
     transform: translate(0, -0.1rem);
   }
   
   p.from-them::after {
-    background-color: #fff7f1;
+    background-color: #ffffff;
     border-bottom-right-radius: 0.5rem;
     left: 20px;
     transform: translate(-30px, -2px);
