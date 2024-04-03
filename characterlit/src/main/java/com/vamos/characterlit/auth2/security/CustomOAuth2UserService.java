@@ -7,7 +7,6 @@ import com.vamos.characterlit.pay.service.BankService;
 import com.vamos.characterlit.users.domain.Users;
 import com.vamos.characterlit.users.repository.UsersRepository;
 import com.vamos.characterlit.users.response.UsersResponseDTO;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -32,7 +31,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        System.out.println(oAuth2User.getAttributes());
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuth2Response oAuth2Response = null;
@@ -47,7 +45,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return null;
         }
         String userId = oAuth2Response.getProvider() + "_" + oAuth2Response.getProviderId();
-        System.out.println(oAuth2Response.getEmail());
         Users existData = usersRepository.findByUserId(userId);
 
         if (existData == null) {
@@ -74,8 +71,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userDTO.setUserId(userId);
             userDTO.setRole("USER");
             userDTO.setName(oAuth2Response.getName());
-            System.out.println(usersRepository.findByUserId(userId).getUserNumber());
-             bankService.registBankUser(usersRepository.findByUserId(userId).getUserNumber());
+            bankService.registBankUser(usersRepository.findByUserId(userId).getUserNumber());
 
             return new CustomOAuth2User(userDTO);
         } else {

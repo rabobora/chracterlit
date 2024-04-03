@@ -30,14 +30,12 @@ public class ReissueService {
 
     public ResponseEntity<?> checkRefreshToken(String refresh) {
 
-        System.out.println("ReissueService : 1 : " + refresh);
         if (refresh == null) {
 
             //response status code
             return new ResponseEntity<>("refresh token null", HttpStatus.BAD_REQUEST);
         }
 
-        System.out.println("ReissueService : 2");
         //expired check
         try {
             jwtUtil.isExpired(refresh);
@@ -49,7 +47,6 @@ public class ReissueService {
 
         // 토큰이 refresh인지 확인 (발급시 페이로드에 명시)
         String category = jwtUtil.getCategory(refresh);
-        System.out.println("ReissueService : 3");
         if (!category.equals("refresh")) {
 
             //response status code
@@ -58,14 +55,12 @@ public class ReissueService {
 
         //DB에 저장되어 있는지 확인
         Boolean isRefreshExist = CustomOAuth2TokenService.isRefreshExist(refresh);
-        System.out.println("ReissueService : 4");
 
         if (!isRefreshExist) {
 
             //response body
             return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
         }
-        System.out.println("ReissueService : 5");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -32,7 +32,6 @@ public class ExtractPayloadArgumentResolver implements HandlerMethodArgumentReso
         String token = extractToken(request)
                 .orElseThrow(() -> BaseException.type(AuthErrorCode.INVALID_PERMISSION));
         validateToken(token);
-        System.out.println("resolveArgument : " + token);
         return jwtUtil.getUserNumber(token);
     }
 
@@ -52,7 +51,6 @@ public class ExtractPayloadArgumentResolver implements HandlerMethodArgumentReso
 
     public static Optional<String> extractToken(HttpServletRequest request) {
         String token = request.getHeader("access_token");
-        System.out.println("extractToken " + token);
         if (isEmptyAuthorizationHeader(token))
             return Optional.empty();
 
