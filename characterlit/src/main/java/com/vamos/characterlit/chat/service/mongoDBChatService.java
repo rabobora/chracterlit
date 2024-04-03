@@ -15,7 +15,11 @@ public class mongoDBChatService {
     public List<mongoDBChatDTO> listMongoDBChat(Long chatroomId){
         return mongoDBchatRepository.findByChatroomId(chatroomId);
     }
-    public void saveMongoDBChat(List<mongoDBChatDTO> mongoDBchatDTOList){
+    public void saveMongoDBChatList(List<mongoDBChatDTO> mongoDBchatDTOList){
         mongoDBchatRepository.saveAll(mongoDBchatDTOList);
+    }
+
+    public void saveMongoDBChat(mongoDBChatDTO mongoDBchatDTO){
+        mongoDBchatRepository.save(mongoDBchatDTO);
     }
 }

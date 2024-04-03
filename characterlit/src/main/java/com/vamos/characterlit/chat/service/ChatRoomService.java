@@ -2,6 +2,8 @@ package com.vamos.characterlit.chat.service;
 
 import com.vamos.characterlit.chat.dto.ChatRoomDTO;
 import com.vamos.characterlit.chat.repository.ChatRoomRepository;
+import com.vamos.characterlit.items.domain.Items;
+import com.vamos.characterlit.items.repository.ItemRepository;
 import com.vamos.characterlit.users.domain.Users;
 import org.springframework.stereotype.Service;
 
@@ -19,5 +21,9 @@ public class ChatRoomService {
     }
     public List<ChatRoomDTO> selectChatRooms(Users user){
         return chatRoomRepository.findByUser(user);
+    }
+
+    public List<ChatRoomDTO> selectSellChatRooms(Items item) {
+        return chatRoomRepository.findByItem(item);
     }
 }
