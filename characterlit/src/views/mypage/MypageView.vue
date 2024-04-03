@@ -45,7 +45,7 @@ export default {
 				{ id: 0, name: '내 정보', link: '/mypage/update' },
 				{ id: 1, name: '입찰 내역', link: '/mypage/mybid' },
 				{ id: 2, name: '판매 내역', link: '/mypage/mysell' },
-				{ id: 3, name: '페이 내역', link: '' },
+				{ id: 3, name: '페이 내역', link: '/mypage/paystatement' },
 			],
 			store: useUsersStore(),
 		};

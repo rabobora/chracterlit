@@ -62,6 +62,7 @@ const paypay = (item, event) => {
     event.preventDefault();
     return;
   }
+  router.push({ name: 'buyItem', params: { number: item.bidId } });
   console.log(item.bidId);
   //라우터 푸시 추가 구현 필요
 };
