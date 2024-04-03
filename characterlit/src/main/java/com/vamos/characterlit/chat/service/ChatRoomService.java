@@ -26,4 +26,8 @@ public class ChatRoomService {
     public List<ChatRoomDTO> selectSellChatRooms(Items item) {
         return chatRoomRepository.findByItem(item);
     }
+
+    public ChatRoomDTO checkDuplicateChatRooms(Long userNumber, Long bidId){
+        return chatRoomRepository.findByUser_UserNumberAndItem_BidId(userNumber, bidId);
+    }
 }

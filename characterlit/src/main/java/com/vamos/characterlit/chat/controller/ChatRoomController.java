@@ -36,6 +36,11 @@ public class ChatRoomController {
     // 채팅방 생성
     @PostMapping("/api/chatroom/create")
     ResponseEntity createChatRoom(@RequestBody ChatRoomRequestDTO chatRoomRequestDTO){
+        System.out.println("채팅방 생성 요청이 있습니다.");
+        if(chatRoomRequestDTO.getBuyerId()==null){
+            System.out.println("userNumber가 넘어오지 않았음. 생성하지 않음");
+            return ResponseEntity.badRequest().body("not enough userNumber value.");
+        }
         ChatRoomDTO chatRoomDTO=ChatRoomDTO.builder()
                 .item(itemRepository.findByBidId(chatRoomRequestDTO.getBidId()))
                 .user(usersRepository.findByUserNumber(chatRoomRequestDTO.getBuyerId()))
@@ -43,6 +48,12 @@ public class ChatRoomController {
 
         System.out.println(chatRoomRequestDTO);
         System.out.println(chatRoomDTO);
+
+        // 이미 존재하는 채팅방인지 확인
+        if(chatRoomService.checkDuplicateChatRooms(chatRoomRequestDTO.getBuyerId(), chatRoomRequestDTO.getBidId())!=null){
+            System.out.println("이미 존재하는 채팅방입니다. 생성하지 않습니다.");
+            return ResponseEntity.badRequest().body("already exist chat room.");
+        }
 
         // insert into chatroom table
         ChatRoomDTO createdChatRoom= chatRoomService.createChatRoom(chatRoomDTO);
