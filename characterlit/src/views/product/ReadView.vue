@@ -72,7 +72,7 @@
         </div>
       </div>
     </div>
-    <div class="description">
+    <div class="description" style="white-space: pre-wrap;">
       <h1>상세설명</h1>
       <div class="image-gallery">
       <img v-for="imageUrl in biddingStore.itemDetail.image" :key="imageUrl" :src="imageUrl" alt="Product Image" class="product-image"/>
