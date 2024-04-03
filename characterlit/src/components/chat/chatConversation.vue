@@ -1,20 +1,20 @@
 <template>
   <!-- 채팅방화면 -->
-  <div id="chatroomBox">
-    
+  <div v-if="givenChatroomId" class="chatroomBox">
     <!-- 채팅 내역 -->
     <div id="messageBox">
       <ul style="list-style:none;">
         <h1>{{givenChatroomId}}번 채팅방 화면</h1>
-        <h1>물품 번호: {{ givenBidId }}</h1>
+        <h2>{{ givenBidId }}번 물품</h2>
+        <h2>접속한 유저:{{ givenUserNumber }}</h2>
         <li v-for="item in chat_logs" :key="item">
           <div class="bubble">
-            <p :class="[item.senderId==this.sender_id ? 'from-me':'from-them']">{{item.content}}</p>
+            <p :class="[item.senderId==this.givenUserNumber ? 'from-me':'from-them']">{{item.content}}</p>
           </div>
         </li>
         <li v-for="item in store_messages" :key="item">
           <div class="bubble">
-            <p :class="[item.senderId==this.sender_id ? 'from-me':'from-them']">{{item.content}}</p>
+            <p :class="[item.senderId==this.givenUserNumber ? 'from-me':'from-them']">{{item.content}}</p>
           </div>
         </li>
           <!-- input message form -->
@@ -44,14 +44,16 @@
       </ul>
     </div>
   </div>
+  <div v-else class="chatroomBox">
+    <h1>채팅방을 선택해 주세요. 😪</h1>
+  </div>
     </template>
     
   <script>
     import SockJS from "sockjs-client/dist/sockjs.min.js";
     import Stomp from "webstomp-client";
-  
     export default {
-      props: ['givenChatroomId', 'givenBidId'],
+      props: ['givenChatroomId', 'givenBidId', 'givenUserNumber'],
       watch:{
         givenChatroomId(chatroomId, oldChatroomId){
           console.log("채팅방 값이 변경되었습니다."+chatroomId);
@@ -64,7 +66,6 @@
         return {
           chat_logs:[], // 당장 받아올 채팅 내역
           store_messages:[], // 저장할 채팅 내역
-          sender_id: 1, // 사용자 id
           content: null,
           connected: false,
           send_chatroomId:'',
@@ -74,16 +75,19 @@
         send() {
           console.log("Send message:" + this.send_message);
           console.log("소켓 연결할 채팅방 번호:"+this.givenChatroomId);
+          console.log("송신자 id:"+this.givenUserNumber);
+
           if (this.stompClient && this.stompClient.connected) {
             const msg = {
               chatroomId: this.givenChatroomId,
-              senderId: this.sender_id,
-              // content: this.content
+              senderId: this.givenUserNumber,
               content: this.content,
             };
             console.log(JSON.stringify(msg));
             // 보낼 땐 JSON 문자열로. 아니면 spring에서 처리 못함
             this.stompClient.send("/pub/api/chat/"+this.givenChatroomId, JSON.stringify(msg), {});
+
+            this.content="";
           }
         },
         connect(chatroomId, oldChatroomId) { // 채팅방 접속
@@ -198,9 +202,9 @@
   #messageBox{
     width:500px;
   }
-  #chatroomBox{
+  .chatroomBox{
     border:1px solid blue;
-    width:500px;
+    width:300px;
     height:100%;
   }
   .bubble {
