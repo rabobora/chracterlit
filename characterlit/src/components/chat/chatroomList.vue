@@ -1,7 +1,6 @@
 <template>
     <div id="chatroomListBox">
         <!-- List-넘겨받은 bidid:{{ givenBidId }} -->
-        <div>
             <!-- <h1> login 한 user Number 테스트{{ store.getLoginUser.userNumber }}</h1> -->
             <!-- <h1>{{store.getLoginUser.userNumber}}번 사용자의 채팅방 목록</h1> -->
             
@@ -22,7 +21,6 @@
                     </div>
                 </li>
             </ul>
-        </div>
     </div>
     <div>
             <chatConversation
@@ -42,6 +40,14 @@ const API_URL="http://localhost:8080/api/chatroomlist";
 
 export default{
     props:['givenBidId'],
+    watch:{
+        chatroomList: {
+          handler() {
+            this.scrollToBottom();
+          },
+          deep: true // 중첩된 객체도 감시
+        },
+    },
     components:{
         chatConversation,
     },
@@ -70,6 +76,13 @@ export default{
     },
 
     methods:{
+        scrollToBottom() {
+          // Vue.nextTick()을 사용하여 DOM 업데이트 이후에 스크롤을 아래로 이동
+          this.$nextTick(() => {
+            const cards = document.getElementById('chatroomCards');
+            cards.scrollTop = cards.scrollHeight;
+          });
+        },
         getChatrooms(){
             // n번 user의 채팅방 목록 불러오기
             fetch(API_URL, {
@@ -143,6 +156,17 @@ export default{
 }
 </script>
 <style scopped>
+#chatroomListBox{
+    width:300px;
+    border-right:1px solid black;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    transition: scroll-behavior 0.5s ease-in-out;
+    /* border:1px solid pink; */
+}
+#chatroomListBox::-webkit-scrollbar {
+    display: none;
+}
 .itemNickName{
     margin: 10px 0;
     font-size:small;
@@ -177,11 +201,6 @@ export default{
     display:flex;
     flex-direction: row;
 }
-#chatroomListBox{
-    width:300px;
-    border-right:1px solid black;
-    /* border:1px solid pink; */
-}
 .roomCard{
     padding:20px;
     width:250px;
@@ -191,6 +210,6 @@ export default{
     transition: background-color 0.3s ease;
 }
 .roomCard:hover, .roomCard.selected { /* 호버 및 선택 상태에 따른 스타일을 지정합니다. */
-    background-color: rgba(211, 211, 211, 0.464); /* 호버 및 선택 시 배경색을 변경합니다. */
+    background: linear-gradient(to right, #d7d7d7, #ffffff); /* 호버 및 선택 시 배경색을 변경합니다. */
 }
 </style>
