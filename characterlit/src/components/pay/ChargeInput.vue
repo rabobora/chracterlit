@@ -1,31 +1,32 @@
 <template>
   <div class="chargeinput-container">
-      <div class="chargeinput-section">
-          <select v-model="bank" class="chargeinput-bank">
-              <option v-for="bank in bankList" :key="bank.code" :value="bank">
-                  {{ bank.name }}
-              </option>
-          </select>
-          <input
-              type="text"
-              name="accountInput"
-              id="accountInput"
-              v-model="accountInput"
-              placeholder="계좌번호를 입력해주세요"
-              class="chargeinput-account"
-          />
-          <div class="chargeinput-money">
-              <h4 class="chargeinput-money-name">결제금액</h4>
-              <h4 class="chargeinput-money-money">{{ pointInput.value }} 원</h4>
-          </div>
-          <button @click="payMoney" class="chargeinput-button">결제하기</button>
+
+    <div class="chargeinput-section">
+      <div class="chargeinput-close" @click="closeChargeModal">
+        <i class="fa-solid fa-xmark fa-2xl" style="color: #ffffff;"></i>
       </div>
+      <div class="chargeinput-content">
+        <select v-model="bank" class="chargeinput-bank">
+          <option v-for="bank in bankList" :key="bank.code" :value="bank">
+            {{ bank.name }}
+          </option>
+        </select>
+        <input type="text" name="accountInput" id="accountInput" v-model="accountInput" placeholder="계좌번호를 입력해주세요"
+          class="chargeinput-account" />
+        <div class="chargeinput-money">
+          <h4 class="chargeinput-money-name">결제금액</h4>
+          <h4 class="chargeinput-money-money">{{ pointInput }} 원</h4>
+        </div>
+        <button @click="payMoney" class="chargeinput-button">결제하기</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { usePayStore } from '@/stores/pay';
+import { isChargeModal } from '@/stores/util';
 
 const payStore = usePayStore();
 
@@ -59,24 +60,30 @@ const bankList = ref([
   { code: '021', name: '제주은행' },
 ]);
 
+const closeChargeModal = () => {
+  isChargeModal.value = false
+}
+
 // 이체 정보 전송
 const payMoney = () => {
   if (!bank.value || !accountInput.value || !pointInput) {
-      window.alert('필요한 정보를 모두 입력해주세요');
+    window.alert('필요한 정보를 모두 입력해주세요');
   }
 
   // 요청 객체 생성
   const request = {
-      bankCode: bank.value.code,
-      accountNo: accountInput.value,
-      transactionBalance: pointInput.value,
+    bankCode: bank.value.code,
+    accountNo: accountInput.value,
+    transactionBalance: pointInput.value,
   };
   try {
-      payStore.chargeAccount(request);
+    payStore.chargeAccount(request);
   } catch (error) {
-      window.alert('문제가 발생했습니다. 다시 시도해주세요.');
+    window.alert('문제가 발생했습니다. 다시 시도해주세요.');
   }
 };
+
+
 
 onMounted(() => {
   payStore.pointCheck();
@@ -85,28 +92,53 @@ onMounted(() => {
 
 <style>
 .chargeinput-container {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  /* max-width:614px;
+  max-height: 584px; */
+  background-color: rgba(128, 128, 128, 0.863) !important;
+  top: 0;
+  left: 0;
+  margin: 0;
+  z-index: 99 !important;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
 }
 
 .chargeinput-section {
-  width: 870px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  width: 500px;
+  margin: auto;
+  margin-top: 40px;
+  background: #FFF;
+  padding: 0px;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.chargeinput-close {
+  background-color: black;
+  width: 500px;
+  box-sizing: border-box;
+  padding: 20px;
+  display: flex; /* flexbox 레이아웃 적용 */
+  justify-content: flex-end; /* 자식 요소들을 오른쪽으로 정렬 */
+}
+
+.chargeinput-content{
+  padding:40px;
 }
 
 .chargeinput-bank,
 .chargeinput-account,
 .chargeinput-button {
   width: calc(100% - 40px);
-  margin: 10px 20px;
+  margin: 15px 20px;
   padding: 10px;
   border-radius: 4px;
   border: 1px solid #ccc;
@@ -123,8 +155,16 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
-  margin: 10px 20px;
+  border: 2px solid black;
+  /* 검정색 테두리 추가 */
+  border-radius: 8px;
+  /* 테두리 둥글게 */
+  padding: 10px 20px;
+  /* 안쪽 여백 추가 */
+  margin: 20px 20px;
+  /* 간격 조정 */
+  width: calc(100% - 40px);
+  box-sizing: border-box;
 }
 
 .chargeinput-money-name,
@@ -143,7 +183,7 @@ onMounted(() => {
 }
 
 .chargeinput-button:hover {
-  background-color: #333333;
+  background-color: #55498c;
 }
 
 .chargeinput-button:disabled {
@@ -154,5 +194,10 @@ onMounted(() => {
 /* Placeholder styling */
 .chargeinput-account::placeholder {
   color: #aaa;
+}
+
+.chargeinput-button:hover {
+    background-color: #0056b3;
+    /* 호버 시 버튼 색상 변경 */
 }
 </style>

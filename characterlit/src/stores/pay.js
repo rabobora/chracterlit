@@ -106,13 +106,10 @@ export const usePayStore = defineStore('pay', () => {
 			withCredentials: true,
 		})
 			.then((res) => {
-				console.log('res');
 				kakaoResponse.value = res.data;
 				tid.value = kakaoResponse.value.tid;
 				next_redirect_pc_url.value = kakaoResponse.value.next_redirect_pc_url;
 				created_at.value = kakaoResponse.value.created_at;
-				console.log('여기2');
-
 				location.href = next_redirect_pc_url.value;
 			})
 			.catch((err) => {

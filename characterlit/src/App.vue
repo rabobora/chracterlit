@@ -14,6 +14,6 @@ import TheFooter from './components/common/TheFooter.vue';
 
 <style scoped>
 .view {
-	min-height: 100vh;
+	min-height: 100%;
 }
 </style>

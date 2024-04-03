@@ -76,14 +76,14 @@
 
   
   const categories = [
-    { id: 0, name: '피규어' },
-    { id: 1, name: '인형' },
-    { id: 2, name: '의류' },
-    { id: 3, name: '음반/서적/블루레이' },
-    { id: 4, name: '카드 및 지류' },
-    { id: 5, name: '팬시/문구' },
-    { id: 6, name: '생활/인테리어' },
-    { id: 7, name: '기타' }    
+    { id: 0, name: '　피규어' },
+    { id: 1, name: '　인형' },
+    { id: 2, name: '　의류' },
+    { id: 3, name: '　음반/서적/블루레이' },
+    { id: 4, name: '　카드 및 지류' },
+    { id: 5, name: '　팬시/문구' },
+    { id: 6, name: '　생활/인테리어' },
+    { id: 7, name: '　기타' }    
   ];
 
   const getAuctionStatusText = (bidStatus) => {
