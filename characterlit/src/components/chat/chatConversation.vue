@@ -21,7 +21,7 @@
             </div>
           </li>
         </div>
-          <!-- input message form -->
+    <!-- input message form -->
     <div>
       <div class="input-group">
         <input @keyup.enter="send" type="text" id="messageForm" v-model="content" class="form-control" placeholder="메세지를 입력하세요."/>
@@ -56,6 +56,7 @@
 <script>
     import SockJS from "sockjs-client/dist/sockjs.min.js";
     import Stomp from "webstomp-client";
+
     export default {
       props: ['givenChatroomId', 'givenBidId', 'givenUserNumber', 'givenBidTitle'],
       watch:{
@@ -64,6 +65,18 @@
           this.connect(chatroomId, oldChatroomId);
           console.log("채팅 내역을 가져옵니다:"+chatroomId);
           this.getMessageLogs(chatroomId);
+        },
+        chat_logs: {
+          handler() {
+            this.scrollToBottom();
+          },
+          deep: true // 중첩된 객체도 감시
+        },
+        store_messages: {
+          handler() {
+            this.scrollToBottom();
+          },
+          deep: true // 중첩된 객체도 감시
         },
       },
       data() {
@@ -76,6 +89,13 @@
         };
       },
       methods: {
+        scrollToBottom() {
+          // Vue.nextTick()을 사용하여 DOM 업데이트 이후에 스크롤을 아래로 이동
+          this.$nextTick(() => {
+            const messageBox = document.getElementById('messages');
+            messageBox.scrollTop = messageBox.scrollHeight;
+          });
+        },
         send() {
           console.log("Send message:" + this.send_message);
           console.log("소켓 연결할 채팅방 번호:"+this.givenChatroomId);
@@ -92,6 +112,7 @@
             this.stompClient.send("/pub/api/chat/"+this.givenChatroomId, JSON.stringify(msg), {});
 
             this.content="";
+            this.scrollToBottom();
           }
         },
         connect(chatroomId, oldChatroomId) { // 채팅방 접속
@@ -118,7 +139,7 @@
           // }
 
           this.chat_logs=[]; // 채팅 데이터 초기화
-            this.store_messages=[]; // 추가되었던 채팅 데이터 초기화
+          this.store_messages=[]; // 추가되었던 채팅 데이터 초기화
 
           this.socket = new SockJS("http://localhost:8080/ws");
           // 주어진 WebSocket 객체를 STOMP 클라이언트로 변환하여 STOMP 프로토콜 사용 가능
@@ -209,11 +230,23 @@
       },
       mounted() { // 페이지 진입 시 작동
         // this.connect();
+        this.scrollToBottom();
       }
     };
 </script>
   
   <style scopped>
+  #messages{
+    /* border:1px solid khaki; */
+    overflow-x: hidden;
+    overflow-y: scroll;
+    transition: scroll-behavior 0.5s ease-in-out;
+    height:350px;
+  }
+  #messages::-webkit-scrollbar {
+    display: none;
+  }
+
   .generate {
     width:55px;
   font-family: inherit;
@@ -283,11 +316,8 @@
     border-color: #007bff; /* 선택되었을 때의 테두리 색상을 변경합니다. */
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* 선택되었을 때의 그림자 효과를 추가합니다. */
     outline: 0; /* 기본 선택 효과를 제거합니다. */
+    transition: 0.3s;
 }
-  #messages{
-    /* border:1px solid khaki; */
-    height:350px;
-  }
   #messageBox{
     width:300px;
     height:500px;
