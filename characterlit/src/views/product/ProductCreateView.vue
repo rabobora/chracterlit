@@ -159,22 +159,27 @@
   };
   
   const submitProduct = () => {
-  const startDateTime = `${startDate.value}T${startTime.value}:00Z`;
-  const endDateTime = `${endDate.value}T${endTime.value}:00Z`;
 
-  const start = new Date(startDateTime);
-  const end = new Date(endDateTime);
-  const now = new Date();
- 
-  if (start <= now) {
-    alert('경매 시작일은 현재 시간보다 이후로 설정해야 합니다.');
+    if (!product.value.title || !product.value.content || product.value.startBid === 0 || !startDate.value || !endDate.value || product.value.category === 0) {
+    alert('모든 정보를 완벽하게 입력해주세요.');
     return;
   }
+    const startDateTime = `${startDate.value}T${startTime.value}:00Z`;
+    const endDateTime = `${endDate.value}T${endTime.value}:00Z`;
 
-  // 경매 종료일이 경매 시작일보다 이후인지 확인
-  if (end <= start) {
-    alert('경매 종료일은 경매 시작일보다 늦게 설정해야 합니다.');
-    return;
+    const start = new Date(startDateTime);
+    const end = new Date(endDateTime);
+    const now = new Date();
+  
+    if (start <= now) {
+      alert('경매 시작일은 현재 시간보다 이후로 설정해야 합니다.');
+      return;
+    }
+
+    // 경매 종료일이 경매 시작일보다 이후인지 확인
+    if (end <= start) {
+      alert('경매 종료일은 경매 시작일보다 늦게 설정해야 합니다.');
+      return;
   }
 
   product.value.startDate = startDateTime;
