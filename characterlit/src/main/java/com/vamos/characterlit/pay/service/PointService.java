@@ -204,7 +204,7 @@ public class PointService {
 public boolean buyItem(BuyRequestDTO request){
 
     Point seller = getPoint(request.getUserNumber());
-    Point buyer =getPoint(request.getWinnerId());
+    Point buyer =getPoint(request.getWinnerNumber());
 
     if(buyer.getUsablePoint()< request.getFinalBid()){
         return false;
@@ -213,7 +213,7 @@ public boolean buyItem(BuyRequestDTO request){
     LocalDateTime now = LocalDateTime.now();
 
     Point updateBuyer = Point.builder()
-            .userNumber(request.getWinnerId())
+            .userNumber(request.getWinnerNumber())
             .allPoint(buyer.getAllPoint()-request.getFinalBid())
             .usablePoint(buyer.getUsablePoint()- request.getFinalBid())
             .build();
@@ -227,7 +227,7 @@ public boolean buyItem(BuyRequestDTO request){
     pointRepository.save(updateSeller);
 
     PointStatements buyerstate = PointStatements.builder()
-            .userNumber(request.getWinnerId())
+            .userNumber(request.getWinnerNumber())
             .point(request.getFinalBid())
             .statementDate(now)
             .pointStatus(2)
@@ -250,5 +250,4 @@ public boolean buyItem(BuyRequestDTO request){
 
     return true;
 }
-
 }

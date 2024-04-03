@@ -86,9 +86,11 @@ public class PointController {
     @PutMapping("/buy")
     public ResponseEntity<Void> buyItem(@RequestBody BuyRequestDTO request){
 
+        System.out.println("request : "+request.toString());
+
         boolean check = pointService.buyItem(request);
 
-        if(check=false){
+        if(check==false){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
