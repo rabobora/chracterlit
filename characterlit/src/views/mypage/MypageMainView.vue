@@ -95,7 +95,7 @@ onMounted(() => {
 }
 
 .point-button:hover {
-    background-color: #000;
+    background-color: #0056b3;
 }
 
 hr {

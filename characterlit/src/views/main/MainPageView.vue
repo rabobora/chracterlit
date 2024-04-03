@@ -116,7 +116,7 @@ const navigateToItem = (bidId) => {
 }
 
 .productlist:hover {
-    background-color: #4a4660;
+    background-color: #0056b3;
     color: white;
 }
 

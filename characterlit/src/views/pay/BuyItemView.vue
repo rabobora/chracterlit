@@ -286,4 +286,9 @@ hr {
 .buyitem-confirm-button:hover:not(:disabled) {
 	background-color: #000000;
 }
+
+.buyitem-confirm-button:hover {
+    background-color: #0056b3;
+    /* 호버 시 버튼 색상 변경 */
+}
 </style>
