@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref,onMounted } from 'vue';
 import { usePayStore } from '@/stores/pay';
 
 const payStore = usePayStore();
