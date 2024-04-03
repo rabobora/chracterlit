@@ -176,7 +176,7 @@ public class PointService {
                     .money(request.getTransactionBalance())
                     .paymentDate(LocalDateTime.now())
                     .paymentStatus(1)
-                    .build();
+                    .build();g
 
             paymentRepository.save(payment);
 
@@ -184,7 +184,7 @@ public class PointService {
                     .userNumber(userNumber)
                     .point(request.getTransactionBalance())
                     .statementDate(payment.getPaymentDate())
-                    .pointStatus(4)
+                    .pointStatus(3)
                     .build();
 
             pointStatementRepository.save(pointStatements);
