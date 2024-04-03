@@ -42,16 +42,7 @@
             </div>
         </div>
       </div>
-    </div>
-    
-    <!-- <div>
-      <select v-model="selectedAuctionStatus">
-        <option value="">모든 상태</option>
-        <option value="0">경매전</option>
-        <option value="1">경매중</option>
-        <option value="2">경매종료</option>
-      </select>
-    </div> -->
+    </div>   
 
     <div class="pagination">
       <button @click="changePage(currentPage - 1)" :disabled="currentPage <= 1">이전</button>
