@@ -1,35 +1,44 @@
 <template>
-	<div class="buyitem-container">
-		<div class="buyitem-section">
-			<div class="buyitem-title">
-				<h2 class="buyitem-title-name">결제하기</h2>
-			</div>
-			<div class="buyitem-info">
-				<h3 class="buyitem-info-title">결제상품 정보</h3>
-				<hr />
-				<img :src="getDetail.thumbnail" class="buyitem-info-img">
-				<p> 상품 이름 : {{ getDetail.title }}</p>
-				<p> 결제 금액 : {{ getDetail.finalBid }}</p>
-			</div>
-			<div class="buyitem-point">
-				<div class="buyitem-point-title">
-					<h4 class="buyitem-point-name">포인트 사용</h4>
-					<span class="buyitem-point-usable">사용가능 포인트 {{ payStore.userPoint.usablePoint }}</span>
+	<div class="buyitem">
+		<header>
+			<TheHeader />
+		</header>
+		<div class="buyitem-container">
+			<div class="buyitem-section">
+				<div class="buyitem-title">
+					<h2 class="buyitem-title-name">결제하기</h2>
 				</div>
-				<div class="buyitem-point-input">
-					<input type="number" name="pointInput" id="pointInput" v-model="pointInput"
-						placeholder="사용할 포인트를 입력해주세요" class="buyitem-point-box" />
-					<button @click="useAllPoint" class="buyitem-point-button">전액사용</button>
+				<div class="buyitem-info">
+					<h3 class="buyitem-info-title">결제상품 정보</h3>
+					<hr />
+					<div class="buyitem-info-all">
+						<img :src="getDetail.thumbnail" class="buyitem-info-img">
+						<div class="buyitem-info-content">
+							<p> 상품 이름 : {{ getDetail.title }}</p>
+							<p> 결제 금액 : {{ getDetail.finalBid }}</p>
+						</div>
+					</div>
 				</div>
-			</div>
-			<div class="buyitem-confirm">
-				<div class="buyitem-confirm-white">
-					<label class="buyitem-confirm-title">
-						<input type="checkbox" v-model="agree" @change="agreement" class="buyitem-confirm-checkbox">
-						구매조건 확인 및 결제 진행 동의
-					</label>
+				<div class="buyitem-point">
+					<div class="buyitem-point-title">
+						<h3 class="buyitem-point-name">포인트 사용</h3>
+						<span class="buyitem-point-usable">사용가능 포인트 {{ payStore.userPoint.usablePoint }}</span>
+					</div>
+					<div class="buyitem-point-input">
+						<input type="number" name="pointInput" id="pointInput" v-model="pointInput"
+							placeholder="사용할 포인트를 입력해주세요" class="buyitem-point-box" />
+						<button @click="useAllPoint" class="buyitem-point-button">전액사용</button>
+					</div>
 				</div>
-				<button @click="buyItemButton" :disabled="!agree" class="buyitem-confirm-button">결제하기</button>
+				<div class="buyitem-confirm">
+					<div class="buyitem-confirm-white">
+						<label class="buyitem-confirm-title">
+							<input type="checkbox" v-model="agree" @change="agreement" class="buyitem-confirm-checkbox">
+							구매조건 확인 및 결제 진행 동의
+						</label>
+					</div>
+					<button @click="buyItemButton" :disabled="!agree" class="buyitem-confirm-button">결제하기</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -40,6 +49,7 @@ import { onMounted, ref, computed } from 'vue';
 import { usePayStore } from '@/stores/pay';
 import { useProductStore } from '@/stores/product';
 import { useRouter, useRoute } from 'vue-router';
+import TheHeader from '@/components/common/TheHeader.vue';
 
 const payStore = usePayStore();
 const productStore = useProductStore();
@@ -93,17 +103,21 @@ onMounted(async () => {
 </script>
 
 <style>
+.buyitem {
+	background-color: #f5f5f5;
+}
+
 .buyitem-container {
 	display: flex;
-	justify-content: center;
+	flex-direction: column;
 	align-items: center;
-	padding: 20px;
+	margin: 20px;
 }
 
 .buyitem-title,
 .buyitem-info,
-.buyitem-point,
-.buyitem-confirm {
+.buyitem-point {
+	width: 870px;
 	text-align: left;
 	background-color: white;
 	border-radius: 8px;
@@ -111,6 +125,31 @@ onMounted(async () => {
 	padding: 20px;
 	margin: 20px 0px;
 	min-width: 100vh;
+	box-sizing: border-box;
+}
+
+.buyitem-confirm-white {
+	width: 870px;
+	text-align: left;
+	background-color: white;
+	border-radius: 8px;
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+	padding: 20px;
+	margin: 20px 0px;
+	min-width: 100vh;
+	box-sizing: border-box;
+}
+
+.buyitem-info {
+	padding-top: 10px;
+}
+
+.buyitem-info-all{
+	display: flex;
+	align-items: center;
+	gap: 40px;
+	font-weight: bold;
+	font-size: 20px;
 }
 
 .buyitem-title {
@@ -140,6 +179,10 @@ onMounted(async () => {
 	justify-content: center;
 }
 
+.buyitem-point-name {
+	padding-top: 10px;
+}
+
 .buyitem-title-name,
 .buyitem-info-title,
 .buyitem-point-name {
@@ -158,11 +201,16 @@ hr {
 	margin-bottom: 20px;
 }
 
+.buyitem-point{
+	padding-bottom: 50px;
+}
+
 .buyitem-point-title {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 10px;
+	margin-top: 0px;
 }
 
 .buyitem-point-usable {
@@ -199,19 +247,35 @@ hr {
 	margin-bottom: 20px;
 }
 
+.buyitem-confirm-title {
+	font-size: 18px;
+	/* h3 태그와 유사한 크기 */
+	font-weight: bold;
+	/* 굵은 글씨 */
+}
+
+
 .buyitem-confirm-checkbox {
 	margin-right: 10px;
+	width: 18px;
+	/* 너비 */
+	height: 18px;
+	/* 높이 */
+	cursor: pointer;
+	/* 마우스 오버 시 커서 변경 */
 }
 
 .buyitem-confirm-button {
-	width: 100%;
-	padding: 10px 0;
+	width: 870px;
 	background-color: #000000;
 	color: white;
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
 	transition: background-color 0.3s;
+	font-size: 18px;
+	font-weight: bold;
+	padding: 15px;
 }
 
 .buyitem-confirm-button:disabled {
