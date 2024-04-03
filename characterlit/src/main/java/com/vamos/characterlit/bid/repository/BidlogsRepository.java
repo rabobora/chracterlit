@@ -11,8 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface BidlogsRepository extends JpaRepository<Bidlogs, Long> {
-    @Query("SELECT b FROM Bidlogs b WHERE b.bidId = :bidId ORDER BY b.requestBid DESC")
-    Optional<Bidlogs> findTopByBidIdOrderByRequestBidDesc(Long bidId);
+//    @Query("SELECT b FROM Bidlogs b WHERE b.bidId = :bidId ORDER BY b.requestBid DESC")
+    Optional<Bidlogs> findTop1ByBidIdOrderByRequestBidDesc(Long bidId);
 
     @Query("SELECT b FROM Bidlogs b WHERE b.bidId IN " +
             "(SELECT b2.bidId FROM Bidlogs b2 WHERE b2.userNumber = :userNumber GROUP BY b2.bidId) " +

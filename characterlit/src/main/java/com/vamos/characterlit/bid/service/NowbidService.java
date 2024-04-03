@@ -42,7 +42,7 @@ public class NowbidService {
             throw new RuntimeException("The bid is lower than the start bid.");
         }
         // 본인이 최상위 입찰자인가 확인 로직
-        Optional<Bidlogs> highestBidlog = bidlogsRepository.findTopByBidIdOrderByRequestBidDesc(messageDTO.getBidId());
+        Optional<Bidlogs> highestBidlog = bidlogsRepository.findTop1ByBidIdOrderByRequestBidDesc(messageDTO.getBidId());
         if(highestBidlog.isPresent()){
             Bidlogs targetLog = highestBidlog.get();
             if(targetLog.getUserNumber().equals(messageDTO.getUserNumber())){
