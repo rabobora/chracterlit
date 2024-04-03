@@ -48,9 +48,9 @@ public class ItemService {
                 .orElseThrow(() -> new EntityNotFoundException("상품 정보를 찾을 수 없습니다: " + bidId));
 
         // 경매 시작 시간 전에만 수정 가능
-//        if (item.getStartDate().isBefore(LocalDateTime.now())) {
-//            throw new IllegalStateException("경매 시작 시간 이후에는 상품 정보를 수정할 수 없습니다.");
-//        }
+        if (item.getStartDate().isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("경매 시작 시간 이후에는 상품 정보를 수정할 수 없습니다.");
+        }
         ItemUpdateDto.updateEntity(item, itemUpdateDto);
         return itemRepository.save(item);
     }
@@ -85,9 +85,9 @@ public class ItemService {
                 .orElseThrow(() -> new EntityNotFoundException("삭제하려는 상품 정보를 찾을 수 없습니다: " + bidId));
 
         // 경매 시작 시간 전에만 삭제 가능
-//        if (item.getStartDate().isBefore(LocalDateTime.now())) {
-//            throw new IllegalStateException("경매 시작 시간 이후에는 상품 정보를 삭제할 수 없습니다.");
-//        }
+        if (item.getStartDate().isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("경매 시작 시간 이후에는 상품 정보를 삭제할 수 없습니다.");
+        }
 
         itemRepository.delete(item);
     }
