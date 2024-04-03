@@ -85,4 +85,70 @@ onMounted(() => {
 
 </script>
 
-<style></style>
+<style>
+.withdraw-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px;
+	background-color: #f5f5f7; /* 배경 색상 설정 */
+	min-height: 100vh; /* 최소 높이 설정 */
+}
+
+.withdraw-section {
+	background-color: white;
+	border-radius: 8px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+	padding: 25px;
+	width: 100%;
+	max-width: 400px; /* 최대 너비 설정 */
+	margin-bottom: 20px; /* 하단 버튼과의 간격 */
+}
+
+.withdraw-title-name,
+.withdraw-point-name {
+	color: #333;
+	margin-bottom: 15px;
+}
+
+.withdraw-point-usable {
+	color: #28a745; /* 사용 가능 포인트 색상 */
+	font-weight: 600;
+	display: block; /* 개행 효과 */
+	margin-top: 5px;
+}
+
+.withdraw-point-input,
+.withdraw-bank {
+	margin-bottom: 20px;
+}
+
+.withdraw-point-box,
+.buyitem-bank-code {
+	width: 100%;
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	margin-bottom: 10px; /* 입력 필드 간 간격 */
+}
+
+.buyitem-bank-code {
+	display: block; /* 새 줄에서 시작 */
+}
+
+.withdraw-confirm-button {
+	width: 100%;
+	max-width: 400px; /* 버튼 최대 너비 설정 */
+	padding: 10px 0;
+	background-color: #007bff; /* 버튼 색상 */
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.withdraw-confirm-button:hover {
+	background-color: #0056b3; /* 호버 시 버튼 색상 변경 */
+}
+</style>
