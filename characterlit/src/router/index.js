@@ -117,9 +117,12 @@ const router = createRouter({
 			component: WithdrawView,
 		},
 		{
-			path: '/chatPage',
+			path: '/chatPage/:bidId?',
 			name: 'chatPage',
 			component: chatView,
+			props: (route) => ({
+				bidId: route.params.bidId ? parseInt(route.params.bidId) : 0 // bidId가 전달되지 않았을 때 기본값으로 0 설정
+			  }),
 		},
 	],
 });
