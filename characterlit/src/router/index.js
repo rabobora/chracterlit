@@ -83,45 +83,53 @@ const router = createRouter({
       component: SearchBarView,
     },
 
-    {
-      path: "/product/:number",
-      name: "ReadView",
-      component: ReadView,
-    },
-    {
-      path: "/login",
-      name: "login",
-      component: LoginView,
-    },
-    {
-      path: "/charge",
-      name: "charge",
-      component: ChargeView,
-    },
-    {
-      path: "/loading",
-      name: "approveKakao",
-      component: PayLoadingView,
-      props: (route) => (
-        { order_id: route.query.order_id }, { pg_token: route.query.pg_token }
-      ),
-    },
-    {
-      path: "/buyitem/:number",
-      name: "buyItem",
-      component: BuyItemView,
-    },
-    {
-      path: "/withdraw",
-      name: "withdraw",
-      component: WithdrawView,
-    },
-    {
-      path: "/chatPage",
-      name: "chatPage",
-      component: chatView,
-    },
-  ],
+		{
+			path: '/product/:number',
+			name: 'ReadView',
+			component: ReadView,
+		},
+		{
+			path: '/login',
+			name: 'login',
+			component: LoginView,
+		},
+		{
+			path: '/paystatement',
+			name: 'payStatement',
+			component: PayStatementView,
+		},
+		{
+			path: '/charge',
+			name: 'charge',
+			component: ChargeView,
+		},
+		{
+			path: '/loading',
+			name: 'approveKakao',
+			component: PayLoadingView,
+			props: (route) => (
+				{ order_id: route.query.order_id }, { pg_token: route.query.pg_token }
+			),
+		},
+		{
+			path: '/buyitem/:number',
+			name: 'buyItem',
+			component: BuyItemView,
+		},
+		{
+			path: '/withdraw',
+			name: 'withdraw',
+			component: WithdrawView,
+		},
+		{
+			path: '/chatPage/:bidId?',
+			name: 'chatPage',
+			component: chatView,
+			props: (route) => ({
+				bidId: route.params.bidId ? parseInt(route.params.bidId) : 0 // bidId가 전달되지 않았을 때 기본값으로 0 설정
+			  }),
+		},
+	],
 });
 
 export default router;
