@@ -62,6 +62,7 @@ const paypay = (item, event) => {
     event.preventDefault();
     return;
   }
+  router.push({ name: 'buyItem', params: { number: item.bidId } });
   console.log(item.bidId);
   //라우터 푸시 추가 구현 필요
 };
@@ -116,14 +117,14 @@ const combinedList = computed(() => {
   max-width: 800px;
   margin: auto;
   padding: 20px;
-  gap: 20px; /* Adds space between items */
+  gap: 20px; 
 }
 
 .bid-item {
   display: flex;
-  align-items: center; /* 이미지를 포함한 모든 항목을 중앙으로 정렬 */
+  align-items: center; 
   justify-content: flex-start;
-  gap: 16px; /* 썸네일과 세부 정보 사이의 간격 */
+  gap: 16px; 
   padding: 16px;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
@@ -134,7 +135,7 @@ const combinedList = computed(() => {
   width: 150px;
   height: 150px;
   object-fit: cover;
-  border: 1px solid #e5e7eb; /* Light gray border for the image */
+  border: 1px solid #e5e7eb; 
   box-shadow: 0px 4px 4px 0px rgb(63, 62, 62);
   border-radius: 10px;
 }
@@ -146,24 +147,24 @@ const combinedList = computed(() => {
 }
 
 .item-details h2 {
-  font-size: 20px; /* Large text size */
-  font-weight: 600; /* Semi-bold */
+  font-size: 20px; 
+  font-weight: 600; 
   margin: 0 0 15px 0;
   word-break: break-word;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 200px; /* Adjust the width as needed */
+  max-width: 200px; 
 }
 
 .item-details p {
-  font-size: 0.875rem; /* Small text size */
-  line-height: 1; /* No additional line height */
+  font-size: 0.875rem; 
+  line-height: 1; 
   margin: 5px 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 400px; /* Adjust the width as needed */
+  max-width: 400px; 
 }
 
 .bidding-list-container > .bid-item:not(:last-child) {
@@ -179,8 +180,8 @@ const combinedList = computed(() => {
 }
 
 .bid-item:hover {
-  background-color: #f9fafb; /* Very light gray background on hover */
-  cursor: pointer; /* Change cursor to indicate clickable */
+  background-color: #f9fafb; 
+  cursor: pointer;
 }
 
 .status-box .item-status {
@@ -208,7 +209,7 @@ const combinedList = computed(() => {
 
 .in-auction {
   background-color: #ff4500;
-  animation: burning 1s infinite; /* 불타는 애니메이션 */
+  animation: burning 1s infinite; 
 }
 
 @keyframes burning {
