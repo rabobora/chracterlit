@@ -1,6 +1,7 @@
 <template>
     <div class="bidding-list-container">
       <h2>나의 구매 및 입찰 내역</h2>
+      <h1 v-if="combinedList.length===0" style="color: rgb(63, 62, 62);">입찰하거나 구매한 상품이 없습니다</h1>
       <div v-for="item in combinedList" :key="item.bidId" class="bid-item">
         <div class="item-thumbnail" @click="navigateToItem(item.bidId)">
           <img :src="item.thumbnail || defaultImage" alt="Item Thumbnail">

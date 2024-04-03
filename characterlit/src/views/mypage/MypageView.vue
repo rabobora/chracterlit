@@ -10,8 +10,8 @@
 						<li v-for="myPage in myPagelist" :key="myPage.id">
 							<i class="fa-solid fa-paper-plane"></i>
 							<RouterLink :to="getPageLink(myPage.name)" class="nav-link">{{
-								myPage.name
-							}}</RouterLink>
+			myPage.name
+		}}</RouterLink>
 						</li>
 					</ul>
 				</div>
@@ -42,10 +42,12 @@ export default {
 	data() {
 		return {
 			myPagelist: [
-				{ id: 0, name: '내 정보', link: '/mypage/update' },
-				{ id: 1, name: '입찰 내역', link: '/mypage/mybid' },
-				{ id: 2, name: '판매 내역', link: '/mypage/mysell' },
-				{ id: 3, name: '페이 내역', link: '/mypage/paystatement' },
+				{ id: 0, name: '　마이페이지', link: '/mypage' },
+				{ id: 1, name: '　내 정보', link: '/mypage/update' },
+				{ id: 2, name: '　입찰 내역', link: '/mypage/mybid' },
+				{ id: 3, name: '　판매 내역', link: '/mypage/mysell' },
+				{ id: 4, name: '　페이 내역', link: '/mypage/paystatement' },
+				{ id: 5, name: '　채팅 내역', link: '/chatPage' }
 			],
 			store: useUsersStore(),
 		};
@@ -112,6 +114,11 @@ export default {
 	z-index: 1000;
 	margin-left: 2%;
 	border-radius: 5px;
+}
+
+.category-navbar li:hover {
+	opacity: 0.7;
+	color: aqua;
 }
 
 .category-navbar ul {

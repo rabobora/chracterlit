@@ -42,16 +42,7 @@
             </div>
         </div>
       </div>
-    </div>
-    
-    <!-- <div>
-      <select v-model="selectedAuctionStatus">
-        <option value="">모든 상태</option>
-        <option value="0">경매전</option>
-        <option value="1">경매중</option>
-        <option value="2">경매종료</option>
-      </select>
-    </div> -->
+    </div>   
 
     <div class="pagination">
       <button @click="changePage(currentPage - 1)" :disabled="currentPage <= 1">이전</button>
@@ -85,14 +76,14 @@
 
   
   const categories = [
-    { id: 0, name: '피규어' },
-    { id: 1, name: '인형' },
-    { id: 2, name: '의류' },
-    { id: 3, name: '음반/서적/블루레이' },
-    { id: 4, name: '카드 및 지류' },
-    { id: 5, name: '팬시/문구' },
-    { id: 6, name: '생활/인테리어' },
-    { id: 7, name: '기타' }    
+    { id: 0, name: '　피규어' },
+    { id: 1, name: '　인형' },
+    { id: 2, name: '　의류' },
+    { id: 3, name: '　음반/서적/블루레이' },
+    { id: 4, name: '　카드 및 지류' },
+    { id: 5, name: '　팬시/문구' },
+    { id: 6, name: '　생활/인테리어' },
+    { id: 7, name: '　기타' }    
   ];
 
   const getAuctionStatusText = (bidStatus) => {
