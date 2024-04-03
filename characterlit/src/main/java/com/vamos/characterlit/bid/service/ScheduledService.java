@@ -31,7 +31,7 @@ public class ScheduledService {
         log.info("target count: {}", itemsToClose.size());
         for (Items item : itemsToClose) {
             Integer presentBid = nowbidRepository.findPresentBidByBidId(item.getBidId());
-            Optional<Bidlogs> winnerLog = bidlogsRepository.findTopByBidIdOrderByRequestBidDesc(item.getBidId());
+            Optional<Bidlogs> winnerLog = bidlogsRepository.findTop1ByBidIdOrderByRequestBidDesc(item.getBidId());
             if(winnerLog.isPresent()){
                 item.setFinalBid(presentBid);
                 item.setWinnerNumber(winnerLog.get().getUserNumber());
