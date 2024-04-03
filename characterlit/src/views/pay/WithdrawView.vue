@@ -1,34 +1,40 @@
 <template>
-    <div class="withdraw-container">
-        <div class="withdraw-section">
-            <div class="withdraw-title">
-                <h3 class="withdraw-title-name">출금하기</h3>
+    <div class="withdraw">
+        <header>
+            <TheHeader />
+        </header>
+        <div class="withdraw-container">
+            <div class="withdraw-section">
+                <div class="withdraw-title">
+                    <h2 class="withdraw-title-name">출금하기</h2>
+                </div>
+                <div class="withdraw-point-title">
+                    <h3 class="withdraw-point-name">출금가능한 포인트</h3>
+                    <h3 class="withdraw-point-usable">{{ payStore.userPoint.usablePoint }}</h3>
+                </div>
+                <div class="withdraw-point-input">
+                    <input type="number" name="withdrawInput" id="withdrawInput" v-model="withdrawInput"
+                        placeholder="출금할 포인트를 입력해주세요" class="withdraw-point-box" />
+                </div>
+                <div class="withdraw-bank">
+                    <select v-model="bank" @change="bankSelect" class="withdraw-bank-code">
+                        <option v-for="bank in bankList" :key="bank.code" :value="bank">
+                            {{ bank.name }}
+                        </option>
+                    </select>
+                    <input type="text" name="accountInput" id="accountInput" v-model="accountInput"
+                        placeholder="계좌번호를 입력해주세요" class="withdraw-point-box" />
+                </div>
             </div>
-            <div class="withdraw-point-title">
-                <h4 class="withdraw-point-name">포인트 사용</h4>
-                <span class="withdraw-point-usable">{{ payStore.userPoint.usablePoint }}</span>
-            </div>
-            <div class="withdraw-point-input">
-                <input type="number" name="withdrawInput" id="withdrawInput" v-model="withdrawInput"
-                    placeholder="출금할 포인트를 입력해주세요" class="withdraw-point-box" />
-            </div>
-            <div class="withdraw-bank">
-                <select v-model="bank" @change="bankSelect" class="buyitem-bank-code">
-                    <option v-for="bank in bankList" :key="bank.code" :value="bank">
-                        {{ bank.name }}
-                    </option>
-                </select>
-                <input type="text" name="accountInput" id="accountInput" v-model="accountInput"
-                    placeholder="계좌번호를 입력해주세요" class="withdraw-point-box" />
-            </div>
+            <button @click="withdrawButton" class="withdraw-confirm-button">출금하기</button>
         </div>
-        <button @click="withdrawButton" class="withdraw-confirm-button">출금하기</button>
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { usePayStore } from '@/stores/pay';
+import TheHeader from '@/components/common/TheHeader.vue';
 
 
 const payStore = usePayStore();
@@ -86,69 +92,114 @@ onMounted(() => {
 </script>
 
 <style>
+.withdraw {
+    background-color: #f5f5f5;
+}
+
 .withdraw-container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding: 20px;
-	background-color: #f5f5f7; /* 배경 색상 설정 */
-	min-height: 100vh; /* 최소 높이 설정 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-.withdraw-section {
-	background-color: white;
-	border-radius: 8px;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-	padding: 25px;
-	width: 100%;
-	max-width: 400px; /* 최대 너비 설정 */
-	margin-bottom: 20px; /* 하단 버튼과의 간격 */
+.withdraw-title,
+.withdraw-point-title,
+.withdraw-point-input,
+.withdraw-bank {
+    width: 870px;
+    text-align: left;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    min-width: 100vh;
+    box-sizing: border-box;
+    margin-bottom: 20px;
 }
 
-.withdraw-title-name,
-.withdraw-point-name {
-	color: #333;
-	margin-bottom: 15px;
+.withdraw-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.withdraw-point-usable {
-	color: #28a745; /* 사용 가능 포인트 색상 */
-	font-weight: 600;
-	display: block; /* 개행 효과 */
-	margin-top: 5px;
+.withdraw-point-title {
+    display: flex;
+    /* Flex 컨테이너로 지정 */
+    justify-content: space-between;
+    /* 내부 요소들을 양 끝으로 정렬 */
+    align-items: center;
+    /* 수직 가운데 정렬 */
+    padding: 0 20px;
+    /* 좌우 패딩을 추가하여 내부 요소들이 테두리에 바짝 붙지 않도록 함 */
 }
+
+.withdraw-point-input {
+    display: flex;
+    /* Flexbox 레이아웃 사용 */
+    flex-direction: column;
+    /* 자식 요소들을 세로 방향으로 배열 */
+    padding-bottom: 30px;
+    /* 자식 요소들을 수직 방향에서 중앙 정렬 */
+    justify-content: center;
+    /* 자식 요소들을 수직 방향에서 중앙 정렬 */
+    align-items: center;
+    /* 자식 요소들을 수평 방향에서 중앙 정렬 */
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.withdraw-point-box:focus {
+    outline: none;
+    /* 포커스 됐을 때의 외곽선 제거 */
+}
+
+.withdraw-point-box {
+    width: 100%;
+    border: 0;
+    /* 모든 테두리 제거 */
+    border-bottom: 1px solid black;
+    /* 아래쪽 테두리만 추가 */
+    margin-top: 20px;
+    /* 입력 상자와 위의 텍스트 사이에 마진 추가 */
+    font-size: 24px;
+    /* h2 태그의 평균 글씨 크기로 설정, 프로젝트에 따라 조정 필요 */
+    text-align: left;
+}
+
 
 .withdraw-point-input,
 .withdraw-bank {
-	margin-bottom: 20px;
+    margin-bottom: 35px;
 }
 
-.withdraw-point-box,
-.buyitem-bank-code {
-	width: 100%;
-	padding: 8px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	margin-bottom: 10px; /* 입력 필드 간 간격 */
+.withdraw-bank{
+    padding: 30px;
+    
 }
 
-.buyitem-bank-code {
-	display: block; /* 새 줄에서 시작 */
-}
+ .withdraw-bank-code {
+    width: 100%;
+    display: block;
+    padding: 10px;
+} 
 
 .withdraw-confirm-button {
-	width: 100%;
-	max-width: 400px; /* 버튼 최대 너비 설정 */
-	padding: 10px 0;
-	background-color: #007bff; /* 버튼 색상 */
-	color: white;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	transition: background-color 0.3s;
+    width: 870px;
+  background-color: #000000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size:18px;
+  font-weight: bold;
+  padding: 15px;
 }
 
 .withdraw-confirm-button:hover {
-	background-color: #0056b3; /* 호버 시 버튼 색상 변경 */
+    background-color: #0056b3;
+    /* 호버 시 버튼 색상 변경 */
 }
 </style>
