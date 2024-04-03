@@ -39,5 +39,13 @@ export default {
 </script>
 
 <style scopped>
-
+.container{
+  border:1px solid black;
+  border-radius:17px;
+}
+.component{
+  border:1px solid royalblue;
+  border-radius:17px;
+  height:500px;
+}
 </style>

@@ -1,16 +1,17 @@
 <template>
     <div id="chatroomListBox" class="component">
-        List-넘겨받은 bidid:{{ givenBidId }}
+        <!-- List-넘겨받은 bidid:{{ givenBidId }} -->
         <div>
-            <h1> login 한 user Number 테스트{{ store.getLoginUser.userNumber }}</h1>
-            <h1>{{store.getLoginUser.userNumber}}번 사용자의 채팅방 목록</h1>
-            <ul style="list-style:none;">
+            <!-- <h1> login 한 user Number 테스트{{ store.getLoginUser.userNumber }}</h1> -->
+            <!-- <h1>{{store.getLoginUser.userNumber}}번 사용자의 채팅방 목록</h1> -->
+            
+            <ul style="list-style:none; padding-inline-start: 0px;">
                 <li v-for="item in chatroomList" :key="item">
                     <div class="roomCard" @click="selectChatroom(item.chatroomId, item.bidId)">
-                        <p>{{item.chatroomId}}번 채팅방</p>
-                        <p>물품 번호 {{ item.bidId }}</p>
-                        <p>구매자: {{ item.buyerId }}</p>
-                        <p>판매자: {{ item.sellerId }}</p>
+                        <div id="cardName">{{item.chatroomId}}번 채팅방</div>
+                        <div id="cardBid">물품 번호{{ item.bidId }}</div>
+                        <div id="cardSeller">판매자: {{ item.sellerId }}</div>
+                        <!-- <p>구매자: {{ item.buyerId }}</p> -->
                     </div>
                 </li>
             </ul>
@@ -124,15 +125,29 @@ export default{
 }
 </script>
 <style scopped>
+#cardName{
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+#cardBid{
+
+}
+#cardSeller{
+
+}
 .component{
     display:flex;
     flex-direction: row;
 }
 #chatroomListBox{
+    width:300px;
     border:1px solid pink;
 }
 .roomCard{
     padding:20px;
+    width:250px;
+    height:80px;
     border-radius:15px;
     border:1px solid black;
 }

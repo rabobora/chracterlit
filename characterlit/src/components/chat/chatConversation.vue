@@ -3,20 +3,24 @@
   <div v-if="givenChatroomId" class="chatroomBox">
     <!-- 채팅 내역 -->
     <div id="messageBox">
-      <ul style="list-style:none;">
-        <h1>{{givenChatroomId}}번 채팅방 화면</h1>
-        <h2>{{ givenBidId }}번 물품</h2>
-        <h2>접속한 유저:{{ givenUserNumber }}</h2>
-        <li v-for="item in chat_logs" :key="item">
-          <div class="bubble">
-            <p :class="[item.senderId==this.givenUserNumber ? 'from-me':'from-them']">{{item.content}}</p>
-          </div>
-        </li>
-        <li v-for="item in store_messages" :key="item">
-          <div class="bubble">
-            <p :class="[item.senderId==this.givenUserNumber ? 'from-me':'from-them']">{{item.content}}</p>
-          </div>
-        </li>
+      <ul style="list-style:none; padding-inline-start: 0px;">
+        <!-- <h1>{{givenChatroomId}}번 채팅방 화면</h1> -->
+        <div id="itemHeader">
+          <h2>{{ givenBidId }}번 물품</h2>
+        </div>
+        <!-- <h2>접속한 유저:{{ givenUserNumber }}</h2> -->
+        <div id="messages">
+          <li v-for="item in chat_logs" :key="item">
+            <div class="bubble">
+              <p :class="[item.senderId==this.givenUserNumber ? 'from-me':'from-them']">{{item.content}}</p>
+            </div>
+          </li>
+          <li v-for="item in store_messages" :key="item">
+            <div class="bubble">
+              <p :class="[item.senderId==this.givenUserNumber ? 'from-me':'from-them']">{{item.content}}</p>
+            </div>
+          </li>
+        </div>
           <!-- input message form -->
     <div class="mb-3 inputmsg">
       <div class="input-group">
@@ -45,11 +49,11 @@
     </div>
   </div>
   <div v-else class="chatroomBox">
-    <h1>채팅방을 선택해 주세요. 😪</h1>
+    <h1>채팅방을 선택해 주세요</h1>
   </div>
-    </template>
+</template>
     
-  <script>
+<script>
     import SockJS from "sockjs-client/dist/sockjs.min.js";
     import Stomp from "webstomp-client";
     export default {
@@ -95,16 +99,27 @@
             console.log("이전 채팅방 접속을 종료하고 새 커넥션을 생성합니다.");
             this.stompClient.disconnect();
           }
-  
-          this.chat_logs=[]; // 채팅 데이터 초기화
+
+          // console.log("저장이 필요한 store_messages:"+this.store_messages);
   
           // 저장할 메시지 값이 있다면 저장
-          if(this.store_messages.length){
-            console.log(oldChatroomId+"번째 방의 채팅방 내역을 저장합니다.");
-            this.saveMessageLogs(oldChatroomId);
+          // if(this.store_messages.length){
+          //   console.log("저장되어 있는 메시지 길이:"+this.chat_logs.length);
+          //   // 저장할 메시지 길이와 저장되어 있는 메시지 길이가 같다면 저장하지 않고 건너뛰기
+          //   if(this.chat_logs.length==this.store_messages.length | this.store_messages.length==0){
+          //     console.log("이미 저장된 메시지 이력이거나 저장할 이력이 없어 채팅방을 저장하지 않습니다.");
+          //   }else{
+          //     console.log(oldChatroomId+"번째 방의 채팅방 내역을 저장합니다.");
+          //     this.saveMessageLogs(oldChatroomId);
+          //   }
+
+          //   this.chat_logs=[]; // 채팅 데이터 초기화
+          //   this.store_messages=[]; // 추가되었던 채팅 데이터 초기화
+          // }
+
+          this.chat_logs=[]; // 채팅 데이터 초기화
             this.store_messages=[]; // 추가되었던 채팅 데이터 초기화
-          }
-  
+
           this.socket = new SockJS("http://localhost:8080/ws");
           // 주어진 WebSocket 객체를 STOMP 클라이언트로 변환하여 STOMP 프로토콜 사용 가능
           this.stompClient = Stomp.over(this.socket);
@@ -196,16 +211,32 @@
         // this.connect();
       }
     };
-  </script>
+</script>
   
   <style scopped>
+  .input-group{
+    border:1px solid salmon;
+    justify-content: center;
+  }
+  p{
+    font-size:medium;
+  }
+  #itemHeader{
+    border:1px solid firebrick;
+  }
+  #messages{
+    border:1px solid khaki;
+    height:350px;
+  }
   #messageBox{
-    width:500px;
+    width:300px;
+    height:500px;
   }
   .chatroomBox{
     border:1px solid blue;
     width:300px;
     height:100%;
+    text-align: center;
   }
   .bubble {
     border-radius: 0.25rem;
