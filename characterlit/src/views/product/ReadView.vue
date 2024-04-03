@@ -68,11 +68,11 @@
         </div>
         <div class="modify-button-box" :class="{'hidden-element': !isOwner || biddingStore.itemDetail.bidStatus !== 0}">
         <button @click="deleteSelectedProduct" class="deletebutton">상품 삭제</button>
-        <button @click="updateproduct" class="updatebutton">상품수정</button>
+        <button @click="updateproduct" class="updatebutton">상품 수정</button>
         </div>
       </div>
     </div>
-    <div class="description">
+    <div class="description" style="white-space: pre-wrap;">
       <h1>상세설명</h1>
       <div class="image-gallery">
       <img v-for="imageUrl in biddingStore.itemDetail.image" :key="imageUrl" :src="imageUrl" alt="Product Image" class="product-image"/>
@@ -181,8 +181,8 @@ const sendChatToSeller = () => {
   if(usersStore.loginUser.userNumber === null){
     return
   }
-  // const bidIdQuery = biddingStore.itemDetail.bidId;
-  // router.push({ name: '페이지명', query: { bidId : bidIdQuery } })
+  const bidIdQuery = biddingStore.itemDetail.bidId;
+  router.push({ name: 'chatPage', params: { bidId : bidIdQuery } })
   console.log(biddingStore.itemDetail.bidId);
 };
 </script>
@@ -205,10 +205,10 @@ const sendChatToSeller = () => {
 
 .searchbar {
   display: flex;
-  justify-content: flex-end; /* 요소들을 오른쪽으로 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
-  margin-top: 3%; /* 상단 여백 */
-  margin-right: 0%; /* 우측 여백 - 필요에 따라 조정 가능 */
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 3%;
+  margin-right: 0%;
 }  
 
 .buttonbox{
@@ -231,34 +231,38 @@ const sendChatToSeller = () => {
     
 }
 
+.buttons:hover {
+    opacity: 0.7;
+}
+
 .category-navbar {
-position: fixed; /* 고정 위치 */
-top: 50%; /* 뷰포트의 중앙에 배치 */
-transform: translateY(-25%); /* 요소의 중심을 정확히 뷰포트 중앙에 맞춤 */
-left: 0; /* 왼쪽 가장자리에 배치 */
-width: 200px; /* 네비게이션 바의 너비 */
-background-color: #000; /* 검정색 배경 */
-color: #fff; /* 텍스트 색상을 흰색으로 */
-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+position: fixed; 
+top: 50%;
+transform: translateY(-25%);
+left: 0;
+width: 200px;
+background-color: #000;
+color: #fff; 
+box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); 
 z-index: 1000; 
 margin-left: 2%;
 border-radius: 2%;
 }
 
 .category-navbar ul {
-  list-style: none; /* 목록 스타일 제거 */
-  padding: 0; /* 내부 여백 제거 */
-  margin: 0; /* 외부 여백 제거 */
+  list-style: none; 
+  padding: 0; 
+  margin: 0;
 }
 
 .category-navbar li {
-  cursor: pointer; /* 마우스 오버 시 커서 변경 */
-  padding: 10px; /* 패딩으로 여백 추가 */
-  border-bottom: 1px solid #fff; /* 경계선 추가 */
+  cursor: pointer; 
+  padding: 10px; 
+  border-bottom: 1px solid #fff; 
 }
 
 .category-navbar li:last-child {
-  border-bottom: none; /* 마지막 요소의 하단 경계선 제거 */
+  border-bottom: none; 
 }
 
 @media (max-width: 768px) {
@@ -269,17 +273,13 @@ border-radius: 2%;
 
 @media (max-width: 1024px) {
   .category-navbar {
-    position: fixed; /* 화면 줄어도 고정 위치 유지 */
-    width: 200px; /* 네비게이션 바 너비 고정 */
-    /* 필요한 경우 여기에 추가 스타일 속성 */
+    position: fixed; 
+    width: 200px;     
   }
 }  
 
-
-
-
 .deletebutton {
- background-color: rgb(0, 0, 0);
+ background-color: rgb(161, 0, 0);
  color: rgb(255, 255, 255);
  cursor: pointer;
  margin-right: 10px;
@@ -295,15 +295,15 @@ border-radius: 2%;
 }
 
 .read-page-container {
-    max-width: 900px; /* 컨테이너의 최대 너비 */
-    margin: auto; /* 중앙 정렬 */
+    max-width: 900px; 
+    margin: auto;
     padding: 20px;
     font-family: 'Arial', sans-serif;
     margin-top: -5%;
   }
   
   .item-image {
-    text-align: center; /* 이미지를 중앙 정렬 */
+    text-align: center; 
     margin-top: 5%;
   }
   
@@ -358,12 +358,16 @@ border-radius: 2%;
   margin-top: 5px;
   margin-right: 20px;  
   width: 83px;
-  background-color: #000; /* 검은색 배경 */
+  background-color: #000;
   color: white;
   border: none;
   border-radius: 90px;
-  cursor: pointer; /* 활성화 상태일 때 마우스 커서를 포인터로 변경 */
-  transition: background-color 0.3s, box-shadow 0.3s; /* 부드러운 전환 효과 */
+  cursor: pointer; 
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.chat-request-button:hover {
+    opacity: 0.7;
 }
   
   .price-container {
@@ -411,14 +415,14 @@ border-radius: 2%;
   
   .bid-input {
     display: flex;
-    justify-content: space-between; /* 입력 필드와 버튼 사이의 공간을 최대로 */
-    text-align: center; /* 입력 필드 중앙 정렬 */
+    justify-content: space-between;
+    text-align: center; 
     margin-top: 20px;
   }
   
   .bid-input input {
-    flex: 1; /* 가능한 모든 공간을 차지 */
-    margin-right: 10px; /* 버튼과의 간격 */
+    flex: 1; 
+    margin-right: 10px; 
     padding: 5px;
     border: none;
     border-bottom: 2px solid #000; 
@@ -429,24 +433,23 @@ border-radius: 2%;
   margin-top: 5px;  
   padding: 5px 25px;
   width: 83px;
-  background-color: #000; /* 검은색 배경 */
+  background-color: #000; 
   color: white;
   border: none;
   border-radius: 90px;
-  cursor: pointer; /* 활성화 상태일 때 마우스 커서를 포인터로 변경 */
-  transition: background-color 0.3s, box-shadow 0.3s; /* 부드러운 전환 효과 */
+  cursor: pointer; 
+  transition: background-color 0.3s, box-shadow 0.3s; 
 }
 
 .bid-input button:hover {
-  background-color: #333; /* 호버 상태의 배경색은 더 어두운 톤의 검은색 */
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); /* 빛나는 효과 */
+  background-color: #333; 
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); 
 }
 
-/* 비활성화된 버튼 스타일 */
 .bid-input button:disabled {
-  background-color: #cccccc; /* 비활성화 상태의 배경색 */
-  color: #666666; /* 비활성화 상태의 텍스트 색상 */
-  cursor: not-allowed; /* 비활성화 상태일 때 마우스 커서를 not-allowed로 변경 */
+  background-color: #cccccc; 
+  color: #666666; 
+  cursor: not-allowed; 
 }  
   .message-overlay {
     position: fixed;
@@ -458,7 +461,7 @@ border-radius: 2%;
     align-items: center;
     justify-content: center;
     animation: fadeInOut 4s;
-    pointer-events: none; /* 오버레이에서 마우스 이벤트 무시 */
+    pointer-events: none; 
   }
   
   .message-box {
@@ -466,11 +469,10 @@ border-radius: 2%;
     background: white;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    pointer-events: auto; /* 메시지 박스에서는 마우스 이벤트 활성화 */
+    pointer-events: auto;
   }
   
-  /* 페이드 인 아웃 애니메이션 */
-  @keyframes fadeInOut {
+   @keyframes fadeInOut {
     0%, 100% {
       opacity: 0;
       visibility: hidden;
@@ -482,15 +484,15 @@ border-radius: 2%;
   }
   .content {
     display: flex;
-    align-items: flex-start; /* 이미지와 내용을 위로 정렬 */
-    gap: 20px; /* 간격 추가 */
+    align-items: flex-start; 
+    gap: 20px; 
   }
   
   .item-info {
-    flex: 1; /* 나머지 공간을 모두 차지 */
+    flex: 1; 
     display: flex;
-    flex-direction: column; /* 세로 방향으로 스택 */
-    justify-content: space-between; /* 시작가와 현재가, 입력 필드를 분리 */
+    flex-direction: column;
+    justify-content: space-between; 
     margin-left: 15px;
   }
 

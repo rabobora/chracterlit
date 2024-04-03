@@ -65,7 +65,11 @@ export const usePayStore = defineStore('pay', () => {
 			withCredentials: true,
 		})
 			.then((res) => {
-				statementList.value = res.data;
+				if(res.data){
+					return statementList.value = res.data;
+				} else{
+					return null;
+				}
 			})
 			.catch((err) => {});
 	};
@@ -156,19 +160,26 @@ export const usePayStore = defineStore('pay', () => {
 	};
 
 	// 구매하기
-	const buyItem = async function () {
+	const buyItem = async function (request) {
+		console.log(request)
 		await axios({
 			url: `${import.meta.env.VITE_REST_POINT_API}/buy`,
 			method: 'PUT',
-			data: item,
+			data: request,
 			headers: {
 				'access_token': localStorage.getItem('access-token'),
 				'Content-type': 'application/json',
 			},
 			withCredentials: true,
 		})
-			.then((res) => {})
-			.catch((err) => {});
+			.then((res) => {
+				window.alert("결제가 완료되었습니다.");
+				router.push("/mypage");
+			})
+			.catch((err) => {
+				window.alert("결제가 실패하였습니다.");
+				console.log(err);
+			});
 	};
 
 	// 구매확정

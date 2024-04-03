@@ -155,6 +155,7 @@ const paginatedProducts = computed(() => {
 const changePage = (page) => {
   if (page >= 1 && page <= totalPage.value) {
     currentPage.value = page;
+    window.scrollTo(0, 0);
   }
 };
   </script>
@@ -178,6 +179,11 @@ box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 z-index: 1000; 
 margin-left: 2%;
 border-radius: 2%;
+}
+
+.category-navbar li:hover {
+    opacity: 0.7;
+    color: aqua;
 }
 
 .category-navbar ul {
@@ -246,6 +252,10 @@ border-radius: 2%;
     box-shadow: 0px 4px 4px 0px rgb(63, 62, 62);
     border-radius: 10px;
   }
+
+  .product-image:hover {
+    opacity: 0.7;
+}
   
   .product-info {
     text-align: center;
@@ -303,9 +313,13 @@ margin-right: 13%;
     cursor: pointer;
     width: 83px;
     height: 25px;
-    text-align: center;
-    
+    text-align: center;    
 }
+
+.buttons:hover {
+    opacity: 0.7;
+}
+
 .whiteicon{
   color: azure;
 }
