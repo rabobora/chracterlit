@@ -203,9 +203,15 @@ public class PointService {
     // 구매하기
 public boolean buyItem(BuyRequestDTO request){
 
-    Point seller = getPoint(request.getUserNumber());
-    Point buyer =getPoint(request.getWinnerId());
+    System.out.println("구매하기 request : "+request.toString());
 
+    Point seller = getPoint(request.getUserNumber());
+    System.out.println("seller : "+seller);
+    Point buyer =getPoint(request.getWinnerNumber());
+    System.out.println("buyer : "+buyer.toString());
+
+    System.out.println("buyer.getUsablePoint() : "+buyer.getUsablePoint());
+    System.out.println(" request.getFinalBid() : "+request.getFinalBid());
     if(buyer.getUsablePoint()< request.getFinalBid()){
         return false;
     }
@@ -213,11 +219,12 @@ public boolean buyItem(BuyRequestDTO request){
     LocalDateTime now = LocalDateTime.now();
 
     Point updateBuyer = Point.builder()
-            .userNumber(request.getWinnerId())
+            .userNumber(request.getWinnerNumber())
             .allPoint(buyer.getAllPoint()-request.getFinalBid())
             .usablePoint(buyer.getUsablePoint()- request.getFinalBid())
             .build();
     pointRepository.save(updateBuyer);
+    System.out.println("updateBuyer : "+updateBuyer);
 
     Point updateSeller = Point.builder()
             .userNumber(request.getUserNumber())
@@ -225,14 +232,18 @@ public boolean buyItem(BuyRequestDTO request){
             .usablePoint(seller.getUsablePoint())
             .build();
     pointRepository.save(updateSeller);
+    System.out.println("updateSeller : "+updateSeller);
+
 
     PointStatements buyerstate = PointStatements.builder()
-            .userNumber(request.getWinnerId())
+            .userNumber(request.getWinnerNumber())
             .point(request.getFinalBid())
             .statementDate(now)
             .pointStatus(2)
             .bidId(request.getBidId())
             .build();
+    System.out.println("buyerstate : "+buyerstate.toString());
+
 
     PointStatements sellerstate = PointStatements.builder()
             .userNumber(request.getUserNumber())
@@ -241,14 +252,15 @@ public boolean buyItem(BuyRequestDTO request){
             .pointStatus(4)
             .bidId(request.getBidId())
             .build();
+    System.out.println("sellerstate : "+sellerstate.toString());
 
     pointStatementRepository.save(buyerstate);
     pointStatementRepository.save(sellerstate);
 
     Items item = itemRepository.findByBidId(request.getBidId());
     item.setIsPaid(true);
+    System.out.println("구매하는 item : "+item);
 
     return true;
 }
-
 }

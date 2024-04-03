@@ -86,11 +86,18 @@ public class PointController {
     @PutMapping("/buy")
     public ResponseEntity<Void> buyItem(@RequestBody BuyRequestDTO request){
 
+        System.out.println("------------ 구매하기 ----------------");
+
+        System.out.println("request : "+request.toString());
+
         boolean check = pointService.buyItem(request);
 
-        if(check=false){
+        System.out.println("구매성공여부 : "+check);
+        if(check==false){
+            System.out.println("----------- 구매실패 -------------");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        System.out.println("----------- 구매성공 -------------");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
