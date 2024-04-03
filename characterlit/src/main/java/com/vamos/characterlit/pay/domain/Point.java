@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor.Override/Implement methods...
+@NoArgsConstructor
 public class Point {
 
     @Id
