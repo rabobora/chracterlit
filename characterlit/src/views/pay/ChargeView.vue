@@ -37,8 +37,9 @@
             결제조건 확인 및 결제 진행 동의
           </label>
         </div>
-        <ChargeInput v-if="isChargeModal" :pointInput="pointInput" @close="isChargeModal = false" />
-        <button @click="chargePoint" :disabled="!agree" class="charge-payment-button">충전하기</button>
+        <ChargeInput v-if="isChargeModal" :pointInput="pointInput" />
+        <button v-if="paymentMethod=='kakaoPay'" @click="chargeKakao" :disabled="!agree" class="charge-payment-button">충전하기</button>
+        <button v-else="paymentMethod=='accountTransfer'" @click="chargeAccount" :disabled="!agree" class="charge-payment-button">충전하기</button>
       </div>
     </div>
   </div>
@@ -58,20 +59,15 @@ const paymentMethod = ref('');
 
 const agree = ref(false);
 
-// 모달창 상태 관리
-// const isChargeModal = ref(false);
-
-const chargePoint = async () => {
-  if (paymentMethod.value === 'kakaoPay') {
-    // 요청 객체 생성
-    const request = {
+const chargeKakao = async() => {
+  const request = {
       money: pointInput.value
     };
     await payStore.readyKakao(request);
-    // await payStore.approveKakao(order_id, pg_token);
-  } else if (paymentMethod.value === 'accountTransfer') {
-    isChargeModal.value = true;
-  }
+}
+
+const chargeAccount = () => {
+  isChargeModal.value = true
 }
 
 onMounted(async () => {
@@ -220,5 +216,10 @@ onMounted(async () => {
 .charge-payment-button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+.charge-payment-button:hover {
+    background-color: #0056b3;
+    /* 호버 시 버튼 색상 변경 */
 }
 </style>
