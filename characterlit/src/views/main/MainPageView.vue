@@ -1,4 +1,4 @@
-<template>
+<template>	
 	<header>
 		<TheHeader />
 	</header>
@@ -15,7 +15,26 @@
 			</div>
 		</div>
 	</div>
-	<!-- <div>다음페이지</div>     -->
+	
+	<div class="top3-container" :class="{ 'visible': top3ContainerVisible }">
+		<div>
+			<h1 class="ranktitle">현재 인기 있는 상품들</h1>
+		</div>
+		<div class="items-container"> <!-- 아이템을 가로로 나열하기 위한 새로운 컨테이너 -->
+			<div @click="navigateToItem(product.bidId)"  class="item" v-for="(product, index) in productStore.gettop3ProductList" :key="product.bidId">
+			<div class="rank">{{ index + 1 }}위</div>
+			<img class="thumbnail" :src="product.thumbnail" alt="thumbnail">
+			<div class="title">{{ product.title }}</div>
+			</div>
+		</div>
+
+		<div @click="gotoproductlist" class="moreproduct">
+			더 많은 상품이 궁금하다면?
+		</div>
+	</div>
+
+
+ 
 </template>
 
 <script setup>
@@ -28,9 +47,29 @@ import TheHeader from '@/components/common/TheHeader.vue';
 const router = useRouter();
 const route = useRoute();
 const productStore = useProductStore();
+const top3ContainerVisible = ref(false);
+
+
+onMounted(() => {
+  productStore.researchTop3Product();
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      // 요소가 뷰포트에 들어오면 true, 아니면 false로 설정
+      top3ContainerVisible.value = entry.isIntersecting;
+    });
+  }, { threshold: 0.3 });
+
+  const top3ContainerEl = document.querySelector('.top3-container');
+  observer.observe(top3ContainerEl);
+});
 
 const gotoproductlist = () => {
 	router.push({ name: 'productList' });
+};
+
+const navigateToItem = (bidId) => {
+	router.push({ name: 'ReadView', params: { number: bidId } });
 };
 </script>
 
@@ -40,16 +79,16 @@ const gotoproductlist = () => {
 
 @keyframes fade-in {
 	from {
-		opacity: 0; /* 시작 시 요소가 완전히 투명 */
+		opacity: 0; 
 	}
 	to {
-		opacity: 1; /* 종료 시 요소가 완전히 불투명 */
+		opacity: 1; 
 	}
 }
 
 .fadecomponents > div {
-	animation: fade-in 2.5s ease-out 0.5s; /* 애니메이션 이름, 지속 시간, 타이밍 함수, 시작 지연 */
-	animation-fill-mode: forwards; /* 애니메이션 종료 시 요소가 최종 상태를 유지하도록 설정 */
+	animation: fade-in 2.5s ease-out 0.5s;
+	animation-fill-mode: forwards; 
 }
 
 .productlist {
@@ -86,6 +125,7 @@ const gotoproductlist = () => {
 	align-items: center;
 	height: 100vh;
 	padding-top: 7%;
+	margin-top: -5%;
 }
 
 .catchpri {
@@ -107,6 +147,86 @@ const gotoproductlist = () => {
 	margin-top: 10%;
 	text-align: center;
 }
-.pictureandwords {
+
+.items-container {
+  display: flex; 
+  justify-content: center; 
+  gap: 20px; 
+}
+
+.top3-container {
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center;
+  padding: 20px;
+  background-color: #3e78e5;
+  height: 100vh;
+}
+
+.item {
+  width: 250px;
+  height: 300px;  
+  border-radius: 5px;
+  overflow: hidden;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  cursor: pointer;
+}
+
+.title {
+  margin-top: 8%;
+  font-size: 22px;
+  font-weight: bold;
+  
+}
+
+.thumbnail {
+  width: 200px; 
+  height: 200px; 
+  /* object-fit: contain;  */
+  border-radius: 5px; 
+}
+.rank{
+	margin-bottom: 3%;
+	font-size: 30px;
+	font-weight: bolder;
+}
+.ranktitle {
+  font-size: 41px; 
+  color: #ffffff; 
+  margin-bottom: 12%; 
+  text-align: center;
+
+}
+
+
+.top3-container {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+
+.top3-container.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes burning {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+.moreproduct{
+	margin-top: 5%;
+	font-size: 25px;
+	color: #ffffff;
+	margin-left: 40%;
+	cursor: pointer;
+	animation: burning 1s infinite;
 }
 </style>

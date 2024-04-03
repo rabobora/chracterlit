@@ -10,6 +10,7 @@ export const useProductStore = defineStore("product", () => {
     const searchProductList = ref([])
     const searchCategoryList = ref([])
     const productDetail = ref({})
+    const top3ProductList = ref({})
 
 
     ////// GETTER/////////////////////////////////////////////
@@ -27,6 +28,9 @@ export const useProductStore = defineStore("product", () => {
     })
     const getProductDetail = computed(() => {
         return productDetail.value
+    })
+    const gettop3ProductList = computed(()=> {
+        return top3ProductList.value
     })
 
 
@@ -121,7 +125,7 @@ export const useProductStore = defineStore("product", () => {
 
     
 
-        // 상품 글 수정
+    // 상품 글 수정
     const updateProduct = function (productData, bidid) {
         const accessToken = localStorage.getItem('access-token');
         
@@ -172,7 +176,9 @@ export const useProductStore = defineStore("product", () => {
                               
               alert(err.response.data.message || "상품 정보 삭제에 실패했습니다.")
           })
+          
           router.push('/product/list');
+          
     }
     
 
@@ -218,6 +224,24 @@ export const useProductStore = defineStore("product", () => {
             return ""
         }
     }
+
+    // 모든 상품 정보 가져오기
+    const researchTop3Product = function () {
+        axios({
+            url: `${import.meta.env.VITE_REST_API}/bid/search/top3`,
+            method: "GET",
+            withCredentials:true
+        })
+            .then((res) => {
+            top3ProductList.value = res.data
+            console.log("요청 성공")
+            })
+            .catch((err) => {
+            console.error("요청 실패:", err)
+            
+            })
+        }
+
 
     const sortState = ref({
         sortField: 'bid_index',
@@ -280,6 +304,8 @@ export const useProductStore = defineStore("product", () => {
         getProductDetail,
         sortState,
         getSortedProductList,
+        gettop3ProductList,
+        top3ProductList,
         getAuctionStatusText,
         researchAllProduct,
         researchSearchResult,
@@ -290,7 +316,8 @@ export const useProductStore = defineStore("product", () => {
         deleteProduct,
         s3ImageUpload,
         s3ThumbnailUpload,
-        filterByBidStatus,        
+        filterByBidStatus,  
+        researchTop3Product,      
 
     }
 }, { persist: true })
