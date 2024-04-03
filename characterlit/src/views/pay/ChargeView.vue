@@ -1,4 +1,8 @@
 <template>
+  <div class="charge">
+  <header>
+    <TheHeader/>
+  </header>
   <div class="charge-container">
     <div class="charge-section">
       <div class="charge-title">
@@ -20,7 +24,7 @@
           <div class="charge-payment-all">
             <div class="charge-payment-kakao">
               <input type="radio" id="kakaoPay" value="kakaoPay" v-model="paymentMethod" />
-              <img src="@/assets/payment_icon_yellow_small.png" alt="logo" class = "charge-kakaologo"/>
+              <img src="@/assets/payment_icon_yellow_small.png" alt="logo" class="charge-kakaologo" />
             </div>
             <div class="charge-payment-account">
               <input type="radio" id="accountTransfer" value="accountTransfer" v-model="paymentMethod" />
@@ -33,11 +37,13 @@
             결제조건 확인 및 결제 진행 동의
           </label>
         </div>
-        <ChargeInput v-if="isChargeModal" :pointInput="pointInput" @close="isChargeModal = false" />
-        <button @click="chargePoint" :disabled="!agree" class="charge-payment-button">충전하기</button>
+        <ChargeInput v-if="isChargeModal" :pointInput="pointInput" />
+        <button v-if="paymentMethod=='kakaoPay'" @click="chargeKakao" :disabled="!agree" class="charge-payment-button">충전하기</button>
+        <button v-else="paymentMethod=='accountTransfer'" @click="chargeAccount" :disabled="!agree" class="charge-payment-button">충전하기</button>
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script setup>
@@ -45,6 +51,7 @@ import { onMounted, ref } from 'vue';
 import { usePayStore } from '@/stores/pay';
 import ChargeInput from '@/components/pay/ChargeInput.vue';
 import { isChargeModal } from '@/stores/util';
+import TheHeader from '@/components/common/TheHeader.vue';
 
 const payStore = usePayStore();
 const pointInput = ref(0);
@@ -52,20 +59,15 @@ const paymentMethod = ref('');
 
 const agree = ref(false);
 
-// 모달창 상태 관리
-// const isChargeModal = ref(false);
-
-const chargePoint = async () => {
-  if (paymentMethod.value === 'kakaoPay') {
-    // 요청 객체 생성
-    const request = {
+const chargeKakao = async() => {
+  const request = {
       money: pointInput.value
     };
     await payStore.readyKakao(request);
-    // await payStore.approveKakao(order_id, pg_token);
-  } else if (paymentMethod.value === 'accountTransfer') {
-    isChargeModal.value = true;
-  }
+}
+
+const chargeAccount = () => {
+  isChargeModal.value = true
 }
 
 onMounted(async () => {
@@ -76,8 +78,9 @@ onMounted(async () => {
 </script>
 
 <style>
-body {
-  background-color: #F5F5F5;
+
+.charge{
+  background-color: #f5f5f5;
 }
 
 .charge-container {
@@ -85,6 +88,7 @@ body {
   flex-direction: column;
   align-items: center;
   margin: 20px;
+  
 }
 
 .charge-title {
@@ -150,13 +154,17 @@ body {
 }
 
 .charge-payment-white {
-  padding-left: 20px;
+  padding: 20px;
 }
 
 .charge-payment-kakao,
 .charge-payment-account {
   margin-bottom: 20px;
   /* 하단 마진 추가로 간격 조정 */
+}
+
+.charge-kakaologo {
+  width: 50px;
 }
 
 
@@ -179,6 +187,19 @@ body {
   margin: 20px 0px;
 }
 
+.charge-payment-confirm {
+  font-size: 18px; /* h3 태그와 유사한 크기 */
+  font-weight: bold; /* 굵은 글씨 */
+}
+
+.charge-confirm-checkbox {
+  /* 체크박스 크기 조절 */
+  width: 18px; /* 너비 */
+  height: 18px; /* 높이 */
+  cursor: pointer; /* 마우스 오버 시 커서 변경 */
+}
+
+
 .charge-payment-button {
   width: 870px;
   background-color: #000000;
@@ -187,10 +208,18 @@ body {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
+  font-size:18px;
+  font-weight: bold;
+  padding: 15px;
 }
 
 .charge-payment-button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+.charge-payment-button:hover {
+    background-color: #0056b3;
+    /* 호버 시 버튼 색상 변경 */
 }
 </style>
