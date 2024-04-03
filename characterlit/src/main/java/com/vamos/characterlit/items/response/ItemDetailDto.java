@@ -25,11 +25,12 @@ public class ItemDetailDto {
     private Integer category;
     private Integer viewCount;
     private Long userNumber;
+    private Long winnerNumber;
 
     @Builder
     public ItemDetailDto(Long bidId, String nickname, String title, String content, List<String> image, String thumbnail,
                          LocalDateTime regDate, LocalDateTime startDate, LocalDateTime endDate, Integer startBid, Integer finalBid,
-                         Integer bidStatus, Integer category, Integer viewCount, Long userNumber) {
+                         Integer bidStatus, Integer category, Integer viewCount, Long userNumber, Long winnerNumber) {
         this.bidId = bidId;
         this.nickname = nickname;
         this.title = title;
@@ -45,6 +46,7 @@ public class ItemDetailDto {
         this.category = category;
         this.viewCount = viewCount;
         this.userNumber = userNumber;
+        this.winnerNumber = winnerNumber;
     }
 
     public static ItemDetailDto fromEntity(Items items) {
@@ -64,6 +66,7 @@ public class ItemDetailDto {
                 .category(items.getCategory())
                 .viewCount(items.getViewCount())
                 .userNumber(items.getUsers().getUserNumber())
+                .winnerNumber(items.getWinnerNumber())
                 .build();
     }
 
