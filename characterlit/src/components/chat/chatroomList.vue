@@ -1,5 +1,5 @@
 <template>
-    <div id="chatroomListBox" class="component">
+    <div id="chatroomListBox">
         <!-- List-넘겨받은 bidid:{{ givenBidId }} -->
         <div>
             <!-- <h1> login 한 user Number 테스트{{ store.getLoginUser.userNumber }}</h1> -->
@@ -7,10 +7,17 @@
             
             <ul style="list-style:none; padding-inline-start: 0px;">
                 <li v-for="item in chatroomList" :key="item">
-                    <div class="roomCard" @click="selectChatroom(item.chatroomId, item.bidId)">
-                        <div id="cardName">{{item.chatroomId}}번 채팅방</div>
-                        <div id="cardBid">물품 번호{{ item.bidId }}</div>
-                        <div id="cardSeller">판매자: {{ item.sellerId }}</div>
+                    <div :class="{ 'roomCard': true, 'selected': selectedItem === item }"
+                    @click="selectChatroom(item)">
+                        <div id="Thumbnail">
+                            <img class="bidThumbnail" :src="item.thumbnail" alt="Thumbnail">
+                        </div>
+                        <div class="cardInfo">
+                            <span class="cardName">
+                                <h3 class="itemTitle">{{item.title}}</h3>
+                                <p class="itemNickName">{{item.nickname}}</p>
+                            </span>
+                        </div>
                         <!-- <p>구매자: {{ item.buyerId }}</p> -->
                     </div>
                 </li>
@@ -22,6 +29,7 @@
             v-bind:givenChatroomId="chatroomId"
             v-bind:givenBidId="bidId"
             v-bind:givenUserNumber="store.getLoginUser.userNumber"
+            v-bind:givenBidTitle="bidTitle"
             class="component"/>
     </div>     
 </template>
@@ -44,7 +52,7 @@ export default{
 
         // this.userNumber=this.store.getLoginUser.userNumber;
 
-        if(this.givenBidId!=0){
+        if(this.givenBidId!=0 && this.store.getLoginUser.userNumber){
             this.createChatrooms(this.givenBidId, this.store.getLoginUser.userNumber);
         }else{
             this.getChatrooms();
@@ -55,8 +63,9 @@ export default{
             chatroomList:[],
             chatroomId: null,
             bidId:null,
+            bidTitle:null,
             store: useUsersStore(),
-            // userNumber: null,
+            selectedItem: null,
         }
     },
 
@@ -79,11 +88,15 @@ export default{
             })
             .then((data) => { // chatroom array
                 for(var i=0;i<data.length;i++){
+                    console.log("s3:"+data[i].item.thumbnail);
                     this.chatroomList.push({
                         chatroomId: data[i].chatroomId,
                         bidId: data[i].item.bidId,
                         buyerId: data[i].user.userNumber, // 구매자
                         sellerId: data[i].item.userNumber, // 판매자
+                        thumbnail: data[i].item.thumbnail,
+                        title: data[i].item.title,
+                        nickname: data[i].item.nickname,
                 });
                 }
             })
@@ -91,11 +104,12 @@ export default{
                 console.error("에러가 났어요.", error);
             });
         },
-        selectChatroom(chatroomId, bidId){
-            this.chatroomId=chatroomId;
-            this.bidId=bidId;
-            console.log("선택찬 채팅방 번호:"+chatroomId);
-            console.log("선택한 채팅방의 bid id:"+bidId);
+        selectChatroom(item){
+            console.log("item:"+item.chatroomId);
+            this.chatroomId=item.chatroomId;
+            this.bidId=item.bidId;
+            this.bidTitle=item.title;
+            this.selectedItem=item;
         },
         createChatrooms(bidId, buyerId){
             fetch("http://localhost:8080/api/chatroom/create", {
@@ -114,6 +128,10 @@ export default{
 
                 this.getChatrooms(); // 채팅방 생성 후 불러오기
               }else{
+                if(response.status===400){
+                    console.log("이미 존재하는 채팅방입니다.");
+                    window.location.href="http://localhost:5173/chatPage";
+                }
                 throw new Error("Network response was not ok.");
               }
           })
@@ -125,30 +143,54 @@ export default{
 }
 </script>
 <style scopped>
-#cardName{
+.itemNickName{
+    margin: 10px 0;
+    font-size:small;
+}
+.itemTitle{
+    margin: 0;
+}
+.cardInfo{
+
+}
+#Thumbnail{
+    float:left;
+}
+.bidThumbnail{
+    border-radius:50px;
+    width:80px;
+    height:80px;
+    margin-right:20px;
+}
+.cardName{
     font-weight: bold;
     font-size: 18px;
     margin-bottom: 10px;
 }
-#cardBid{
-
+.cardBid{
+    margin-top:10px;
 }
 #cardSeller{
 
 }
-.component{
+.chatComponent{
     display:flex;
     flex-direction: row;
 }
 #chatroomListBox{
     width:300px;
-    border:1px solid pink;
+    border-right:1px solid black;
+    /* border:1px solid pink; */
 }
 .roomCard{
     padding:20px;
     width:250px;
-    height:80px;
-    border-radius:15px;
-    border:1px solid black;
+    height:70px;
+    /* border-radius:15px; */
+    border-bottom:1px solid rgba(0, 0, 0, 0.179);
+    transition: background-color 0.3s ease;
+}
+.roomCard:hover, .roomCard.selected { /* 호버 및 선택 상태에 따른 스타일을 지정합니다. */
+    background-color: rgba(211, 211, 211, 0.464); /* 호버 및 선택 시 배경색을 변경합니다. */
 }
 </style>
