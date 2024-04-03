@@ -247,6 +247,7 @@ public boolean buyItem(BuyRequestDTO request){
 
     Items item = itemRepository.findByBidId(request.getBidId());
     item.setIsPaid(true);
+    itemRepository.save(item);
 
     return true;
 }
