@@ -1,6 +1,7 @@
 <template>
 	<div class="selling-list-container">
 		<h2>나의 판매 내역</h2>
+		<h1 v-if="sellingList.length===0" style="color: rgb(63, 62, 62);">판매한 상품이 없습니다</h1>
 		<div
 			v-for="item in sellingList"
 			:key="item.bidId"
