@@ -1,4 +1,3 @@
-
 <p align="center">
 <img src="./rmimages/logo.png">
 </p>
@@ -28,8 +27,6 @@
 원하는 물건들을 원하는 가격에 구매하는 것이 가능해집니다  
 >
 #### 당신이 원하는 캐릭터 굿즈, 캐릭터릿에서 찾아보세요
-
-
 
 
 
@@ -74,7 +71,6 @@
 ## Cloud
 - AWS S3
 - AWS Lambda
-
 <br />
 <br />
 
@@ -83,12 +79,8 @@
 - GitLab
 - Notion
 - Mattermost
-
 <br />
 <br />
-
-
-
 <br />
 <br />
 <br />
@@ -117,6 +109,7 @@
 
 - 검색창과 전체 상품목록을 볼 수 있는 페이지로 이동하는 버튼이 있습니다
 - 스크롤을 내리면 현재 인기 상품 순위를 보여줍니다 
+
 <br />
 <br />
 <br />
@@ -130,6 +123,7 @@
 - 네이버, 카카오 두 가지 방법으로 소셜 로그인과 회원가입이 가능합니다
 - 가입 완료시 최초 유저 닉네임은 유저 번호를 기반으로 생성이 되고 추후 수정 가능합니다
 - 완료되면 메인페이지로 넘어가게 됩니다
+
 <br />
 <br />
 <br />
@@ -143,18 +137,17 @@
 - 썸네일은 Lambda를 활용하여 이미지를 리사이즈한 url을 활용합니다
 - 검색 기능을 제공합니다
 - 카테고리별 필터링과 생성순으로 정렬이 가능합니다
+
 <br />
 <br />
 <br />
 
 ## ✍ 상품 등록
 <img src="./RMimg/상품등록1.gif" alt="input" width="800px" height="450px">
-
+<br />
 <img src="./RMimg/상품등록2.gif" alt="input" width="800px" height="450px">
-
 <br />
 
-<br />
 
 - 상품 기본 정보를 입력합니다
 - 경매 시작일과 종료일은 정각으로 설정 가능합니다
@@ -281,7 +274,7 @@
 # 📃 설계 문서
 
 ## ERD
-<img src="./RMimg/ERD.png" alt="erd" width="800px" height="800px">
+<img src="./RMimg/ERD.png" alt="erd" width="800px" height="450px">
 
 <br />
 <br />
