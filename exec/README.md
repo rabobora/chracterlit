@@ -1,5 +1,5 @@
 <p align="center">
-<img src="./rmimages/logo.png">
+<img src="./RMimg/logo.png">
 </p>
 
 # 📕 목차 
@@ -89,7 +89,7 @@
 
 # 🧮 시스템 아키텍처
 
-<img src="./rmimages/시스템 아키텍처.jpg" alt="마이페이지" width="900px" height="700px">
+<img src="./RMimg/시스템 아키텍처.jpg" alt="마이페이지" width="900px" height="700px">
 
 <br />
 <br />
@@ -281,7 +281,7 @@
 <br />
 
 ## 시퀀스다이어그램 (경매입찰관련)
-<img src="./rmimages/입찰관련로직.png" alt="시퀀스" width="800px" height="800px">
+<img src="./RMimg/입찰관련로직.png" alt="시퀀스" width="800px" height="800px">
 
 <br />
 <br />
@@ -289,7 +289,7 @@
 
 ## 플로우차트 (경매입찰관련)
 
-<img src="./rmimages/입찰플로우차트.png" alt="플로우" width="800px" height="800px">
+<img src="./RMimg/입찰플로우차트.png" alt="플로우" width="800px" height="800px">
 
 <br />
 <br />
