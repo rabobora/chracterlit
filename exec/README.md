@@ -198,9 +198,7 @@
 <br />
 
 ## 🗣 채팅
-<img src="./RMimg/채팅1.gif" alt="cal" width="800px" height="450px">
-
-<img src="./RMimg/채팅2.gif" alt="cal" width="800px" height="450px">
+<img src="./RMimg/채팅.gif" alt="cal" width="800px" height="450px">
 
 <br />
 
