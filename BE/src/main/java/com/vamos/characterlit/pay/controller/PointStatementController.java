@@ -26,7 +26,7 @@ public class PointStatementController {
 
     // 구매확정
     @PutMapping("/buy/complete")
-    public ResponseEntity<Void> buyComplete(@RequestParam Long bidId){
+    public ResponseEntity<Void> buyComplete(@ExtractPayload Long bidId){
         pointStatementService.pointConfirm(bidId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
